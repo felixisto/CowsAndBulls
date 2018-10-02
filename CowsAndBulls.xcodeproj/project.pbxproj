@@ -7,12 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		939486DB2BF1718B71F4BD6E /* Pods_CowsAndBullsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A627A67EC4EBCE13551DD16E /* Pods_CowsAndBullsTests.framework */; };
+		9E5B4DD423283C85C8FD2983 /* Pods_CowsAndBulls.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525452D770688E1A6F254A7D /* Pods_CowsAndBulls.framework */; };
+		B80BF64121639C3000F8B1EE /* LocalIPAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */; };
+		B80BF6432163B1F000F8B1EE /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6422163B1F000F8B1EE /* MainViewController.swift */; };
+		B80BF6472163B20800F8B1EE /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6462163B20800F8B1EE /* MainView.xib */; };
+		B80BF6492163B21400F8B1EE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6482163B21400F8B1EE /* MainView.swift */; };
+		B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */; };
+		B80BF64D2163B46300F8B1EE /* JoinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64C2163B46300F8B1EE /* JoinViewController.swift */; };
+		B80BF64F2163B46D00F8B1EE /* JoinPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */; };
+		B80BF6512163B47800F8B1EE /* JoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6502163B47800F8B1EE /* JoinView.swift */; };
+		B80BF6532163B48600F8B1EE /* JoinView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6522163B48600F8B1EE /* JoinView.xib */; };
 		B863198521635F860089A674 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198421635F860089A674 /* AppDelegate.swift */; };
-		B863198721635F860089A674 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198621635F860089A674 /* ViewController.swift */; };
-		B863198A21635F860089A674 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B863198821635F860089A674 /* Main.storyboard */; };
+		B863198721635F860089A674 /* HostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198621635F860089A674 /* HostViewController.swift */; };
 		B863198C21635F870089A674 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B863198B21635F870089A674 /* Assets.xcassets */; };
 		B863198F21635F870089A674 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B863198D21635F870089A674 /* LaunchScreen.storyboard */; };
 		B863199A21635F870089A674 /* CowsAndBullsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863199921635F870089A674 /* CowsAndBullsTests.swift */; };
+		B86319AC2163603C0089A674 /* CABSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AB2163603C0089A674 /* CABSession.swift */; };
+		B86319AE216360510089A674 /* CABGameHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AD216360510089A674 /* CABGameHost.swift */; };
+		B86319B0216360620089A674 /* CABGameGuesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AF216360620089A674 /* CABGameGuesser.swift */; };
+		B86319B2216360DF0089A674 /* HostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B1216360DF0089A674 /* HostView.xib */; };
+		B86319B4216360F30089A674 /* PickRoleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B3216360F30089A674 /* PickRoleView.xib */; };
+		B86319B6216361070089A674 /* HostPickWordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B5216361070089A674 /* HostPickWordView.xib */; };
+		B86319B82163611B0089A674 /* HostGameplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B72163611B0089A674 /* HostGameplayView.xib */; };
+		B86319BA2163612D0089A674 /* GuesserPickWordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B92163612D0089A674 /* GuesserPickWordView.xib */; };
+		B86319BC216361390089A674 /* GuesserGameplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319BB216361390089A674 /* GuesserGameplayView.xib */; };
+		B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319BD216361FA0089A674 /* HostPresenter.swift */; };
+		B86319C1216362640089A674 /* HostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C0216362640089A674 /* HostView.swift */; };
+		B86319C3216368870089A674 /* PickRoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C2216368870089A674 /* PickRoleViewController.swift */; };
+		B86319C5216368AA0089A674 /* PickRolePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C4216368AA0089A674 /* PickRolePresenter.swift */; };
+		B86319C7216368CD0089A674 /* PickRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C6216368CD0089A674 /* PickRoleView.swift */; };
+		B86319C9216369A30089A674 /* HostPickWordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C8216369A30089A674 /* HostPickWordViewController.swift */; };
+		B86319CB216369AF0089A674 /* HostPickWordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */; };
+		B86319CD216369B80089A674 /* HostPickWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CC216369B80089A674 /* HostPickWordView.swift */; };
+		B86319CF21636A860089A674 /* GuesserPickWordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */; };
+		B86319D121636A910089A674 /* GuesserPickWordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */; };
+		B86319D321636A980089A674 /* GuesserWaitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D221636A980089A674 /* GuesserWaitView.swift */; };
+		B86319D521636E280089A674 /* HostGameplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D421636E280089A674 /* HostGameplayViewController.swift */; };
+		B86319D721636E3F0089A674 /* HostGameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */; };
+		B86319D921636E500089A674 /* HostGameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D821636E500089A674 /* HostGameplayView.swift */; };
+		B86319DB216374C40089A674 /* GuesserGameplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */; };
+		B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */; };
+		B86319DF216374D40089A674 /* GuesserGameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DE216374D40089A674 /* GuesserGameplayView.swift */; };
+		B873AC53216393A000B5C8AC /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B873AC52216393A000B5C8AC /* Communicator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,16 +63,57 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02C742063094271805F1AE6C /* Pods-CowsAndBullsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBullsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBullsTests/Pods-CowsAndBullsTests.release.xcconfig"; sourceTree = "<group>"; };
+		525452D770688E1A6F254A7D /* Pods_CowsAndBulls.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CowsAndBulls.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		53E92BADA31648EE11557F78 /* Pods-CowsAndBulls.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBulls.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls.debug.xcconfig"; sourceTree = "<group>"; };
+		9D099EF7E212EDB9C74AD328 /* Pods-CowsAndBulls.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBulls.release.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls.release.xcconfig"; sourceTree = "<group>"; };
+		A627A67EC4EBCE13551DD16E /* Pods_CowsAndBullsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CowsAndBullsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalIPAddress.swift; sourceTree = "<group>"; };
+		B80BF6422163B1F000F8B1EE /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		B80BF6462163B20800F8B1EE /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
+		B80BF6482163B21400F8B1EE /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
+		B80BF64C2163B46300F8B1EE /* JoinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinViewController.swift; sourceTree = "<group>"; };
+		B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinPresenter.swift; sourceTree = "<group>"; };
+		B80BF6502163B47800F8B1EE /* JoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinView.swift; sourceTree = "<group>"; };
+		B80BF6522163B48600F8B1EE /* JoinView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JoinView.xib; sourceTree = "<group>"; };
 		B863198121635F860089A674 /* CowsAndBulls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowsAndBulls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B863198421635F860089A674 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B863198621635F860089A674 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B863198921635F860089A674 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B863198621635F860089A674 /* HostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostViewController.swift; sourceTree = "<group>"; };
 		B863198B21635F870089A674 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B863198E21635F870089A674 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B863199021635F870089A674 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B863199521635F870089A674 /* CowsAndBullsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CowsAndBullsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B863199921635F870089A674 /* CowsAndBullsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CowsAndBullsTests.swift; sourceTree = "<group>"; };
 		B863199B21635F870089A674 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B86319AB2163603C0089A674 /* CABSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABSession.swift; sourceTree = "<group>"; };
+		B86319AD216360510089A674 /* CABGameHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABGameHost.swift; sourceTree = "<group>"; };
+		B86319AF216360620089A674 /* CABGameGuesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABGameGuesser.swift; sourceTree = "<group>"; };
+		B86319B1216360DF0089A674 /* HostView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostView.xib; sourceTree = "<group>"; };
+		B86319B3216360F30089A674 /* PickRoleView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PickRoleView.xib; sourceTree = "<group>"; };
+		B86319B5216361070089A674 /* HostPickWordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostPickWordView.xib; sourceTree = "<group>"; };
+		B86319B72163611B0089A674 /* HostGameplayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostGameplayView.xib; sourceTree = "<group>"; };
+		B86319B92163612D0089A674 /* GuesserPickWordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GuesserPickWordView.xib; sourceTree = "<group>"; };
+		B86319BB216361390089A674 /* GuesserGameplayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GuesserGameplayView.xib; sourceTree = "<group>"; };
+		B86319BD216361FA0089A674 /* HostPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPresenter.swift; sourceTree = "<group>"; };
+		B86319C0216362640089A674 /* HostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostView.swift; sourceTree = "<group>"; };
+		B86319C2216368870089A674 /* PickRoleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRoleViewController.swift; sourceTree = "<group>"; };
+		B86319C4216368AA0089A674 /* PickRolePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRolePresenter.swift; sourceTree = "<group>"; };
+		B86319C6216368CD0089A674 /* PickRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRoleView.swift; sourceTree = "<group>"; };
+		B86319C8216369A30089A674 /* HostPickWordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordViewController.swift; sourceTree = "<group>"; };
+		B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordPresenter.swift; sourceTree = "<group>"; };
+		B86319CC216369B80089A674 /* HostPickWordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordView.swift; sourceTree = "<group>"; };
+		B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserPickWordViewController.swift; sourceTree = "<group>"; };
+		B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserPickWordPresenter.swift; sourceTree = "<group>"; };
+		B86319D221636A980089A674 /* GuesserWaitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserWaitView.swift; sourceTree = "<group>"; };
+		B86319D421636E280089A674 /* HostGameplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayViewController.swift; sourceTree = "<group>"; };
+		B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayPresenter.swift; sourceTree = "<group>"; };
+		B86319D821636E500089A674 /* HostGameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayView.swift; sourceTree = "<group>"; };
+		B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayViewController.swift; sourceTree = "<group>"; };
+		B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayPresenter.swift; sourceTree = "<group>"; };
+		B86319DE216374D40089A674 /* GuesserGameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayView.swift; sourceTree = "<group>"; };
+		B873AC52216393A000B5C8AC /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
+		CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBullsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBullsTests/Pods-CowsAndBullsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E5B4DD423283C85C8FD2983 /* Pods_CowsAndBulls.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,18 +129,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				939486DB2BF1718B71F4BD6E /* Pods_CowsAndBullsTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1ED1573E6BB3D13B14104656 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				525452D770688E1A6F254A7D /* Pods_CowsAndBulls.framework */,
+				A627A67EC4EBCE13551DD16E /* Pods_CowsAndBullsTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B863197821635F860089A674 = {
 			isa = PBXGroup;
 			children = (
 				B863198321635F860089A674 /* CowsAndBulls */,
 				B863199821635F870089A674 /* CowsAndBullsTests */,
 				B863198221635F860089A674 /* Products */,
+				CF042804B7B1F4E2B07CF00D /* Pods */,
+				1ED1573E6BB3D13B14104656 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,8 +169,12 @@
 			isa = PBXGroup;
 			children = (
 				B863198421635F860089A674 /* AppDelegate.swift */,
-				B863198621635F860089A674 /* ViewController.swift */,
-				B863198821635F860089A674 /* Main.storyboard */,
+				B86319BF2163623A0089A674 /* ViewControllers */,
+				B86319AA2163602B0089A674 /* Models */,
+				B86319A6216360080089A674 /* Presenters */,
+				B86319A72163600F0089A674 /* Views */,
+				B86319A421635FF00089A674 /* Interface */,
+				B86319A521635FF60089A674 /* Utilities */,
 				B863198B21635F870089A674 /* Assets.xcassets */,
 				B863198D21635F870089A674 /* LaunchScreen.storyboard */,
 				B863199021635F870089A674 /* Info.plist */,
@@ -96,6 +191,96 @@
 			path = CowsAndBullsTests;
 			sourceTree = "<group>";
 		};
+		B86319A421635FF00089A674 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				B80BF6462163B20800F8B1EE /* MainView.xib */,
+				B86319B1216360DF0089A674 /* HostView.xib */,
+				B80BF6522163B48600F8B1EE /* JoinView.xib */,
+				B86319B3216360F30089A674 /* PickRoleView.xib */,
+				B86319B5216361070089A674 /* HostPickWordView.xib */,
+				B86319B72163611B0089A674 /* HostGameplayView.xib */,
+				B86319B92163612D0089A674 /* GuesserPickWordView.xib */,
+				B86319BB216361390089A674 /* GuesserGameplayView.xib */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		B86319A521635FF60089A674 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B873AC52216393A000B5C8AC /* Communicator.swift */,
+				B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		B86319A6216360080089A674 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */,
+				B86319BD216361FA0089A674 /* HostPresenter.swift */,
+				B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */,
+				B86319C4216368AA0089A674 /* PickRolePresenter.swift */,
+				B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */,
+				B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */,
+				B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */,
+				B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		B86319A72163600F0089A674 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B80BF6482163B21400F8B1EE /* MainView.swift */,
+				B86319C0216362640089A674 /* HostView.swift */,
+				B80BF6502163B47800F8B1EE /* JoinView.swift */,
+				B86319C6216368CD0089A674 /* PickRoleView.swift */,
+				B86319CC216369B80089A674 /* HostPickWordView.swift */,
+				B86319D221636A980089A674 /* GuesserWaitView.swift */,
+				B86319D821636E500089A674 /* HostGameplayView.swift */,
+				B86319DE216374D40089A674 /* GuesserGameplayView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B86319AA2163602B0089A674 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B86319AB2163603C0089A674 /* CABSession.swift */,
+				B86319AD216360510089A674 /* CABGameHost.swift */,
+				B86319AF216360620089A674 /* CABGameGuesser.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B86319BF2163623A0089A674 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B80BF6422163B1F000F8B1EE /* MainViewController.swift */,
+				B863198621635F860089A674 /* HostViewController.swift */,
+				B80BF64C2163B46300F8B1EE /* JoinViewController.swift */,
+				B86319C2216368870089A674 /* PickRoleViewController.swift */,
+				B86319C8216369A30089A674 /* HostPickWordViewController.swift */,
+				B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */,
+				B86319D421636E280089A674 /* HostGameplayViewController.swift */,
+				B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		CF042804B7B1F4E2B07CF00D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				53E92BADA31648EE11557F78 /* Pods-CowsAndBulls.debug.xcconfig */,
+				9D099EF7E212EDB9C74AD328 /* Pods-CowsAndBulls.release.xcconfig */,
+				CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */,
+				02C742063094271805F1AE6C /* Pods-CowsAndBullsTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -103,9 +288,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B863199E21635F870089A674 /* Build configuration list for PBXNativeTarget "CowsAndBulls" */;
 			buildPhases = (
+				5A97FC9BFEAF3516F03AED92 /* [CP] Check Pods Manifest.lock */,
 				B863197D21635F860089A674 /* Sources */,
 				B863197E21635F860089A674 /* Frameworks */,
 				B863197F21635F860089A674 /* Resources */,
+				F04CE88ACA8F9365F323797D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -120,6 +307,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B86319A121635F870089A674 /* Build configuration list for PBXNativeTarget "CowsAndBullsTests" */;
 			buildPhases = (
+				26EAF6CDF2345F612F847D5C /* [CP] Check Pods Manifest.lock */,
 				B863199121635F870089A674 /* Sources */,
 				B863199221635F870089A674 /* Frameworks */,
 				B863199321635F870089A674 /* Resources */,
@@ -178,8 +366,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				B863198F21635F870089A674 /* LaunchScreen.storyboard in Resources */,
+				B86319B2216360DF0089A674 /* HostView.xib in Resources */,
+				B80BF6532163B48600F8B1EE /* JoinView.xib in Resources */,
+				B86319BC216361390089A674 /* GuesserGameplayView.xib in Resources */,
+				B80BF6472163B20800F8B1EE /* MainView.xib in Resources */,
+				B86319B4216360F30089A674 /* PickRoleView.xib in Resources */,
+				B86319BA2163612D0089A674 /* GuesserPickWordView.xib in Resources */,
+				B86319B6216361070089A674 /* HostPickWordView.xib in Resources */,
 				B863198C21635F870089A674 /* Assets.xcassets in Resources */,
-				B863198A21635F860089A674 /* Main.storyboard in Resources */,
+				B86319B82163611B0089A674 /* HostGameplayView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,13 +387,110 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		26EAF6CDF2345F612F847D5C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CowsAndBullsTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5A97FC9BFEAF3516F03AED92 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CowsAndBulls-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F04CE88ACA8F9365F323797D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BlueSocket/Socket.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Socket.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B863197D21635F860089A674 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B863198721635F860089A674 /* ViewController.swift in Sources */,
+				B86319D521636E280089A674 /* HostGameplayViewController.swift in Sources */,
+				B80BF6492163B21400F8B1EE /* MainView.swift in Sources */,
+				B86319CF21636A860089A674 /* GuesserPickWordViewController.swift in Sources */,
+				B863198721635F860089A674 /* HostViewController.swift in Sources */,
+				B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */,
+				B86319C1216362640089A674 /* HostView.swift in Sources */,
+				B80BF64D2163B46300F8B1EE /* JoinViewController.swift in Sources */,
+				B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */,
+				B86319B0216360620089A674 /* CABGameGuesser.swift in Sources */,
+				B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */,
+				B86319AC2163603C0089A674 /* CABSession.swift in Sources */,
+				B86319DB216374C40089A674 /* GuesserGameplayViewController.swift in Sources */,
+				B86319AE216360510089A674 /* CABGameHost.swift in Sources */,
+				B86319D721636E3F0089A674 /* HostGameplayPresenter.swift in Sources */,
+				B86319D121636A910089A674 /* GuesserPickWordPresenter.swift in Sources */,
+				B86319C5216368AA0089A674 /* PickRolePresenter.swift in Sources */,
+				B80BF64F2163B46D00F8B1EE /* JoinPresenter.swift in Sources */,
 				B863198521635F860089A674 /* AppDelegate.swift in Sources */,
+				B80BF6432163B1F000F8B1EE /* MainViewController.swift in Sources */,
+				B86319C3216368870089A674 /* PickRoleViewController.swift in Sources */,
+				B86319DF216374D40089A674 /* GuesserGameplayView.swift in Sources */,
+				B86319C7216368CD0089A674 /* PickRoleView.swift in Sources */,
+				B80BF64121639C3000F8B1EE /* LocalIPAddress.swift in Sources */,
+				B86319D921636E500089A674 /* HostGameplayView.swift in Sources */,
+				B86319CD216369B80089A674 /* HostPickWordView.swift in Sources */,
+				B86319C9216369A30089A674 /* HostPickWordViewController.swift in Sources */,
+				B86319D321636A980089A674 /* GuesserWaitView.swift in Sources */,
+				B86319CB216369AF0089A674 /* HostPickWordPresenter.swift in Sources */,
+				B80BF6512163B47800F8B1EE /* JoinView.swift in Sources */,
+				B873AC53216393A000B5C8AC /* Communicator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,14 +513,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B863198821635F860089A674 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B863198921635F860089A674 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B863198D21635F870089A674 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -358,11 +642,13 @@
 		};
 		B863199F21635F870089A674 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53E92BADA31648EE11557F78 /* Pods-CowsAndBulls.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GM565V9649;
+				DEVELOPMENT_TEAM = XU7WQ382FC;
 				INFOPLIST_FILE = CowsAndBulls/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -370,17 +656,19 @@
 				PRODUCT_BUNDLE_IDENTIFIER = learn.CowsAndBulls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		B86319A021635F870089A674 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D099EF7E212EDB9C74AD328 /* Pods-CowsAndBulls.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GM565V9649;
+				DEVELOPMENT_TEAM = XU7WQ382FC;
 				INFOPLIST_FILE = CowsAndBulls/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -388,12 +676,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = learn.CowsAndBulls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 		B86319A221635F870089A674 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -415,6 +704,7 @@
 		};
 		B86319A321635F870089A674 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02C742063094271805F1AE6C /* Pods-CowsAndBullsTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";

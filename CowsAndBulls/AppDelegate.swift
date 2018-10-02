@@ -12,10 +12,25 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
+    {
+        window = UIWindow(frame: UIScreen.main.bounds)
+        
+        // Create navigation controller as root controller
+        let navigationController = UINavigationController(navigationBarClass: nil, toolbarClass: nil)
+        window!.rootViewController = navigationController
+        
+        // Create default presenter
+        let presenter = MainPresenter()
+        
+        // Create default controller and push it to navigation as a root controller
+        let viewController = MainViewController(withWindow: window, withPresenter: presenter)
+        navigationController.pushViewController(viewController, animated: false)
+        
+        // Activate window
+        window!.makeKeyAndVisible()
+        
         return true
     }
 
