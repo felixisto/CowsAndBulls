@@ -14,10 +14,11 @@
 		B80BF6472163B20800F8B1EE /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6462163B20800F8B1EE /* MainView.xib */; };
 		B80BF6492163B21400F8B1EE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6482163B21400F8B1EE /* MainView.swift */; };
 		B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */; };
-		B80BF64D2163B46300F8B1EE /* JoinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64C2163B46300F8B1EE /* JoinViewController.swift */; };
-		B80BF64F2163B46D00F8B1EE /* JoinPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */; };
-		B80BF6512163B47800F8B1EE /* JoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6502163B47800F8B1EE /* JoinView.swift */; };
-		B80BF6532163B48600F8B1EE /* JoinView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6522163B48600F8B1EE /* JoinView.xib */; };
+		B80BF64D2163B46300F8B1EE /* ClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64C2163B46300F8B1EE /* ClientViewController.swift */; };
+		B80BF64F2163B46D00F8B1EE /* ClientPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64E2163B46D00F8B1EE /* ClientPresenter.swift */; };
+		B80BF6512163B47800F8B1EE /* ClientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6502163B47800F8B1EE /* ClientView.swift */; };
+		B80BF6532163B48600F8B1EE /* ClientView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6522163B48600F8B1EE /* ClientView.xib */; };
+		B82D8A6421649A5300CD3890 /* splash.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B82D8A6321649A5300CD3890 /* splash.jpeg */; };
 		B863198521635F860089A674 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198421635F860089A674 /* AppDelegate.swift */; };
 		B863198721635F860089A674 /* HostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198621635F860089A674 /* HostViewController.swift */; };
 		B863198C21635F870089A674 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B863198B21635F870089A674 /* Assets.xcassets */; };
@@ -50,6 +51,8 @@
 		B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */; };
 		B86319DF216374D40089A674 /* GuesserGameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DE216374D40089A674 /* GuesserGameplayView.swift */; };
 		B873AC53216393A000B5C8AC /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B873AC52216393A000B5C8AC /* Communicator.swift */; };
+		B8B2840E2165F57600B62A88 /* NetworkObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B2840D2165F57600B62A88 /* NetworkObserver.swift */; };
+		B8B284142165FAE200B62A88 /* CommunicatorCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,10 +76,11 @@
 		B80BF6462163B20800F8B1EE /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
 		B80BF6482163B21400F8B1EE /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
-		B80BF64C2163B46300F8B1EE /* JoinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinViewController.swift; sourceTree = "<group>"; };
-		B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinPresenter.swift; sourceTree = "<group>"; };
-		B80BF6502163B47800F8B1EE /* JoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinView.swift; sourceTree = "<group>"; };
-		B80BF6522163B48600F8B1EE /* JoinView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JoinView.xib; sourceTree = "<group>"; };
+		B80BF64C2163B46300F8B1EE /* ClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientViewController.swift; sourceTree = "<group>"; };
+		B80BF64E2163B46D00F8B1EE /* ClientPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientPresenter.swift; sourceTree = "<group>"; };
+		B80BF6502163B47800F8B1EE /* ClientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientView.swift; sourceTree = "<group>"; };
+		B80BF6522163B48600F8B1EE /* ClientView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClientView.xib; sourceTree = "<group>"; };
+		B82D8A6321649A5300CD3890 /* splash.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = splash.jpeg; sourceTree = "<group>"; };
 		B863198121635F860089A674 /* CowsAndBulls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowsAndBulls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B863198421635F860089A674 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B863198621635F860089A674 /* HostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 		B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayPresenter.swift; sourceTree = "<group>"; };
 		B86319DE216374D40089A674 /* GuesserGameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayView.swift; sourceTree = "<group>"; };
 		B873AC52216393A000B5C8AC /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
+		B8B2840D2165F57600B62A88 /* NetworkObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObserver.swift; sourceTree = "<group>"; };
+		B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicatorCommands.swift; sourceTree = "<group>"; };
 		CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBullsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBullsTests/Pods-CowsAndBullsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,6 +151,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B82D8A6021649A3C00CD3890 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B82D8A6321649A5300CD3890 /* splash.jpeg */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		B863197821635F860089A674 = {
 			isa = PBXGroup;
 			children = (
@@ -174,7 +188,9 @@
 				B86319A6216360080089A674 /* Presenters */,
 				B86319A72163600F0089A674 /* Views */,
 				B86319A421635FF00089A674 /* Interface */,
+				B8B2840C2165F55400B62A88 /* Network */,
 				B86319A521635FF60089A674 /* Utilities */,
+				B82D8A6021649A3C00CD3890 /* Resources */,
 				B863198B21635F870089A674 /* Assets.xcassets */,
 				B863198D21635F870089A674 /* LaunchScreen.storyboard */,
 				B863199021635F870089A674 /* Info.plist */,
@@ -196,7 +212,7 @@
 			children = (
 				B80BF6462163B20800F8B1EE /* MainView.xib */,
 				B86319B1216360DF0089A674 /* HostView.xib */,
-				B80BF6522163B48600F8B1EE /* JoinView.xib */,
+				B80BF6522163B48600F8B1EE /* ClientView.xib */,
 				B86319B3216360F30089A674 /* PickRoleView.xib */,
 				B86319B5216361070089A674 /* HostPickWordView.xib */,
 				B86319B72163611B0089A674 /* HostGameplayView.xib */,
@@ -209,7 +225,6 @@
 		B86319A521635FF60089A674 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				B873AC52216393A000B5C8AC /* Communicator.swift */,
 				B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */,
 			);
 			path = Utilities;
@@ -220,7 +235,7 @@
 			children = (
 				B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */,
 				B86319BD216361FA0089A674 /* HostPresenter.swift */,
-				B80BF64E2163B46D00F8B1EE /* JoinPresenter.swift */,
+				B80BF64E2163B46D00F8B1EE /* ClientPresenter.swift */,
 				B86319C4216368AA0089A674 /* PickRolePresenter.swift */,
 				B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */,
 				B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */,
@@ -235,7 +250,7 @@
 			children = (
 				B80BF6482163B21400F8B1EE /* MainView.swift */,
 				B86319C0216362640089A674 /* HostView.swift */,
-				B80BF6502163B47800F8B1EE /* JoinView.swift */,
+				B80BF6502163B47800F8B1EE /* ClientView.swift */,
 				B86319C6216368CD0089A674 /* PickRoleView.swift */,
 				B86319CC216369B80089A674 /* HostPickWordView.swift */,
 				B86319D221636A980089A674 /* GuesserWaitView.swift */,
@@ -260,7 +275,7 @@
 			children = (
 				B80BF6422163B1F000F8B1EE /* MainViewController.swift */,
 				B863198621635F860089A674 /* HostViewController.swift */,
-				B80BF64C2163B46300F8B1EE /* JoinViewController.swift */,
+				B80BF64C2163B46300F8B1EE /* ClientViewController.swift */,
 				B86319C2216368870089A674 /* PickRoleViewController.swift */,
 				B86319C8216369A30089A674 /* HostPickWordViewController.swift */,
 				B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */,
@@ -268,6 +283,16 @@
 				B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B8B2840C2165F55400B62A88 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				B873AC52216393A000B5C8AC /* Communicator.swift */,
+				B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */,
+				B8B2840D2165F57600B62A88 /* NetworkObserver.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		CF042804B7B1F4E2B07CF00D /* Pods */ = {
@@ -367,9 +392,10 @@
 			files = (
 				B863198F21635F870089A674 /* LaunchScreen.storyboard in Resources */,
 				B86319B2216360DF0089A674 /* HostView.xib in Resources */,
-				B80BF6532163B48600F8B1EE /* JoinView.xib in Resources */,
+				B80BF6532163B48600F8B1EE /* ClientView.xib in Resources */,
 				B86319BC216361390089A674 /* GuesserGameplayView.xib in Resources */,
 				B80BF6472163B20800F8B1EE /* MainView.xib in Resources */,
+				B82D8A6421649A5300CD3890 /* splash.jpeg in Resources */,
 				B86319B4216360F30089A674 /* PickRoleView.xib in Resources */,
 				B86319BA2163612D0089A674 /* GuesserPickWordView.xib in Resources */,
 				B86319B6216361070089A674 /* HostPickWordView.xib in Resources */,
@@ -441,13 +467,13 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BlueSocket/Socket.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftSocket/SwiftSocket.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Socket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSocket.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -467,8 +493,9 @@
 				B863198721635F860089A674 /* HostViewController.swift in Sources */,
 				B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */,
 				B86319C1216362640089A674 /* HostView.swift in Sources */,
-				B80BF64D2163B46300F8B1EE /* JoinViewController.swift in Sources */,
+				B80BF64D2163B46300F8B1EE /* ClientViewController.swift in Sources */,
 				B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */,
+				B8B284142165FAE200B62A88 /* CommunicatorCommands.swift in Sources */,
 				B86319B0216360620089A674 /* CABGameGuesser.swift in Sources */,
 				B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */,
 				B86319AC2163603C0089A674 /* CABSession.swift in Sources */,
@@ -476,8 +503,9 @@
 				B86319AE216360510089A674 /* CABGameHost.swift in Sources */,
 				B86319D721636E3F0089A674 /* HostGameplayPresenter.swift in Sources */,
 				B86319D121636A910089A674 /* GuesserPickWordPresenter.swift in Sources */,
+				B8B2840E2165F57600B62A88 /* NetworkObserver.swift in Sources */,
 				B86319C5216368AA0089A674 /* PickRolePresenter.swift in Sources */,
-				B80BF64F2163B46D00F8B1EE /* JoinPresenter.swift in Sources */,
+				B80BF64F2163B46D00F8B1EE /* ClientPresenter.swift in Sources */,
 				B863198521635F860089A674 /* AppDelegate.swift in Sources */,
 				B80BF6432163B1F000F8B1EE /* MainViewController.swift in Sources */,
 				B86319C3216368870089A674 /* PickRoleViewController.swift in Sources */,
@@ -489,7 +517,7 @@
 				B86319C9216369A30089A674 /* HostPickWordViewController.swift in Sources */,
 				B86319D321636A980089A674 /* GuesserWaitView.swift in Sources */,
 				B86319CB216369AF0089A674 /* HostPickWordPresenter.swift in Sources */,
-				B80BF6512163B47800F8B1EE /* JoinView.swift in Sources */,
+				B80BF6512163B47800F8B1EE /* ClientView.swift in Sources */,
 				B873AC53216393A000B5C8AC /* Communicator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

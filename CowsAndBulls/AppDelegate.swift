@@ -31,6 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Activate window
         window!.makeKeyAndVisible()
         
+        // Prevent lock screen
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         return true
     }
 

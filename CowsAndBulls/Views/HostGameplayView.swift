@@ -10,7 +10,7 @@ import UIKit
 
 protocol HostGameplayViewDelegate : class
 {
-    
+    func connectionFailure(errorMessage: String)
 }
 
 protocol HostGameplayActionDelegate : class

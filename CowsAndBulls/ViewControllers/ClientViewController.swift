@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  JoinViewController.swift
 //  CowsAndBulls
 //
 //  Created by Kristiyan Butev on 2.10.18.
@@ -8,13 +8,13 @@
 
 import UIKit
 
-class HostViewController: UIViewController
+class ClientViewController: UIViewController
 {
-    private var customView: HostView?
+    private var customView: ClientView?
     
-    private var presenter: HostPresenterDelegate? = nil
+    private var presenter: ClientPresenterDelegate? = nil
     
-    init(withPresenter presenter: HostPresenter)
+    init(withPresenter presenter: ClientPresenter)
     {
         super.init(nibName: nil, bundle: nil)
         
@@ -32,8 +32,6 @@ class HostViewController: UIViewController
         super.viewDidLoad()
         
         initInterface()
-        
-        presenter?.startHostServer()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -48,28 +46,17 @@ class HostViewController: UIViewController
     
     private func initInterface()
     {
-        self.customView = self.view as? HostView
+        self.customView = self.view as? ClientView
         self.customView?.delegate = self
         
         navigationController?.navigationBar.isHidden = false
-        navigationItem.title = "Host Game"
+        navigationItem.title = "Join Game"
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Quit", style: .plain, target: self, action: #selector(actionBack(_:)))
-        
-        if let localIPAddress = LocalIPAddress.get()
-        {
-            self.customView?.setYourIP(address: localIPAddress)
-        }
-        else
-        {
-            let alert = UIAlertController(title: "Network Error", message: "Could retrieve your IP address!", preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        }
     }
 }
 
-extension HostViewController
+extension ClientViewController
 {
     @objc func actionBack(_ sender: Any)
     {
@@ -79,16 +66,16 @@ extension HostViewController
     }
 }
 
-extension HostViewController : HostViewDelegate
+extension ClientViewController : ClientViewDelegate
 {
     func connectionBegin()
     {
-        customView?.beginConnecting()
+        customView?.foundConnection()
         
         navigationItem.leftBarButtonItem?.isEnabled = false
     }
     
-    func connectionSuccessful(communicator: CommunicatorHost?)
+    func connectionSuccessful(communicator: CommunicatorClient?)
     {
         navigationItem.leftBarButtonItem?.isEnabled = true
         
@@ -109,7 +96,11 @@ extension HostViewController : HostViewDelegate
     }
 }
 
-extension HostViewController : HostActionDelegate
+extension ClientViewController : ClientActionDelegate
 {
-    
+    func connect(hostAddress: String)
+    {
+        customView?.beginConnecting()
+        presenter?.connect(hostAddress: hostAddress)
+    }
 }

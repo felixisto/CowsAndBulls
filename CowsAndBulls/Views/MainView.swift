@@ -23,6 +23,7 @@ class MainView : UIView
 {
     weak var delegate : MainActionDelegate?
     
+    @IBOutlet weak var imageSpash: UIImageView!
     @IBOutlet weak var buttonHost: UIButton!
     @IBOutlet weak var buttonJoin: UIButton!
     
@@ -45,14 +46,23 @@ class MainView : UIView
     {
         let guide = self.safeAreaLayoutGuide
         
+        imageSpash.translatesAutoresizingMaskIntoConstraints = false
+        imageSpash.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        imageSpash.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
+        imageSpash.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.0).isActive = true
+        imageSpash.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 1.0).isActive = true
+        self.sendSubviewToBack(imageSpash)
+        
         buttonHost.translatesAutoresizingMaskIntoConstraints = false
         buttonHost.centerYAnchor.constraint(equalTo: guide.centerYAnchor, constant: -50).isActive = true
         buttonHost.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonHost.widthAnchor.constraint(equalToConstant: 168).isActive = true
         buttonHost.addTarget(self, action: #selector(actionHost(_:)), for: .touchDown)
         
         buttonJoin.translatesAutoresizingMaskIntoConstraints = false
         buttonJoin.centerYAnchor.constraint(equalTo: guide.centerYAnchor, constant: 50).isActive = true
         buttonJoin.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonJoin.widthAnchor.constraint(equalToConstant: 168).isActive = true
         buttonJoin.addTarget(self, action: #selector(actionJoin(_:)), for: .touchDown)
     }
 }

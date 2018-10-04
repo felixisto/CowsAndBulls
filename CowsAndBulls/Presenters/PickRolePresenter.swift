@@ -10,20 +10,66 @@ import Foundation
 
 protocol PickRolePresenterDelegate : class
 {
-    
+    func quit()
 }
 
-class PickRolePresenter
+class PickRolePresenter : NSObject
 {
     weak var delegate : PickRoleViewDelegate?
     
-    required init()
+    var communicator: Communicator?
+    
+    required init(communicator: Communicator)
     {
+        self.communicator = communicator
         
+        super.init()
+        
+        self.communicator?.attachObserver(observer: self, key: self.description)
+    }
+    
+    deinit {
+        self.communicator?.detachObserver(key: self.description)
     }
 }
 
 extension PickRolePresenter : PickRolePresenterDelegate
 {
-    
+    func quit()
+    {
+        print("PickRolePresenter quit")
+        
+        communicator?.quit()
+    }
 }
+
+extension PickRolePresenter : NetworkObserver
+{
+    func beginConnect()
+    {
+        
+    }
+    
+    func connect(data: CommunicatorInitialConnection)
+    {
+        
+    }
+    
+    func failedToConnect()
+    {
+        
+    }
+    
+    func disconnect()
+    {
+        print("PickRolePresenter failed to connect!")
+        delegate?.connectionFailure(errorMessage: "Disconnect")
+    }
+    
+    func disconnect(error: String)
+    {
+        print("PickRolePresenter failed to connect!")
+        delegate?.connectionFailure(errorMessage: error)
+    }
+}
+

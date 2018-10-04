@@ -54,7 +54,12 @@ class HostPickWordViewController: UIViewController
 
 extension HostPickWordViewController : HostPickWordViewDelegate
 {
-    
+    func connectionFailure(errorMessage: String)
+    {
+        presenter?.quit()
+        
+        navigationController?.popToRootViewController(animated: false)
+    }
 }
 
 extension HostPickWordViewController : HostPickWordActionDelegate

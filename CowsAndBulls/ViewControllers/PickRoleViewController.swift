@@ -37,7 +37,6 @@ class PickRoleViewController: UIViewController
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        
     }
     
     override func didReceiveMemoryWarning()
@@ -49,12 +48,27 @@ class PickRoleViewController: UIViewController
     {
         self.customView = self.view as? PickRoleView
         self.customView?.delegate = self
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Quit", style: .plain, target: self, action: #selector(actionBack(_:)))
+    }
+}
+
+extension PickRoleViewController
+{
+    @objc func actionBack(_ sender: Any)
+    {
+        self.connectionFailure(errorMessage: "")
     }
 }
 
 extension PickRoleViewController : PickRoleViewDelegate
 {
-    
+    func connectionFailure(errorMessage: String)
+    {
+        presenter?.quit()
+        
+        navigationController?.popToRootViewController(animated: false)
+    }
 }
 
 extension PickRoleViewController : PickRoleActionDelegate

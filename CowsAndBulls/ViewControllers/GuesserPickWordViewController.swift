@@ -54,7 +54,12 @@ class GuesserPickWordViewController: UIViewController
 
 extension GuesserPickWordViewController : GuesserPickWordViewDelegate
 {
-    
+    func connectionFailure(errorMessage: String)
+    {
+        presenter?.quit()
+        
+        navigationController?.popToRootViewController(animated: false)
+    }
 }
 
 extension GuesserPickWordViewController : GuesserPickWordActionDelegate

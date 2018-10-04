@@ -1,5 +1,5 @@
 //
-//  HostPresenter.swift
+//  ClientPresenter.swift
 //  CowsAndBulls
 //
 //  Created by Kristiyan Butev on 2.10.18.
@@ -8,19 +8,19 @@
 
 import Foundation
 
-protocol HostPresenterDelegate : class
+protocol ClientPresenterDelegate : class
 {
-    func startHostServer()
+    func connect(hostAddress: String)
     func quit()
 }
 
-class HostPresenter : NSObject
+class ClientPresenter : NSObject
 {
-    weak var delegate : HostViewDelegate?
+    weak var delegate : ClientViewDelegate?
     
-    var communicator: CommunicatorHost?
+    var communicator: CommunicatorClient?
     
-    required init(communicator: CommunicatorHost? = CommunicatorHost())
+    required init(communicator: CommunicatorClient? = CommunicatorClient())
     {
         self.communicator = communicator
         
@@ -34,38 +34,37 @@ class HostPresenter : NSObject
     }
 }
 
-extension HostPresenter : HostPresenterDelegate
+extension ClientPresenter : ClientPresenterDelegate
 {
-    func startHostServer()
+    func connect(hostAddress: String)
     {
-        print("HostPresenter: starting server...")
+        print("ClientPresenter: attempting to connect to host \(hostAddress)...")
         
-        // Start server
+        // Attempt to connect
         do
         {
             try communicator?.create()
+            communicator?.start(connectTo: hostAddress)
         }
         catch
         {
-            print("HostPresenter: failed to start host service! Error: \(error)")
+            print("ClientPresenter: failed to connect to partner! Error: \(error)")
             
-            delegate?.connectionFailure(errorMessage: "Failed to start host service")
+            delegate?.connectionFailure(errorMessage: "Failed to connect to partner")
             
             return
         }
-        
-        communicator?.start()
     }
     
     func quit()
     {
-        print("HostPresenter: quit")
+        print("ClientPresenter: quit.")
         
         communicator?.quit()
     }
 }
 
-extension HostPresenter : NetworkObserver
+extension ClientPresenter : NetworkObserver
 {
     func beginConnect()
     {
@@ -75,25 +74,26 @@ extension HostPresenter : NetworkObserver
     
     func connect(data: CommunicatorInitialConnection)
     {
-        print("HostPresenter network connected!")
+        print("ClientPresenter network connected!")
         delegate?.connectionSuccessful(communicator: communicator)
     }
     
     func failedToConnect()
     {
-        print("HostPresenter failed to connect!")
+        print("ClientPresenter failed to connect!")
         delegate?.connectionFailure(errorMessage: "Could not find player")
     }
     
     func disconnect()
     {
-        print("HostPresenter disconnect!")
-        delegate?.connectionFailure(errorMessage: "Disconnect")
+        print("ClientPresenter disconnected!")
+        delegate?.connectionFailure(errorMessage: "Disconnected")
     }
     
     func disconnect(error: String)
     {
-        print("HostPresenter disconnect!")
+        print("ClientPresenter disconnected!")
         delegate?.connectionFailure(errorMessage: error)
     }
 }
+

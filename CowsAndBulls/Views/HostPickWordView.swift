@@ -10,7 +10,7 @@ import UIKit
 
 protocol HostPickWordViewDelegate : class
 {
-    
+    func connectionFailure(errorMessage: String)
 }
 
 protocol HostPickWordActionDelegate : class

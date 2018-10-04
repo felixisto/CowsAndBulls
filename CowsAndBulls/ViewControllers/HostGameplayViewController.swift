@@ -54,7 +54,12 @@ class HostGameplayViewController: UIViewController
 
 extension HostGameplayViewController : HostGameplayViewDelegate
 {
-    
+    func connectionFailure(errorMessage: String)
+    {
+        presenter?.quit()
+        
+        navigationController?.popToRootViewController(animated: false)
+    }
 }
 
 extension HostGameplayViewController : HostGameplayActionDelegate

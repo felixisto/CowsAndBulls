@@ -44,6 +44,7 @@ class MainViewController: UIViewController
     {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func didReceiveMemoryWarning()
@@ -51,12 +52,18 @@ class MainViewController: UIViewController
         super.didReceiveMemoryWarning()
     }
     
+    override var prefersStatusBarHidden : Bool {
+        get {
+            return true
+        }
+    }
+    
     private func initInterface()
     {
         self.customView = self.view as? MainView
         self.customView?.delegate = self
         
-        navigationItem.title = "Cows & Bulls"
+        navigationController?.navigationBar.isHidden = true
     }
 }
 
@@ -74,6 +81,6 @@ extension MainViewController : MainActionDelegate
     
     func join()
     {
-        navigationController?.pushViewController(JoinViewController(withPresenter: JoinPresenter()), animated: true)
+        navigationController?.pushViewController(ClientViewController(withPresenter: ClientPresenter()), animated: true)
     }
 }

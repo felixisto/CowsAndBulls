@@ -10,7 +10,8 @@ import UIKit
 
 protocol HostViewDelegate : class
 {
-    func connectionSuccessful(communicator: Communicator?)
+    func connectionBegin()
+    func connectionSuccessful(communicator: CommunicatorHost?)
     func connectionFailure(errorMessage: String)
 }
 
@@ -57,6 +58,18 @@ class HostView : UIView
 
 extension HostView
 {
+    func beginConnecting()
+    {
+        DispatchQueue.main.async {
+        }
+    }
+    
+    func stopConnecting()
+    {
+        DispatchQueue.main.async {
+        }
+    }
+    
     func setYourIP(address: String)
     {
         DispatchQueue.main.async {

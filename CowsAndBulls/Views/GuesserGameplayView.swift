@@ -10,7 +10,7 @@ import UIKit
 
 protocol GuesserGameplayViewDelegate : class
 {
-    
+    func connectionFailure(errorMessage: String)
 }
 
 protocol GuesserGameplayActionDelegate : class

@@ -8,20 +8,21 @@
 
 import UIKit
 
-protocol JoinViewDelegate : class
+protocol ClientViewDelegate : class
 {
-    func connectionSuccessful(communicator: Communicator?)
+    func connectionBegin()
+    func connectionSuccessful(communicator: CommunicatorClient?)
     func connectionFailure(errorMessage: String)
 }
 
-protocol JoinActionDelegate : class
+protocol ClientActionDelegate : class
 {
     func connect(hostAddress: String)
 }
 
-class JoinView : UIView
+class ClientView : UIView
 {
-    weak var delegate : JoinActionDelegate?
+    weak var delegate : ClientActionDelegate?
     
     @IBOutlet weak var labelHostAddress: UILabel!
     @IBOutlet weak var fieldHostAddress: UITextField!
@@ -61,13 +62,25 @@ class JoinView : UIView
     }
 }
 
-extension JoinView
+extension ClientView
 {
     func beginConnecting()
     {
         DispatchQueue.main.async {
             self.buttonConnect.isEnabled = false
             self.buttonConnect.setTitle("Connecting...", for: .disabled)
+            
+            self.fieldHostAddress.isEnabled = false
+        }
+    }
+    
+    func foundConnection()
+    {
+        DispatchQueue.main.async {
+            self.buttonConnect.isEnabled = false
+            self.buttonConnect.setTitle("Found host...", for: .disabled)
+            
+            self.fieldHostAddress.isEnabled = false
         }
     }
     
@@ -75,11 +88,12 @@ extension JoinView
     {
         DispatchQueue.main.async {
             self.buttonConnect.isEnabled = true
+            self.fieldHostAddress.isEnabled = true
         }
     }
 }
 
-extension JoinView
+extension ClientView
 {
     @objc func actionConnect(_ sender: Any)
     {
@@ -90,14 +104,14 @@ extension JoinView
     }
 }
 
-extension JoinView
+extension ClientView
 {
-    class func create(owner: Any) -> JoinView?
+    class func create(owner: Any) -> ClientView?
     {
         let bundle = Bundle.main
-        let nibName = String(describing: JoinView.self)
+        let nibName = String(describing: ClientView.self)
         let nib = UINib(nibName: nibName, bundle: bundle)
         
-        return nib.instantiate(withOwner: owner, options: nil).first as? JoinView
+        return nib.instantiate(withOwner: owner, options: nil).first as? ClientView
     }
 }

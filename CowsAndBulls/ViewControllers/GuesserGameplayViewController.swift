@@ -54,7 +54,12 @@ class GuesserGameplayViewController: UIViewController
 
 extension GuesserGameplayViewController : GuesserGameplayViewDelegate
 {
-    
+    func connectionFailure(errorMessage: String)
+    {
+        presenter?.quit()
+        
+        navigationController?.popToRootViewController(animated: false)
+    }
 }
 
 extension GuesserGameplayViewController : GuesserGameplayActionDelegate

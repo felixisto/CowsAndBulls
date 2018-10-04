@@ -10,7 +10,7 @@ import UIKit
 
 protocol GuesserPickWordViewDelegate : class
 {
-    
+    func connectionFailure(errorMessage: String)
 }
 
 protocol GuesserPickWordActionDelegate : class

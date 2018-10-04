@@ -10,7 +10,7 @@ import UIKit
 
 protocol PickRoleViewDelegate : class
 {
-    
+    func connectionFailure(errorMessage: String)
 }
 
 protocol PickRoleActionDelegate : class
