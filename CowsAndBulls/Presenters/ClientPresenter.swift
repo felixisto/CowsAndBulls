@@ -76,12 +76,23 @@ extension ClientPresenter : NetworkObserver
     {
         print("ClientPresenter network connected!")
         delegate?.connectionSuccessful(communicator: communicator)
+        self.communicator?.detachObserver(key: self.description)
     }
     
     func failedToConnect()
     {
         print("ClientPresenter failed to connect!")
         delegate?.connectionFailure(errorMessage: "Could not find player")
+    }
+    
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("ClientPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("ClientPresenter reconnect!")
     }
     
     func disconnect()

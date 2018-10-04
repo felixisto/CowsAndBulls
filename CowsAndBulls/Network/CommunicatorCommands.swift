@@ -13,6 +13,7 @@ enum CommunicatorCommand : String
     case GREETINGS = "GREETINGS"
     case QUIT = "QUIT"
     case CHAT = "CHAT"
+    case PING = "PING"
 }
 
 struct CommunicatorCommands
@@ -30,6 +31,15 @@ struct CommunicatorCommands
     static func constructGreetingsMessage() -> String
     {
         var string = String("\(CommunicatorCommand.GREETINGS.rawValue) \(deviceName())")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructPingMessage() -> String
+    {
+        var string = String("\(CommunicatorCommand.PING.rawValue)")
         
         string.append(CommunicatorMessageEndingTag)
         

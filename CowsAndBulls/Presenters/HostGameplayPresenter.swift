@@ -58,6 +58,16 @@ extension HostGameplayPresenter : NetworkObserver
         
     }
     
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("HostGameplayPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("HostGameplayPresenter reconnect!")
+    }
+    
     func disconnect()
     {
         print("HostGameplayPresenter failed to connect!")

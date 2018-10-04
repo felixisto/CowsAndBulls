@@ -106,6 +106,13 @@ extension HostViewController : HostViewDelegate
         customView?.stopConnecting()
         
         navigationItem.leftBarButtonItem?.isEnabled = true
+        
+        let alert = UIAlertController(title: "Error", message: "Failed to start server. Other player cannot join you.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {sender -> Void in
+            self.navigationController?.popToRootViewController(animated: false)
+        }))
+        
+        navigationController?.present(alert, animated: true, completion: nil)
     }
 }
 

@@ -58,6 +58,16 @@ extension HostPickWordPresenter : NetworkObserver
         
     }
     
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("HostPickWordPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("HostPickWordPresenter reconnect!")
+    }
+    
     func disconnect()
     {
         print("HostPickWordPresenter failed to connect!")

@@ -58,6 +58,16 @@ extension GuesserGameplayPresenter : NetworkObserver
         
     }
     
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("GuesserGameplayPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("GuesserGameplayPresenter reconnect!")
+    }
+    
     func disconnect()
     {
         print("GuesserGameplayPresenter failed to connect!")

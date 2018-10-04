@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		939486DB2BF1718B71F4BD6E /* Pods_CowsAndBullsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A627A67EC4EBCE13551DD16E /* Pods_CowsAndBullsTests.framework */; };
 		9E5B4DD423283C85C8FD2983 /* Pods_CowsAndBulls.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 525452D770688E1A6F254A7D /* Pods_CowsAndBulls.framework */; };
+		B80B2642216638C20037A05D /* CommunicatorError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80B2641216638C20037A05D /* CommunicatorError.swift */; };
 		B80BF64121639C3000F8B1EE /* LocalIPAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */; };
 		B80BF6432163B1F000F8B1EE /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6422163B1F000F8B1EE /* MainViewController.swift */; };
 		B80BF6472163B20800F8B1EE /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6462163B20800F8B1EE /* MainView.xib */; };
@@ -71,6 +72,7 @@
 		53E92BADA31648EE11557F78 /* Pods-CowsAndBulls.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBulls.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls.debug.xcconfig"; sourceTree = "<group>"; };
 		9D099EF7E212EDB9C74AD328 /* Pods-CowsAndBulls.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBulls.release.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls.release.xcconfig"; sourceTree = "<group>"; };
 		A627A67EC4EBCE13551DD16E /* Pods_CowsAndBullsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CowsAndBullsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B80B2641216638C20037A05D /* CommunicatorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicatorError.swift; sourceTree = "<group>"; };
 		B80BF64021639C3000F8B1EE /* LocalIPAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalIPAddress.swift; sourceTree = "<group>"; };
 		B80BF6422163B1F000F8B1EE /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B80BF6462163B20800F8B1EE /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				B873AC52216393A000B5C8AC /* Communicator.swift */,
+				B80B2641216638C20037A05D /* CommunicatorError.swift */,
 				B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */,
 				B8B2840D2165F57600B62A88 /* NetworkObserver.swift */,
 			);
@@ -492,6 +495,7 @@
 				B86319CF21636A860089A674 /* GuesserPickWordViewController.swift in Sources */,
 				B863198721635F860089A674 /* HostViewController.swift in Sources */,
 				B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */,
+				B80B2642216638C20037A05D /* CommunicatorError.swift in Sources */,
 				B86319C1216362640089A674 /* HostView.swift in Sources */,
 				B80BF64D2163B46300F8B1EE /* ClientViewController.swift in Sources */,
 				B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */,

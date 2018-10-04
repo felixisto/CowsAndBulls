@@ -58,6 +58,16 @@ extension GuesserPickWordPresenter : NetworkObserver
         
     }
     
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("GuesserPickWordPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("GuesserPickWordPresenter reconnect!")
+    }
+    
     func disconnect()
     {
         print("GuesserPickWordPresenter failed to connect!")

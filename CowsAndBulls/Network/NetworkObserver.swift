@@ -16,6 +16,9 @@ protocol NetworkObserver: class
     
     func failedToConnect()
     
+    func lostConnectingAttemptingToReconnect()
+    func reconnect()
+    
     func disconnect()
     func disconnect(error: String)
 }

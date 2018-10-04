@@ -75,14 +75,25 @@ extension HostPresenter : NetworkObserver
     
     func connect(data: CommunicatorInitialConnection)
     {
-        print("HostPresenter network connected!")
+        print("HostPresenter network started server!")
         delegate?.connectionSuccessful(communicator: communicator)
+        self.communicator?.detachObserver(key: self.description)
     }
     
     func failedToConnect()
     {
-        print("HostPresenter failed to connect!")
+        print("HostPresenter failed start server!")
         delegate?.connectionFailure(errorMessage: "Could not find player")
+    }
+    
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("HostPresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("HostPresenter reconnect!")
     }
     
     func disconnect()

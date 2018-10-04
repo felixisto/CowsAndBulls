@@ -60,6 +60,16 @@ extension PickRolePresenter : NetworkObserver
         
     }
     
+    func lostConnectingAttemptingToReconnect()
+    {
+        print("PickRolePresenter lostConnectingAttemptingToReconnect!")
+    }
+    
+    func reconnect()
+    {
+        print("PickRolePresenter reconnect!")
+    }
+    
     func disconnect()
     {
         print("PickRolePresenter failed to connect!")

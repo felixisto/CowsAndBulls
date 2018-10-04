@@ -18,6 +18,9 @@ let CommunicatorClientConnectTimeout : Double = 10.0
 
 let CommunicatorMessageEndingTag = "$%\n!#!"
 
+let CommunicatorPingDelayMinimum : Double = 0.25
+let CommunicatorPingTimeout : Double = 10.0
+
 // Generic interface that allows you to interact with either host communicator or client communicator
 protocol Communicator
 {
@@ -58,11 +61,14 @@ class CommunicatorHost : Communicator
     
     private var isConnectedToClient = false
     
-    private var serverMessage : String = ""
+    private var clientMessage : String = ""
+    
+    private var lastPingFromClient : Date?
+    private var lastPingRetryingToConnect : Bool
     
     init()
     {
-        
+        lastPingRetryingToConnect = false
     }
     
     deinit {
@@ -76,7 +82,11 @@ class CommunicatorHost : Communicator
     
     func create() throws
     {
-        server = TCPServer(address: "192.168.17.124", port: CommunicatorDefaultPort)
+        guard let address = LocalIPAddress.get() else {
+            throw CommunicatorError.invalidIPAddress
+        }
+        
+        server = TCPServer(address: address, port: CommunicatorDefaultPort)
     }
     
     func destroy()
@@ -89,7 +99,10 @@ class CommunicatorHost : Communicator
         
         isConnectedToClient = false
         
-        serverMessage = ""
+        clientMessage = ""
+        
+        lastPingFromClient = nil
+        lastPingRetryingToConnect = false
         
         observers.removeAll()
     }
@@ -157,11 +170,11 @@ class CommunicatorHost : Communicator
             }
             
             // Read output from server into the property @serverMessage
-            if let bytes = client.read(1, timeout: -1)
+            if let bytes = client.read(1, timeout: 10)
             {
                 if let string = String(bytes: bytes, encoding: .utf8)
                 {
-                    communicator.serverMessage.append(string)
+                    communicator.clientMessage.append(string)
                 }
             }
             
@@ -176,11 +189,13 @@ class CommunicatorHost : Communicator
                 return
             }
             
+            var wasPingedJustNow = false
+            
             // Full message received?
-            if communicator.serverMessage.hasSuffix(CommunicatorMessageEndingTag)
+            if communicator.clientMessage.hasSuffix(CommunicatorMessageEndingTag)
             {
-                let message = communicator.serverMessage.replacingOccurrences(of: CommunicatorMessageEndingTag, with: "")
-                communicator.serverMessage = ""
+                let message = communicator.clientMessage.replacingOccurrences(of: CommunicatorMessageEndingTag, with: "")
+                communicator.clientMessage = ""
                 
                 if let command = CommunicatorCommands.extractCommand(fromMessage: message)
                 {
@@ -196,14 +211,92 @@ class CommunicatorHost : Communicator
                         {
                             communicator.onClientQuit()
                         }
+                    case .PING:
+                        if communicator.isConnectedToClient
+                        {
+                            wasPingedJustNow = true
+                            communicator.lastPingFromClient = Date()
+                            print("\(communicator.lastPingFromClient!) Ping from client")
+                        }
                     default:
                         print("Bad command \(command.rawValue)!")
                     }
                 }
             }
             
+            // Repeat
             communicator.connectionLoop()
         }
+    }
+    
+    private func pingLoop()
+    {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            guard let communicator = self else
+            {
+                return
+            }
+            
+            guard let client = communicator.client else
+            {
+                return
+            }
+            
+            if communicator.isConnectedToClient
+            {
+                let _ = client.send(string: CommunicatorCommands.constructPingMessage())
+                
+                // Check if server has been pinging back
+                if let lastPingFromClient = communicator.lastPingFromClient
+                {
+                    let currentDate = Date()
+                    
+                    let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromClient))
+                    
+                    let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+                    
+                    // Lost connection
+                    if noPingReceivedShort
+                    {
+                        let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                        
+                        // Timeout, end the connection
+                        if pingTimeout
+                        {
+                            communicator.onDisconnected()
+                            return
+                        }
+                        else
+                        {
+                            // Try to reconnect
+                            if !communicator.lastPingRetryingToConnect
+                            {
+                                communicator.lostConnectionAttemptingToReconnect()
+                            }
+                        }
+                    }
+                    // Reconnect, if connection was lost
+                    else
+                    {
+                        if communicator.lastPingRetryingToConnect
+                        {
+                            communicator.reconnect()
+                        }
+                    }
+                }
+                else
+                {
+                    print("Communicator last ping date was not initialized properly")
+                    
+                    communicator.onDisconnected()
+                    
+                    return
+                }
+            }
+            
+            // Repeat
+            communicator.pingLoop()
+        })
     }
 }
 
@@ -229,15 +322,18 @@ extension CommunicatorHost
 {
     private func onBeginConnection(client: TCPClient)
     {
-        print("CommunicatorHost: sending greetings to client: \(client.address):\(client.port), waiting to be greeted back")
+        print("CommunicatorHost: sending greetings to client: \(client.address):\(client.port), waiting to be greeted back on \(Date())")
         
         self.client = client
+        self.clientMessage = ""
+        self.lastPingFromClient = Date()
         
         // Send greetings to client
         let _ = client.send(string: CommunicatorCommands.constructGreetingsMessage())
         
-        // Start connection loop
+        // Start loops
         connectionLoop()
+        pingLoop()
         
         // Observers notification
         DispatchQueue.main.async {
@@ -250,7 +346,7 @@ extension CommunicatorHost
     
     private func onConnect(client: TCPClient, command: CommunicatorCommand, message: String)
     {
-        print("CommunicatorHost: connected with client: \(client.address):\(client.port)")
+        print("CommunicatorHost: connected with client: \(client.address):\(client.port) on \(Date())")
         
         isConnectedToClient = true
         
@@ -273,7 +369,7 @@ extension CommunicatorHost
     
     private func onClientQuit()
     {
-        print("CommunicatorHost: client quit")
+        print("CommunicatorHost: client quit on \(Date())")
         
         DispatchQueue.main.async {
             for observer in self.observers
@@ -287,7 +383,7 @@ extension CommunicatorHost
     
     private func onDisconnected()
     {
-        print("CommunicatorHost: disconnected")
+        print("CommunicatorHost: disconnected on \(Date())")
         
         // Copy the observers here
         let observers = self.observers
@@ -300,6 +396,34 @@ extension CommunicatorHost
             for observer in observers
             {
                 observer.value.disconnect(error: "Disconnected")
+            }
+        }
+    }
+    
+    private func lostConnectionAttemptingToReconnect()
+    {
+        print("CommunicatorHost: lost connection attempting to reconnect on \(Date())")
+        
+        lastPingRetryingToConnect = true
+        
+        DispatchQueue.main.async {
+            for observer in self.observers
+            {
+                observer.value.lostConnectingAttemptingToReconnect()
+            }
+        }
+    }
+    
+    private func reconnect()
+    {
+        print("CommunicatorHost: reconnected")
+        
+        lastPingRetryingToConnect = false
+        
+        DispatchQueue.main.async {
+            for observer in self.observers
+            {
+                observer.value.reconnect()
             }
         }
     }
@@ -352,9 +476,12 @@ class CommunicatorClient : Communicator
     
     private var serverMessage: String = ""
     
+    private var lastPingFromServer : Date?
+    private var lastPingRetryingToConnect : Bool
+    
     init()
     {
-        
+        lastPingRetryingToConnect = false
     }
     
     deinit {
@@ -379,6 +506,9 @@ class CommunicatorClient : Communicator
         isConnectedToServer = false
         
         serverMessage = ""
+        
+        lastPingFromServer = nil
+        lastPingRetryingToConnect = false
         
         observers.removeAll()
     }
@@ -413,8 +543,6 @@ class CommunicatorClient : Communicator
                     success = true
                     break
                 }
-                
-                sleep(1)
             }
             
             guard let _ = self else {
@@ -451,7 +579,7 @@ class CommunicatorClient : Communicator
             }
             
             // Read output from server into the property @serverMessage
-            if let bytes = socket.read(1, timeout: -1)
+            if let bytes = socket.read(1, timeout: 10)
             {
                 if let string = String(bytes: bytes, encoding: .utf8)
                 {
@@ -490,14 +618,92 @@ class CommunicatorClient : Communicator
                         {
                             communicator.onServerQuit()
                         }
+                    case .PING:
+                        if communicator.isConnectedToServer
+                        {
+                            communicator.lastPingFromServer = Date()
+                            print("\(communicator.lastPingFromServer!) Ping from server")
+                        }
                     default:
                         print("Bad command \(command.rawValue)!")
                     }
                 }
             }
             
+            // Repeat
             communicator.connectionLoop()
         }
+    }
+    
+    private func pingLoop()
+    {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            guard let communicator = self else
+            {
+                return
+            }
+            
+            guard let socket = communicator.socket else
+            {
+                return
+            }
+            
+            // Ping server
+            if communicator.isConnectedToServer
+            {
+                let _ = socket.send(string: CommunicatorCommands.constructPingMessage())
+                
+                // Check if server has been pinging back
+                if let lastPingFromServer = communicator.lastPingFromServer
+                {
+                    let currentDate = Date()
+                    
+                    let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromServer))
+                    
+                    let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+                    
+                    // Lost connection
+                    if noPingReceivedShort
+                    {
+                        let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                        
+                        // Timeout, end the connection
+                        if pingTimeout
+                        {
+                            communicator.onDisconnected()
+                            return
+                        }
+                        else
+                        {
+                            // Try to reconnect
+                            if !communicator.lastPingRetryingToConnect
+                            {
+                                communicator.lostConnectionAttemptingToReconnect()
+                            }
+                        }
+                    }
+                        // Reconnect, if connection was lost
+                    else
+                    {
+                        if communicator.lastPingRetryingToConnect
+                        {
+                            communicator.reconnect()
+                        }
+                    }
+                }
+                else
+                {
+                    print("Communicator last ping date was not initialized properly")
+                    
+                    communicator.onDisconnected()
+                    
+                    return
+                }
+            }
+            
+            // Repeat
+            communicator.pingLoop()
+        })
     }
 }
 
@@ -525,10 +731,14 @@ extension CommunicatorClient
 {
     private func onBeginConnection()
     {
-        print("CommunicatorClient: beginning new connection with server")
+        print("CommunicatorClient: beginning new connection with server on \(Date())")
         
-        // Start connection loop
+        self.serverMessage = ""
+        self.lastPingFromServer = Date()
+        
+        // Start loops
         connectionLoop()
+        pingLoop()
         
         // Observers notification
         DispatchQueue.main.async {
@@ -541,7 +751,7 @@ extension CommunicatorClient
     
     private func onConnected(command: CommunicatorCommand, message: String)
     {
-        print("CommunicatorClient: received greetings, sending greetings message to server")
+        print("CommunicatorClient: received greetings, sending greetings message to server on \(Date())")
         
         isConnectedToServer = true
         
@@ -567,7 +777,7 @@ extension CommunicatorClient
     
     private func onServerQuit()
     {
-        print("CommunicatorClient: server quit")
+        print("CommunicatorClient: server quit on \(Date())")
         
         DispatchQueue.main.async {
             for observer in self.observers
@@ -581,19 +791,42 @@ extension CommunicatorClient
     
     private func onDisconnected()
     {
-        print("CommunicatorClient: disconnected")
+        print("CommunicatorClient: disconnected on \(Date())")
         
-        // Copy the observers here
-        let observers = self.observers
-        
-        // Destroy
-        destroy()
-        
-        // Delegate notification
         DispatchQueue.main.async {
-            for observer in observers
+            for observer in self.observers
             {
                 observer.value.disconnect(error: "Disconnected")
+            }
+            
+            self.destroy()
+        }
+    }
+    
+    private func lostConnectionAttemptingToReconnect()
+    {
+        print("CommunicatorClient: lost connection attempting to reconnect on \(Date())")
+        
+        lastPingRetryingToConnect = true
+        
+        DispatchQueue.main.async {
+            for observer in self.observers
+            {
+                observer.value.lostConnectingAttemptingToReconnect()
+            }
+        }
+    }
+    
+    private func reconnect()
+    {
+        print("CommunicatorClient: reconnected on \(Date())")
+        
+        lastPingRetryingToConnect = false
+        
+        DispatchQueue.main.async {
+            for observer in self.observers
+            {
+                observer.value.reconnect()
             }
         }
     }
