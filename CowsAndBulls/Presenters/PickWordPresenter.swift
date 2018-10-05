@@ -22,6 +22,8 @@ class PickWordPresenter : NSObject
     
     var communicator: Communicator?
     
+    var connectionData: CommunicatorInitialConnection
+    
     let guessWordLength: UInt
     
     var guessWordPicked: String
@@ -30,9 +32,11 @@ class PickWordPresenter : NSObject
     var opponentHasPickedGuessWord: Bool
     var opponentPickedTurn: UInt
     
-    required init(communicator: Communicator, guessWordLength: UInt)
+    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection, guessWordLength: UInt)
     {
         self.communicator = communicator
+        self.connectionData = connectionData
+        
         self.guessWordLength = guessWordLength
         
         self.guessWordPicked = ""
@@ -73,19 +77,23 @@ extension PickWordPresenter : PickWordPresenterDelegate
         
         guessWordPicked = guessWord
         
+        // Generate turn value, used to decide which player will go first
+        let ownIPAddress = LocalIPAddress.get()!
+        
+        let newTurnValue : UInt = 0
+        //GameTurnRandom.generateTurnValue(currentTurnValue: turnValue, opponentTurnValue: opponentPickedTurn, currentIPAddress: connectionData.otherPlayerAddress, opponentIPAddress: connectionData.otherPlayerAddress)
+        
         // If opponent has also picked word, then lets play
         if opponentHasPickedGuessWord
         {
-            print("PickWordPresenter play with guess word \(guessWord)")
+            print("PickWordPresenter play with guess word \(guessWord) with turn value \(newTurnValue)")
             
-            delegate?.play(communicator: communicator, withGuessWord: guessWord)
+            delegate?.play(communicator: communicator, connectionData: connectionData, withGuessWord: guessWord)
         }
         else
         {
             print("PickWordPresenter picked guess word \(guessWord)")
         }
-        
-        let newTurnValue = GameTurnRandom.generateTurnValue(currentTurnValue: turnValue, opponentTurnValue: opponentPickedTurn)
         
         communicator?.sendGuessWordAlertAndTurnValue(turnValue: newTurnValue)
     }
@@ -130,7 +138,7 @@ extension PickWordPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
         
     }

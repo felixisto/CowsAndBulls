@@ -38,8 +38,19 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Opponent is picking character count..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J8U-Qs-ShZ">
-                    <rect key="frame" x="41" y="338" width="293" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="My turn to go:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OS8-Gq-rAv">
+                    <rect key="frame" x="122" y="331" width="130" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OY0-M0-g4k">
+                    <rect key="frame" x="0.0" y="360" width="375" height="216"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                </pickerView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Opponent is currently choosing setup values..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J8U-Qs-ShZ">
+                    <rect key="frame" x="21" y="591" width="355" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
@@ -52,7 +63,9 @@
                 <outlet property="labelInfo" destination="53O-ly-Ot3" id="EwP-Vw-qaS"/>
                 <outlet property="labelOpponentStatus" destination="J8U-Qs-ShZ" id="kR7-xV-Wg3"/>
                 <outlet property="labelTip" destination="Jgm-WJ-Pbd" id="UDU-tq-E0Q"/>
+                <outlet property="labelWhoGoesFirst" destination="OS8-Gq-rAv" id="tmv-vN-2Gt"/>
                 <outlet property="pickerNumberOfCharacters" destination="ufa-ti-MDd" id="wFQ-ei-KPP"/>
+                <outlet property="pickerTurn" destination="OY0-M0-g4k" id="BA5-gX-D88"/>
             </connections>
             <point key="canvasLocation" x="39.200000000000003" y="46.326836581709152"/>
         </view>

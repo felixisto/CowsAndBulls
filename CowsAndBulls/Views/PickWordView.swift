@@ -16,7 +16,7 @@ protocol PickWordViewDelegate : class
     func setOpponentStatus(status: String)
     func updateEnterXCharacterWord(length: UInt)
     
-    func play(communicator: Communicator?, withGuessWord guessWord: String)
+    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWord guessWord: String)
 }
 
 protocol PickWordActionDelegate : PinCodeTextFieldDelegate

@@ -108,7 +108,7 @@ extension HostPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
         
     }

@@ -36,7 +36,7 @@ protocol Communicator
     func sendActionMessage(message: String)
     func sendQuitMessage()
     
-    func sendGuessWordLength(length: UInt)
+    func sendPlaySetupMessage(length: UInt, turnToGo: String)
     func sendAlertPickedGuessWord()
     func sendGuessWordAlertAndTurnValue(turnValue: UInt)
 }
@@ -220,18 +220,21 @@ class CommunicatorHost : Communicator
                             communicator.lastPingFromClient = Date()
                             print("\(communicator.lastPingFromClient!) Ping from client")
                         }
-                    case .GUESSWORDLENGTH:
+                    case .PLAYSETUP:
                         if communicator.isConnectedToClient
                         {
-                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            let param1 = CommunicatorCommands.extractFirstParameter(command: command, message: message)
+                            let param2 = CommunicatorCommands.extractSecondParameter(command: command, message: message)
+                            
+                            if param1 != nil && param2 != nil
                             {
-                                if let wordLength = UInt(parameter)
+                                if let wordLength = UInt(param1!)
                                 {
                                     // Observers notification
                                     DispatchQueue.main.async {
                                         for observer in communicator.observers
                                         {
-                                            observer.value.opponentDidSelectGuessWordCharacterCount(number: wordLength)
+                                            observer.value.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
                                         }
                                     }
                                 }
@@ -240,7 +243,7 @@ class CommunicatorHost : Communicator
                     case .PLAYSESSION:
                         if communicator.isConnectedToClient
                         {
-                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
                             {
                                 if let turnValue = UInt(parameter)
                                 {
@@ -392,7 +395,7 @@ extension CommunicatorHost
             {
                 let dateConnected = Date()
                 let otherPlayerAddress = client.address
-                let otherPlayerName = CommunicatorCommands.extractParameter(command: command, message: message) ?? "Unknown"
+                let otherPlayerName = CommunicatorCommands.extractFirstParameter(command: command, message: message) ?? "Unknown"
                 let otherPlayerColor = UIColor.red
                 
                 for observer in self.observers
@@ -501,13 +504,13 @@ extension CommunicatorHost
         print("CommunicatorHost: sending quit message to client")
     }
     
-    public func sendGuessWordLength(length: UInt)
+    public func sendPlaySetupMessage(length: UInt, turnToGo: String)
     {
         guard let client = self.client else {
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructGuessWordLengthMessage(length: length))
+        let _ = client.send(string: CommunicatorCommands.constructPlaySetupMessage(length: length, turnToGo: turnToGo))
         
         print("CommunicatorHost: sending guess word length message to client")
     }
@@ -693,18 +696,21 @@ class CommunicatorClient : Communicator
                             communicator.lastPingFromServer = Date()
                             print("\(communicator.lastPingFromServer!) Ping from server")
                         }
-                    case .GUESSWORDLENGTH:
+                    case .PLAYSETUP:
                         if communicator.isConnectedToServer
                         {
-                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            let param1 = CommunicatorCommands.extractFirstParameter(command: command, message: message)
+                            let param2 = CommunicatorCommands.extractSecondParameter(command: command, message: message)
+                            
+                            if param1 != nil && param2 != nil
                             {
-                                if let wordLength = UInt(parameter)
+                                if let wordLength = UInt(param1!)
                                 {
                                     // Observers notification
                                     DispatchQueue.main.async {
                                         for observer in communicator.observers
                                         {
-                                            observer.value.opponentDidSelectGuessWordCharacterCount(number: wordLength)
+                                            observer.value.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
                                         }
                                     }
                                 }
@@ -713,7 +719,7 @@ class CommunicatorClient : Communicator
                     case .PLAYSESSION:
                         if communicator.isConnectedToServer
                         {
-                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
                             {
                                 if let turnValue = UInt(parameter)
                                 {
@@ -867,7 +873,7 @@ extension CommunicatorClient
             {
                 let dateConnected = Date()
                 let otherPlayerAddress = socket.address
-                let otherPlayerName = CommunicatorCommands.extractParameter(command: command, message: message) ?? "Unknown"
+                let otherPlayerName = CommunicatorCommands.extractFirstParameter(command: command, message: message) ?? "Unknown"
                 let otherPlayerColor = UIColor.red
                 
                 for observer in self.observers
@@ -971,13 +977,13 @@ extension CommunicatorClient
         print("CommunicatorClient: sending quit message to server")
     }
     
-    public func sendGuessWordLength(length: UInt)
+    public func sendPlaySetupMessage(length: UInt, turnToGo: String)
     {
         guard let socket = self.socket else {
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructGuessWordLengthMessage(length: length))
+        let _ = socket.send(string: CommunicatorCommands.constructPlaySetupMessage(length: length, turnToGo: turnToGo))
         
         print("CommunicatorClient: sending guess word length message to server")
     }

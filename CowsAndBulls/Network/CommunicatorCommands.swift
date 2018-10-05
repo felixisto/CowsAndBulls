@@ -15,7 +15,7 @@ enum CommunicatorCommand : String
     case CHAT = "CHAT"
     case PING = "PING"
     
-    case GUESSWORDLENGTH = "GUESSWORDLENGTH"
+    case PLAYSETUP = "PLAYSETUP"
     case PLAYSESSION = "PLAYSESSION"
 }
 
@@ -67,9 +67,9 @@ struct CommunicatorCommands
         return string
     }
     
-    static func constructGuessWordLengthMessage(length: UInt) -> String
+    static func constructPlaySetupMessage(length: UInt, turnToGo: String) -> String
     {
-        var string = String("\(CommunicatorCommand.GUESSWORDLENGTH.rawValue) \(length)")
+        var string = String("\(CommunicatorCommand.PLAYSETUP.rawValue) \(length) \(turnToGo)")
         
         string.append(CommunicatorMessageEndingTag)
         
@@ -103,7 +103,7 @@ struct CommunicatorCommands
         return CommunicatorCommand(rawValue: String(first))
     }
     
-    static func extractParameter(command: CommunicatorCommand, message: String) -> String?
+    static func extractFirstParameter(command: CommunicatorCommand, message: String) -> String?
     {
         let split = message.split(separator: " ")
         
@@ -113,6 +113,20 @@ struct CommunicatorCommands
         }
         
         let second = split[1]
+        
+        return String(second)
+    }
+    
+    static func extractSecondParameter(command: CommunicatorCommand, message: String) -> String?
+    {
+        let split = message.split(separator: " ")
+        
+        if split.count <= 2
+        {
+            return nil
+        }
+        
+        let second = split[2]
         
         return String(second)
     }

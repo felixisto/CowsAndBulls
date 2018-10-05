@@ -159,3 +159,19 @@ struct GameSession
         return ""
     }
 }
+
+enum GameTurn : String
+{
+    case first = "First"
+    case second = "Second"
+    
+    func nextTurn() -> GameTurn
+    {
+        if self == .first
+        {
+            return .second
+        }
+        
+        return .first
+    }
+}

@@ -92,12 +92,14 @@ extension HostViewController : HostViewDelegate
     {
         navigationItem.leftBarButtonItem?.isEnabled = true
         
-        if let comm = communicator
+        if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
             let presenter = GameSetupPresenter(communicator: comm, connectionData: initialData)
             let viewController = GameSetupViewController(withPresenter: presenter)
             
-            navigationController?.pushViewController(viewController, animated: true)
+            viewControllers.insert(viewController, at: viewControllers.count)
+            
+            navigationController?.viewControllers = viewControllers
         }
     }
     

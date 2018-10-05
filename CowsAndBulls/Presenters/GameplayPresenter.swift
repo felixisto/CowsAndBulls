@@ -19,7 +19,7 @@ class GameplayPresenter : NSObject
     
     var communicator: Communicator?
     
-    required init(communicator: Communicator)
+    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection)
     {
         self.communicator = communicator
         
@@ -82,7 +82,7 @@ extension GameplayPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
         
     }

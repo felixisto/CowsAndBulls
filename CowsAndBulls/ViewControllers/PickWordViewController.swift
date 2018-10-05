@@ -98,14 +98,16 @@ extension PickWordViewController : PickWordViewDelegate
         customView?.setNumberOfCharacter(length: length)
     }
     
-    func play(communicator: Communicator?, withGuessWord guessWord: String)
+    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWord guessWord: String)
     {
-        if let comm = communicator
+        if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
-            let presenter = GameplayPresenter(communicator: comm)
+            let presenter = GameplayPresenter(communicator: comm, connectionData: connectionData)
             let viewController = GameplayViewController(withPresenter: presenter)
             
-            navigationController?.pushViewController(viewController, animated: true)
+            viewControllers.insert(viewController, at: viewControllers.count)
+            
+            navigationController?.viewControllers = viewControllers
         }
     }
 }

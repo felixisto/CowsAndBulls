@@ -52,10 +52,10 @@ class GameSetupViewController: UIViewController
         self.customView?.delegate = self
         
         navigationController?.navigationBar.isHidden = false
-        navigationItem.title = "Pick Role"
+        navigationItem.title = "Game Setup"
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Quit", style: .plain, target: self, action: #selector(actionBack(_:)))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(actionNext(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Agree?", style: .plain, target: self, action: #selector(actionNext(_:)))
     }
 }
 
@@ -74,15 +74,20 @@ extension GameSetupViewController
         
         navigationItem.rightBarButtonItem?.isEnabled = false
         
-        presenter?.pickAndSendGuessWorCharacterCountToOpponent()
+        presenter?.pickCurrentPlaySetupAndSendToOpponent()
     }
 }
 
 extension GameSetupViewController : GameSetupViewDelegate
 {
-    func updateNumberOfCharactersPicker(dataSource: GameSetupPickerViewDataSource?, delegate: GameSetupPickerViewDelegate?)
+    func updateNumberOfCharactersPicker(dataSource: GameSetupWordLengthPickerViewDataSource?, delegate: GameSetupWordLengthPickerViewDelegate?)
     {
         customView?.updateNumberOfCharactersPicker(dataSource: dataSource, delegate: delegate)
+    }
+    
+    func updateTurnToGoPicker(dataSource: GameSetupTurnPickerViewDataSource?, delegate: GameSetupTurnPickerViewDelegate?)
+    {
+        customView?.updateTurnToGoPicker(dataSource: dataSource, delegate: delegate)
     }
     
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
@@ -97,43 +102,54 @@ extension GameSetupViewController : GameSetupViewDelegate
         navigationController?.popToRootViewController(animated: false)
     }
     
-    func didSelectGuessWordCharacterCount(number: UInt)
+    func updateOpponentPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
-        presenter?.didSelectGuessWordCharacterCount(number: number)
+        customView?.updateOpponentStatus(guessWordLength: guessWordLength, turnToGo: turnToGo)
     }
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
-    {
-        customView?.setOpponentGuessWordLength(length: number)
-    }
-    
-    func guessWordCharacterCountMismatch()
+    func playSetupMismatch()
     {
         customView?.enableUserInteraction()
         
         navigationItem.rightBarButtonItem?.isEnabled = true
         
-        presenter?.guessWordCharacterCountMismatch()
+        presenter?.playSetupMismatchesOpponentPlayerSetup()
+        
+        let alert = UIAlertController(title: "Setup mismatch", message: "Your picked values must not contradict the opponent's values", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
-    func guessWordCharacterCountMatch()
+    func playSetupMatch()
     {
-        presenter?.guessWordCharacterCountMatch()
+        presenter?.playSetupMatchesOpponentPlayerSetup()
     }
     
-    func goToPickWord(communicator: Communicator?, withGuessWordLength guessWordLength: UInt)
+    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWordLength guessWordLength: UInt)
     {
-        if let comm = communicator
+        if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
-            let presenter = PickWordPresenter(communicator: comm, guessWordLength: guessWordLength)
+            let presenter = PickWordPresenter(communicator: comm, connectionData: connectionData, guessWordLength: guessWordLength)
             let viewController = PickWordViewController(withPresenter: presenter)
             
-            navigationController?.pushViewController(viewController, animated: true)
+            viewControllers.insert(viewController, at: viewControllers.count)
+            
+            navigationController?.viewControllers = viewControllers
         }
     }
 }
 
 extension GameSetupViewController : GameSetupActionDelegate
 {
+    func didSelectGuessWordCharacterCount(number: UInt)
+    {
+        presenter?.didSelectGuessWordCharacterCount(number: number)
+    }
     
+    func didSelectTurnToGo(turnToGo: String)
+    {
+        presenter?.didSelectTurnToGo(turnToGo: turnToGo)
+    }
 }

@@ -10,25 +10,28 @@ import UIKit
 
 protocol GameSetupViewDelegate : class
 {
-    func updateNumberOfCharactersPicker(dataSource: GameSetupPickerViewDataSource?, delegate: GameSetupPickerViewDelegate?)
+    func updateNumberOfCharactersPicker(dataSource: GameSetupWordLengthPickerViewDataSource?, delegate: GameSetupWordLengthPickerViewDelegate?)
+    func updateTurnToGoPicker(dataSource: GameSetupTurnPickerViewDataSource?, delegate: GameSetupTurnPickerViewDelegate?)
+    
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
     func connectionFailure(errorMessage: String)
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
-    func guessWordCharacterCountMismatch()
-    func guessWordCharacterCountMatch()
+    func updateOpponentPlaySetup(guessWordLength: UInt, turnToGo: String)
+    func playSetupMismatch()
+    func playSetupMatch()
     
-    func goToPickWord(communicator: Communicator?, withGuessWordLength guessWordLength: UInt)
+    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWordLength guessWordLength: UInt)
 }
 
 protocol GameSetupActionDelegate : class
 {
     func didSelectGuessWordCharacterCount(number: UInt)
+    func didSelectTurnToGo(turnToGo: String)
 }
 
-class GameSetupPickerViewDataSource : NSObject, UIPickerViewDataSource
+class GameSetupWordLengthPickerViewDataSource : NSObject, UIPickerViewDataSource
 {
-    private let numbers : [UInt]
+    private let values : [UInt]
     
     init(minNumber: UInt, maxNumber: UInt)
     {
@@ -39,7 +42,7 @@ class GameSetupPickerViewDataSource : NSObject, UIPickerViewDataSource
             numbers.append(UInt(e))
         }
         
-        self.numbers = numbers
+        self.values = numbers
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
@@ -49,13 +52,33 @@ class GameSetupPickerViewDataSource : NSObject, UIPickerViewDataSource
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
     {
-        return numbers.count
+        return values.count
     }
 }
 
-class GameSetupPickerViewDelegate : NSObject, UIPickerViewDelegate
+class GameSetupTurnPickerViewDataSource : NSObject, UIPickerViewDataSource
 {
-    private let numbers : [UInt]
+    private let values : [String]
+    
+    init(values: [String])
+    {
+        self.values = values
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int
+    {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
+    {
+        return values.count
+    }
+}
+
+class GameSetupWordLengthPickerViewDelegate : NSObject, UIPickerViewDelegate
+{
+    private let values : [UInt]
     private let actionDelegate: GameSetupActionDelegate?
     
     init(minNumber: UInt, maxNumber: UInt, actionDelegate: GameSetupActionDelegate?)
@@ -67,20 +90,45 @@ class GameSetupPickerViewDelegate : NSObject, UIPickerViewDelegate
             numbers.append(UInt(e))
         }
         
-        self.numbers = numbers
+        self.values = numbers
         self.actionDelegate = actionDelegate
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
     {
-        return String(numbers[row])
+        return String(values[row])
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
     {
-        if (0..<numbers.count).contains(row)
+        if (0..<values.count).contains(row)
         {
-            actionDelegate?.didSelectGuessWordCharacterCount(number: numbers[row])
+            actionDelegate?.didSelectGuessWordCharacterCount(number: values[row])
+        }
+    }
+}
+
+class GameSetupTurnPickerViewDelegate : NSObject, UIPickerViewDelegate
+{
+    private let values : [String]
+    private let actionDelegate: GameSetupActionDelegate?
+    
+    init(values: [String], actionDelegate: GameSetupActionDelegate?)
+    {
+        self.values = values
+        self.actionDelegate = actionDelegate
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+    {
+        return String(values[row])
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
+    {
+        if (0..<values.count).contains(row)
+        {
+            actionDelegate?.didSelectTurnToGo(turnToGo: values[row])
         }
     }
 }
@@ -92,6 +140,8 @@ class GameSetupView : UIView
     @IBOutlet private weak var labelInfo: UILabel!
     @IBOutlet private weak var labelTip: UILabel!
     @IBOutlet private weak var pickerNumberOfCharacters: UIPickerView!
+    @IBOutlet private weak var labelWhoGoesFirst: UILabel!
+    @IBOutlet private weak var pickerTurn: UIPickerView!
     @IBOutlet private weak var labelOpponentStatus: UILabel!
     
     override init(frame: CGRect)
@@ -131,10 +181,23 @@ class GameSetupView : UIView
         pickerNumberOfCharacters.heightAnchor.constraint(equalToConstant: 128.0).isActive = true
         pickerNumberOfCharacters.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         
+        labelWhoGoesFirst.translatesAutoresizingMaskIntoConstraints = false
+        labelWhoGoesFirst.topAnchor.constraint(equalTo: pickerNumberOfCharacters.bottomAnchor, constant: 40.0).isActive = true
+        labelWhoGoesFirst.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        labelWhoGoesFirst.widthAnchor.constraint(equalTo: guide.widthAnchor, constant: 1.0).isActive = true
+        labelWhoGoesFirst.textAlignment = .center
+        
+        pickerTurn.translatesAutoresizingMaskIntoConstraints = false
+        pickerTurn.topAnchor.constraint(equalTo: labelWhoGoesFirst.bottomAnchor, constant: 0.0).isActive = true
+        pickerTurn.heightAnchor.constraint(equalToConstant: 128.0).isActive = true
+        pickerTurn.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        
         labelOpponentStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelOpponentStatus.topAnchor.constraint(equalTo: pickerNumberOfCharacters.bottomAnchor, constant: 0.0).isActive = true
+        labelOpponentStatus.topAnchor.constraint(equalTo: pickerTurn.bottomAnchor, constant: 0.0).isActive = true
+        labelOpponentStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.9).isActive = true
         labelOpponentStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        labelTip.textAlignment = .center
+        labelOpponentStatus.textAlignment = .center
+        labelOpponentStatus.numberOfLines = 2
     }
 }
 
@@ -147,7 +210,7 @@ extension GameSetupView
         }
     }
     
-    func updateNumberOfCharactersPicker(dataSource: GameSetupPickerViewDataSource?, delegate: GameSetupPickerViewDelegate?)
+    func updateNumberOfCharactersPicker(dataSource: GameSetupWordLengthPickerViewDataSource?, delegate: GameSetupWordLengthPickerViewDelegate?)
     {
         DispatchQueue.main.async {
             self.pickerNumberOfCharacters.dataSource = dataSource
@@ -156,10 +219,19 @@ extension GameSetupView
         }
     }
     
-    func setOpponentGuessWordLength(length: UInt)
+    func updateTurnToGoPicker(dataSource: GameSetupTurnPickerViewDataSource?, delegate: GameSetupTurnPickerViewDelegate?)
     {
         DispatchQueue.main.async {
-            self.labelOpponentStatus.text = String("Opponent wants \(length) character guess words")
+            self.pickerTurn.dataSource = dataSource
+            self.pickerTurn.delegate = delegate
+            self.pickerTurn.reloadAllComponents()
+        }
+    }
+    
+    func updateOpponentStatus(guessWordLength: UInt, turnToGo: String)
+    {
+        DispatchQueue.main.async {
+            self.labelOpponentStatus.text = String("Opponent wants \(guessWordLength) digit guess words and wants \(turnToGo) turn")
         }
     }
     
@@ -167,6 +239,7 @@ extension GameSetupView
     {
         DispatchQueue.main.async {
             self.pickerNumberOfCharacters.isUserInteractionEnabled = true
+            self.pickerTurn.isUserInteractionEnabled = true
         }
     }
     
@@ -174,6 +247,7 @@ extension GameSetupView
     {
         DispatchQueue.main.async {
             self.pickerNumberOfCharacters.isUserInteractionEnabled = false
+            self.pickerTurn.isUserInteractionEnabled = false
         }
     }
 }

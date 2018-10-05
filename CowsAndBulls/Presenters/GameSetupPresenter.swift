@@ -14,9 +14,11 @@ protocol GameSetupPresenterDelegate : class
     func quit()
     
     func didSelectGuessWordCharacterCount(number: UInt)
-    func pickAndSendGuessWorCharacterCountToOpponent()
-    func guessWordCharacterCountMismatch()
-    func guessWordCharacterCountMatch()
+    func didSelectTurnToGo(turnToGo: String)
+    
+    func pickCurrentPlaySetupAndSendToOpponent()
+    func playSetupMismatchesOpponentPlayerSetup()
+    func playSetupMatchesOpponentPlayerSetup()
 }
 
 class GameSetupPresenter : NSObject
@@ -27,19 +29,27 @@ class GameSetupPresenter : NSObject
     
     var connectionData: CommunicatorInitialConnection
     var selectedGuessWordCharacterCount: UInt
-    var pickedGuessWordCharacterCount: Bool
+    var selectedTurnToGo: GameTurn
+    var sentRequestToOpponent: Bool
     var opponentPickedGuessWordCharacterCount: UInt
+    var opponentPickedTurnToGo: GameTurn
+    var opponentSentRequest: Bool
     
-    var rolePickerDelegate: GameSetupPickerViewDelegate?
-    var rolePickerDataSource: GameSetupPickerViewDataSource?
+    var wordLengthPickerDelegate: GameSetupWordLengthPickerViewDelegate?
+    var wordLengthPickerDataSource: GameSetupWordLengthPickerViewDataSource?
+    var turnPickerDelegate: GameSetupTurnPickerViewDelegate?
+    var turnPickerDataSource: GameSetupTurnPickerViewDataSource?
     
     required init(communicator: Communicator, connectionData: CommunicatorInitialConnection)
     {
         self.communicator = communicator
         self.connectionData = connectionData
         self.selectedGuessWordCharacterCount = GameConstants.GuessWordCharacterCountMin
-        self.pickedGuessWordCharacterCount = false
+        self.selectedTurnToGo = .first
+        self.sentRequestToOpponent = false
         self.opponentPickedGuessWordCharacterCount = 0
+        self.opponentPickedTurnToGo = .first
+        self.opponentSentRequest = false
         
         super.init()
         
@@ -50,16 +60,9 @@ class GameSetupPresenter : NSObject
         self.communicator?.detachObserver(key: self.description)
     }
     
-    private func updateGuessWordLengthSelection() -> Bool
+    private func opponentHasSameSetupParameters() -> Bool
     {
-        // If we have selected a guess word length, compare
-        if pickedGuessWordCharacterCount
-        {
-            return selectedGuessWordCharacterCount == opponentPickedGuessWordCharacterCount
-        }
-        
-        // If we havent selected it, wait until selection
-        return false
+        return selectedGuessWordCharacterCount != 0 && selectedGuessWordCharacterCount == opponentPickedGuessWordCharacterCount && selectedTurnToGo != opponentPickedTurnToGo
     }
 }
 
@@ -71,10 +74,15 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         
         delegate?.updateConnectionData(playerAddress: connectionData.otherPlayerAddress, playerName: connectionData.otherPlayerName, playerColor: connectionData.otherPlayerColor)
         
-        self.rolePickerDataSource = GameSetupPickerViewDataSource(minNumber: GameConstants.GuessWordCharacterCountMin, maxNumber: GameConstants.GuessWordCharacterCountMax)
-        self.rolePickerDelegate = GameSetupPickerViewDelegate(minNumber: GameConstants.GuessWordCharacterCountMin, maxNumber: GameConstants.GuessWordCharacterCountMax, actionDelegate: delegate as? GameSetupActionDelegate)
+        self.wordLengthPickerDataSource = GameSetupWordLengthPickerViewDataSource(minNumber: GameConstants.GuessWordCharacterCountMin, maxNumber: GameConstants.GuessWordCharacterCountMax)
+        self.wordLengthPickerDelegate = GameSetupWordLengthPickerViewDelegate(minNumber: GameConstants.GuessWordCharacterCountMin, maxNumber: GameConstants.GuessWordCharacterCountMax, actionDelegate: delegate as? GameSetupActionDelegate)
         
-        delegate?.updateNumberOfCharactersPicker(dataSource: self.rolePickerDataSource, delegate: self.rolePickerDelegate)
+        delegate?.updateNumberOfCharactersPicker(dataSource: wordLengthPickerDataSource, delegate: wordLengthPickerDelegate)
+        
+        self.turnPickerDataSource = GameSetupTurnPickerViewDataSource(values: [GameTurn.first.rawValue, GameTurn.second.rawValue])
+        self.turnPickerDelegate = GameSetupTurnPickerViewDelegate(values: [GameTurn.first.rawValue, GameTurn.second.rawValue], actionDelegate: delegate as? GameSetupActionDelegate)
+        
+        delegate?.updateTurnToGoPicker(dataSource: turnPickerDataSource, delegate: turnPickerDelegate)
     }
     
     func quit()
@@ -91,57 +99,77 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         selectedGuessWordCharacterCount = number
     }
     
-    func pickAndSendGuessWorCharacterCountToOpponent()
+    func didSelectTurnToGo(turnToGo: String)
     {
-        print("GameSetupPresenter sending guess word character count \(selectedGuessWordCharacterCount) to opponent")
-        
-        // If the opponent has already sent their character count to use, just compare
-        if opponentPickedGuessWordCharacterCount != 0
+        if let turn = GameTurn(rawValue: turnToGo)
         {
-            if selectedGuessWordCharacterCount == opponentPickedGuessWordCharacterCount
-            {
-                // Send message to opponent
-                communicator?.sendGuessWordLength(length: selectedGuessWordCharacterCount)
-                
-                // Match
-                delegate?.guessWordCharacterCountMatch()
-                
-                return
-            }
+            print("GameSetupPresenter selected turn to go \(turnToGo)")
+            
+            selectedTurnToGo = turn
         }
-        
-        // Else, send the character count to opponent
-        pickedGuessWordCharacterCount = true
-        
-        // Send message to opponent
-        communicator?.sendGuessWordLength(length: selectedGuessWordCharacterCount)
     }
     
-    func guessWordCharacterCountMismatch()
+    func pickCurrentPlaySetupAndSendToOpponent()
     {
-        // Skip all of this, if the opponent guess word length is already zero
-        guard opponentPickedGuessWordCharacterCount > 0 else {
+        print("GameSetupPresenter sending play setup to opponent with guess word length \(selectedGuessWordCharacterCount) and \(selectedTurnToGo.rawValue) turn value")
+        
+        // If the opponent has already sent their play setup, compare and we may agree go to the next screen right here
+        if opponentSentRequest
+        {
+            if opponentHasSameSetupParameters()
+            {
+                sentRequestToOpponent = true
+                
+                // Send message to opponent
+                communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
+                
+                // Match
+                delegate?.playSetupMatch()
+            }
+            else
+            {
+                // Mismatch
+                delegate?.playSetupMismatch()
+            }
+            
             return
         }
         
-        print("GameSetupPresenter selected guess word character does not match with opponent's selection")
+        // Else, send the character count to opponent
+        sentRequestToOpponent = true
         
-        pickedGuessWordCharacterCount = false
-        opponentPickedGuessWordCharacterCount = 0
-        
-        communicator?.sendGuessWordLength(length: 0)
+        communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
     }
     
-    func guessWordCharacterCountMatch()
+    func playSetupMismatchesOpponentPlayerSetup()
+    {
+        // Skip all of this, if no requests have been sent by either side
+        if !sentRequestToOpponent && !opponentSentRequest
+        {
+            return
+        }
+        
+        print("GameSetupPresenter we disagree with the opponent game setup values! Try again")
+        
+        if !sentRequestToOpponent
+        {
+            communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
+        }
+        
+        sentRequestToOpponent = false
+        opponentSentRequest = false
+    }
+    
+    func playSetupMatchesOpponentPlayerSetup()
     {
         // Skip all of this, if either mine or the opponent guess word length is zero
         guard selectedGuessWordCharacterCount == opponentPickedGuessWordCharacterCount && selectedGuessWordCharacterCount != 0 else {
             return
         }
         
-        print("GameSetupPresenter selected guess word character match! Guess words will be \(selectedGuessWordCharacterCount) characters long!")
+        print("GameSetupPresenter we have agree with the opponent on the game setup values! Guess words will be \(selectedGuessWordCharacterCount) characters long and we are \(selectedTurnToGo.rawValue) to go!")
         
-        delegate?.goToPickWord(communicator: communicator, withGuessWordLength: selectedGuessWordCharacterCount)
+        delegate?.goToPickWord(communicator: communicator, connectionData: connectionData, withGuessWordLength: selectedGuessWordCharacterCount)
     }
 }
 
@@ -184,32 +212,38 @@ extension GameSetupPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
-        // If the given number is zero, then the opponent is disagreeing with the given guess character length
-        guard number > 0 else {
-            delegate?.guessWordCharacterCountMismatch()
+        // Zero value means mismatch, always
+        guard guessWordLength > 0 else {
+            delegate?.playSetupMismatch()
             return
         }
         
-        print("GameSetupPresenter opponent selected guess word length \(number)!")
+        // We need a valid Turn value
+        guard let opponentTurnToGo = GameTurn(rawValue: turnToGo) else {
+            return
+        }
         
-        opponentPickedGuessWordCharacterCount = number
+        print("GameSetupPresenter opponent selected guess word length \(guessWordLength)!")
         
-        delegate?.opponentDidSelectGuessWordCharacterCount(number: opponentPickedGuessWordCharacterCount)
+        opponentSentRequest = true
+        opponentPickedGuessWordCharacterCount = guessWordLength
+        opponentPickedTurnToGo = opponentTurnToGo
         
-        // If we have picked a guess word length, we may go to the next screen or we may tell the opponent that we are disagreeing
-        if pickedGuessWordCharacterCount
+        delegate?.updateOpponentPlaySetup(guessWordLength: opponentPickedGuessWordCharacterCount, turnToGo: opponentPickedTurnToGo.rawValue)
+        
+        // If we have already sent our play setup to the opoonent, try to see if the parameters match here
+        // We may go to the next screen here
+        if sentRequestToOpponent
         {
-            // Match
-            if updateGuessWordLengthSelection()
+            if opponentHasSameSetupParameters()
             {
-                delegate?.guessWordCharacterCountMatch()
+                delegate?.playSetupMatch()
             }
-            // Mismatch
             else
             {
-                delegate?.guessWordCharacterCountMismatch()
+                delegate?.playSetupMismatch()
             }
         }
     }

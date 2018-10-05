@@ -22,7 +22,7 @@ protocol NetworkObserver: class
     func failedToConnect()
     
     // Game Setup scene
-    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     
     // Game Pick Word scene
     func opponentDidSendPlaySession(turnValue: UInt)
