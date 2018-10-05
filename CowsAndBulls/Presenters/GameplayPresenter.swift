@@ -1,5 +1,5 @@
 //
-//  HostGameplayPresenter.swift
+//  GameplayPresenter.swift
 //  CowsAndBulls
 //
 //  Created by Kristiyan Butev on 2.10.18.
@@ -8,14 +8,14 @@
 
 import Foundation
 
-protocol HostGameplayPresenterDelegate : class
+protocol GameplayPresenterDelegate : class
 {
     func quit()
 }
 
-class HostGameplayPresenter : NSObject
+class GameplayPresenter : NSObject
 {
-    weak var delegate : HostGameplayViewDelegate?
+    weak var delegate : GameplayViewDelegate?
     
     var communicator: Communicator?
     
@@ -33,15 +33,17 @@ class HostGameplayPresenter : NSObject
     }
 }
 
-extension HostGameplayPresenter : HostGameplayPresenterDelegate
+extension GameplayPresenter : GameplayPresenterDelegate
 {
     func quit()
     {
-        self.communicator?.detachObserver(key: self.description)
+        print("GameplayPresenter quit")
+        
+        communicator?.quit()
     }
 }
 
-extension HostGameplayPresenter : NetworkObserver
+extension GameplayPresenter : NetworkObserver
 {
     func beginConnect()
     {
@@ -60,23 +62,33 @@ extension HostGameplayPresenter : NetworkObserver
     
     func lostConnectingAttemptingToReconnect()
     {
-        print("HostGameplayPresenter lostConnectingAttemptingToReconnect!")
+        print("GameplayPresenter lostConnectingAttemptingToReconnect!")
     }
     
     func reconnect()
     {
-        print("HostGameplayPresenter reconnect!")
+        print("GameplayPresenter reconnect!")
     }
     
     func disconnect()
     {
-        print("HostGameplayPresenter failed to connect!")
+        print("GameplayPresenter failed to connect!")
         delegate?.connectionFailure(errorMessage: "Disconnect")
     }
     
     func disconnect(error: String)
     {
-        print("HostGameplayPresenter failed to connect!")
+        print("GameplayPresenter failed to connect!")
         delegate?.connectionFailure(errorMessage: error)
+    }
+    
+    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    {
+        
+    }
+    
+    func opponentDidSendPlaySession(turnValue: UInt)
+    {
+        
     }
 }

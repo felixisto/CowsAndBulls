@@ -23,9 +23,9 @@ class MainView : UIView
 {
     weak var delegate : MainActionDelegate?
     
-    @IBOutlet weak var imageSpash: UIImageView!
-    @IBOutlet weak var buttonHost: UIButton!
-    @IBOutlet weak var buttonJoin: UIButton!
+    @IBOutlet private weak var imageSpash: UIImageView!
+    @IBOutlet private weak var buttonHost: UIButton!
+    @IBOutlet private weak var buttonJoin: UIButton!
     
     override init(frame: CGRect)
     {

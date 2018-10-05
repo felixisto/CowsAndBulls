@@ -18,8 +18,9 @@ let CommunicatorClientConnectTimeout : Double = 10.0
 
 let CommunicatorMessageEndingTag = "$%\n!#!"
 
-let CommunicatorPingDelayMinimum : Double = 0.25
-let CommunicatorPingTimeout : Double = 10.0
+let CommunicatorPingInterval : Double = 0.1
+let CommunicatorPingDelayMinimum : Double = 0.3
+let CommunicatorPingTimeout : Double = 30.0
 
 // Generic interface that allows you to interact with either host communicator or client communicator
 protocol Communicator
@@ -34,6 +35,10 @@ protocol Communicator
     func sendMessageToClient(message: String)
     func sendActionMessage(message: String)
     func sendQuitMessage()
+    
+    func sendGuessWordLength(length: UInt)
+    func sendAlertPickedGuessWord()
+    func sendGuessWordAlertAndTurnValue(turnValue: UInt)
 }
 
 struct CommunicatorInitialConnection
@@ -189,8 +194,6 @@ class CommunicatorHost : Communicator
                 return
             }
             
-            var wasPingedJustNow = false
-            
             // Full message received?
             if communicator.clientMessage.hasSuffix(CommunicatorMessageEndingTag)
             {
@@ -214,9 +217,42 @@ class CommunicatorHost : Communicator
                     case .PING:
                         if communicator.isConnectedToClient
                         {
-                            wasPingedJustNow = true
                             communicator.lastPingFromClient = Date()
                             print("\(communicator.lastPingFromClient!) Ping from client")
+                        }
+                    case .GUESSWORDLENGTH:
+                        if communicator.isConnectedToClient
+                        {
+                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            {
+                                if let wordLength = UInt(parameter)
+                                {
+                                    // Observers notification
+                                    DispatchQueue.main.async {
+                                        for observer in communicator.observers
+                                        {
+                                            observer.value.opponentDidSelectGuessWordCharacterCount(number: wordLength)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    case .PLAYSESSION:
+                        if communicator.isConnectedToClient
+                        {
+                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            {
+                                if let turnValue = UInt(parameter)
+                                {
+                                    // Observers notification
+                                    DispatchQueue.main.async {
+                                        for observer in communicator.observers
+                                        {
+                                            observer.value.opponentDidSendPlaySession(turnValue: turnValue)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     default:
                         print("Bad command \(command.rawValue)!")
@@ -231,7 +267,7 @@ class CommunicatorHost : Communicator
     
     private func pingLoop()
     {
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + CommunicatorPingInterval, execute: { [weak self] in
             guard let communicator = self else
             {
                 return
@@ -464,6 +500,39 @@ extension CommunicatorHost
         
         print("CommunicatorHost: sending quit message to client")
     }
+    
+    public func sendGuessWordLength(length: UInt)
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructGuessWordLengthMessage(length: length))
+        
+        print("CommunicatorHost: sending guess word length message to client")
+    }
+    
+    public func sendAlertPickedGuessWord()
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructPickedGuessWordMessage())
+        
+        print("CommunicatorHost: sending notification to client that a guess word has been picked")
+    }
+    
+    public func sendGuessWordAlertAndTurnValue(turnValue: UInt)
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructPlaySessionMessage(turnValue: turnValue))
+        
+        print("CommunicatorHost: sending notification to client that a guess word has been picked")
+    }
 }
 
 class CommunicatorClient : Communicator
@@ -624,6 +693,40 @@ class CommunicatorClient : Communicator
                             communicator.lastPingFromServer = Date()
                             print("\(communicator.lastPingFromServer!) Ping from server")
                         }
+                    case .GUESSWORDLENGTH:
+                        if communicator.isConnectedToServer
+                        {
+                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            {
+                                if let wordLength = UInt(parameter)
+                                {
+                                    // Observers notification
+                                    DispatchQueue.main.async {
+                                        for observer in communicator.observers
+                                        {
+                                            observer.value.opponentDidSelectGuessWordCharacterCount(number: wordLength)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    case .PLAYSESSION:
+                        if communicator.isConnectedToServer
+                        {
+                            if let parameter = CommunicatorCommands.extractParameter(command: command, message: message)
+                            {
+                                if let turnValue = UInt(parameter)
+                                {
+                                    // Observers notification
+                                    DispatchQueue.main.async {
+                                        for observer in communicator.observers
+                                        {
+                                            observer.value.opponentDidSendPlaySession(turnValue: turnValue)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     default:
                         print("Bad command \(command.rawValue)!")
                     }
@@ -637,7 +740,7 @@ class CommunicatorClient : Communicator
     
     private func pingLoop()
     {
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + CommunicatorPingInterval, execute: { [weak self] in
             guard let communicator = self else
             {
                 return
@@ -866,6 +969,39 @@ extension CommunicatorClient
         let _ = socket.send(string: CommunicatorCommands.constructQuitMessage())
         
         print("CommunicatorClient: sending quit message to server")
+    }
+    
+    public func sendGuessWordLength(length: UInt)
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructGuessWordLengthMessage(length: length))
+        
+        print("CommunicatorClient: sending guess word length message to server")
+    }
+    
+    public func sendAlertPickedGuessWord()
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructPickedGuessWordMessage())
+        
+        print("CommunicatorClient: sending notification to client that a guess word has been picked")
+    }
+    
+    public func sendGuessWordAlertAndTurnValue(turnValue: UInt)
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructPlaySessionMessage(turnValue: turnValue))
+        
+        print("CommunicatorClient: sending notification to client that a guess word has been picked")
     }
 }
 

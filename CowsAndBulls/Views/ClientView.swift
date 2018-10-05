@@ -11,7 +11,7 @@ import UIKit
 protocol ClientViewDelegate : class
 {
     func connectionBegin()
-    func connectionSuccessful(communicator: CommunicatorClient?)
+    func connectionSuccessful(communicator: CommunicatorClient?, initialData: CommunicatorInitialConnection)
     func connectionFailure(errorMessage: String)
 }
 
@@ -24,9 +24,9 @@ class ClientView : UIView
 {
     weak var delegate : ClientActionDelegate?
     
-    @IBOutlet weak var labelHostAddress: UILabel!
-    @IBOutlet weak var fieldHostAddress: UITextField!
-    @IBOutlet weak var buttonConnect: UIButton!
+    @IBOutlet private weak var labelHostAddress: UILabel!
+    @IBOutlet private weak var fieldHostAddress: UITextField!
+    @IBOutlet private weak var buttonConnect: UIButton!
     
     override init(frame: CGRect)
     {
@@ -48,15 +48,15 @@ class ClientView : UIView
         let guide = self.safeAreaLayoutGuide
         
         labelHostAddress.translatesAutoresizingMaskIntoConstraints = false
-        labelHostAddress.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10.0).isActive = true
+        labelHostAddress.topAnchor.constraint(equalTo: guide.topAnchor, constant: 50.0).isActive = true
         labelHostAddress.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10.0).isActive = true
         
         fieldHostAddress.translatesAutoresizingMaskIntoConstraints = false
-        fieldHostAddress.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
-        fieldHostAddress.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10.0).isActive = true
+        fieldHostAddress.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: 0.0).isActive = true
+        fieldHostAddress.centerYAnchor.constraint(equalTo: labelHostAddress.centerYAnchor).isActive = true
         
         buttonConnect.translatesAutoresizingMaskIntoConstraints = false
-        buttonConnect.topAnchor.constraint(equalTo: labelHostAddress.topAnchor, constant: 40.0).isActive = true
+        buttonConnect.topAnchor.constraint(equalTo: labelHostAddress.topAnchor, constant: 50.0).isActive = true
         buttonConnect.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         buttonConnect.addTarget(self, action: #selector(actionConnect(_:)), for: .touchDown)
     }

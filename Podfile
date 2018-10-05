@@ -7,6 +7,7 @@ target 'CowsAndBulls' do
 
   # Pods for CowsAndBulls
   pod 'SwiftSocket'
+  pod 'PinCodeTextField'
   target 'CowsAndBullsTests' do
     inherit! :search_paths
     # Pods for testing

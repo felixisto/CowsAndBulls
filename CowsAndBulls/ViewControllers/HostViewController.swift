@@ -88,14 +88,14 @@ extension HostViewController : HostViewDelegate
         navigationItem.leftBarButtonItem?.isEnabled = false
     }
     
-    func connectionSuccessful(communicator: CommunicatorHost?)
+    func connectionSuccessful(communicator: CommunicatorHost?, initialData: CommunicatorInitialConnection)
     {
         navigationItem.leftBarButtonItem?.isEnabled = true
         
         if let comm = communicator
         {
-            let presenter = PickRolePresenter(communicator: comm)
-            let viewController = PickRoleViewController(withPresenter: presenter)
+            let presenter = GameSetupPresenter(communicator: comm, connectionData: initialData)
+            let viewController = GameSetupViewController(withPresenter: presenter)
             
             navigationController?.pushViewController(viewController, animated: true)
         }

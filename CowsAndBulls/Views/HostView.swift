@@ -11,7 +11,7 @@ import UIKit
 protocol HostViewDelegate : class
 {
     func connectionBegin()
-    func connectionSuccessful(communicator: CommunicatorHost?)
+    func connectionSuccessful(communicator: CommunicatorHost?, initialData: CommunicatorInitialConnection)
     func connectionFailure(errorMessage: String)
 }
 
@@ -24,8 +24,8 @@ class HostView : UIView
 {
     weak var delegate : HostActionDelegate?
     
-    @IBOutlet weak var labelDescription: UILabel!
-    @IBOutlet weak var labelYourIP: UILabel!
+    @IBOutlet private weak var labelDescription: UILabel!
+    @IBOutlet private weak var labelYourIP: UILabel!
     
     override init(frame: CGRect)
     {
@@ -47,12 +47,12 @@ class HostView : UIView
         let guide = self.safeAreaLayoutGuide
         
         labelDescription.translatesAutoresizingMaskIntoConstraints = false
-        labelDescription.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10.0).isActive = true
+        labelDescription.topAnchor.constraint(equalTo: guide.topAnchor, constant: 50.0).isActive = true
         labelDescription.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         
         labelYourIP.translatesAutoresizingMaskIntoConstraints = false
-        labelYourIP.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 10.0).isActive = true
-        labelYourIP.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 10.0).isActive = true
+        labelYourIP.topAnchor.constraint(equalTo: labelDescription.bottomAnchor, constant: 25.0).isActive = true
+        labelYourIP.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
     }
 }
 

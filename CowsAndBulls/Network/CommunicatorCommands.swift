@@ -14,6 +14,9 @@ enum CommunicatorCommand : String
     case QUIT = "QUIT"
     case CHAT = "CHAT"
     case PING = "PING"
+    
+    case GUESSWORDLENGTH = "GUESSWORDLENGTH"
+    case PLAYSESSION = "PLAYSESSION"
 }
 
 struct CommunicatorCommands
@@ -58,6 +61,33 @@ struct CommunicatorCommands
     static func constructQuitMessage() -> String
     {
         var string = String("\(CommunicatorCommand.QUIT.rawValue)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructGuessWordLengthMessage(length: UInt) -> String
+    {
+        var string = String("\(CommunicatorCommand.GUESSWORDLENGTH.rawValue) \(length)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructPickedGuessWordMessage() -> String
+    {
+        var string = String("\(CommunicatorCommand.PLAYSESSION.rawValue)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructPlaySessionMessage(turnValue: UInt) -> String
+    {
+        var string = String("\(CommunicatorCommand.PLAYSESSION.rawValue) \(turnValue)")
         
         string.append(CommunicatorMessageEndingTag)
         

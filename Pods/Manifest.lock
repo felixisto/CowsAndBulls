@@ -1,16 +1,20 @@
 PODS:
+  - PinCodeTextField (0.1.0)
   - SwiftSocket (2.0.2)
 
 DEPENDENCIES:
+  - PinCodeTextField
   - SwiftSocket
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - PinCodeTextField
     - SwiftSocket
 
 SPEC CHECKSUMS:
+  PinCodeTextField: a3c39be58bde3ed1d6888d0fb1d88b0a4a2277cc
   SwiftSocket: 6f4c9c63fbc5c1d61188936bb3c599fd546f40ae
 
-PODFILE CHECKSUM: 93b255e4f1d59d7abd8b0f4b8eb2abd6201a8e68
+PODFILE CHECKSUM: e950d08466aa7a97c23cc34e86335e4c8d764134
 
 COCOAPODS: 1.5.3

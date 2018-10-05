@@ -76,7 +76,7 @@ extension HostPresenter : NetworkObserver
     func connect(data: CommunicatorInitialConnection)
     {
         print("HostPresenter network started server!")
-        delegate?.connectionSuccessful(communicator: communicator)
+        delegate?.connectionSuccessful(communicator: communicator, initialData: data)
         self.communicator?.detachObserver(key: self.description)
     }
     
@@ -106,5 +106,15 @@ extension HostPresenter : NetworkObserver
     {
         print("HostPresenter disconnect!")
         delegate?.connectionFailure(errorMessage: error)
+    }
+    
+    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    {
+        
+    }
+    
+    func opponentDidSendPlaySession(turnValue: UInt)
+    {
+        
     }
 }

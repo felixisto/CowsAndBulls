@@ -20,40 +20,34 @@
 		B80BF6512163B47800F8B1EE /* ClientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80BF6502163B47800F8B1EE /* ClientView.swift */; };
 		B80BF6532163B48600F8B1EE /* ClientView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B80BF6522163B48600F8B1EE /* ClientView.xib */; };
 		B82D8A6421649A5300CD3890 /* splash.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B82D8A6321649A5300CD3890 /* splash.jpeg */; };
+		B83720CF21673A7B00D4B145 /* GameConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83720CE21673A7B00D4B145 /* GameConstants.swift */; };
+		B83720D121673D3B00D4B145 /* GameErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83720D021673D3B00D4B145 /* GameErrors.swift */; };
 		B863198521635F860089A674 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198421635F860089A674 /* AppDelegate.swift */; };
 		B863198721635F860089A674 /* HostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863198621635F860089A674 /* HostViewController.swift */; };
 		B863198C21635F870089A674 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B863198B21635F870089A674 /* Assets.xcassets */; };
 		B863198F21635F870089A674 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B863198D21635F870089A674 /* LaunchScreen.storyboard */; };
 		B863199A21635F870089A674 /* CowsAndBullsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B863199921635F870089A674 /* CowsAndBullsTests.swift */; };
-		B86319AC2163603C0089A674 /* CABSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AB2163603C0089A674 /* CABSession.swift */; };
-		B86319AE216360510089A674 /* CABGameHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AD216360510089A674 /* CABGameHost.swift */; };
-		B86319B0216360620089A674 /* CABGameGuesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319AF216360620089A674 /* CABGameGuesser.swift */; };
 		B86319B2216360DF0089A674 /* HostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B1216360DF0089A674 /* HostView.xib */; };
-		B86319B4216360F30089A674 /* PickRoleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B3216360F30089A674 /* PickRoleView.xib */; };
-		B86319B6216361070089A674 /* HostPickWordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B5216361070089A674 /* HostPickWordView.xib */; };
-		B86319B82163611B0089A674 /* HostGameplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B72163611B0089A674 /* HostGameplayView.xib */; };
-		B86319BA2163612D0089A674 /* GuesserPickWordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B92163612D0089A674 /* GuesserPickWordView.xib */; };
-		B86319BC216361390089A674 /* GuesserGameplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319BB216361390089A674 /* GuesserGameplayView.xib */; };
+		B86319B4216360F30089A674 /* GameSetupView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B3216360F30089A674 /* GameSetupView.xib */; };
+		B86319B6216361070089A674 /* PickWordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B5216361070089A674 /* PickWordView.xib */; };
+		B86319B82163611B0089A674 /* GameplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B86319B72163611B0089A674 /* GameplayView.xib */; };
 		B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319BD216361FA0089A674 /* HostPresenter.swift */; };
 		B86319C1216362640089A674 /* HostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C0216362640089A674 /* HostView.swift */; };
-		B86319C3216368870089A674 /* PickRoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C2216368870089A674 /* PickRoleViewController.swift */; };
-		B86319C5216368AA0089A674 /* PickRolePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C4216368AA0089A674 /* PickRolePresenter.swift */; };
-		B86319C7216368CD0089A674 /* PickRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C6216368CD0089A674 /* PickRoleView.swift */; };
-		B86319C9216369A30089A674 /* HostPickWordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C8216369A30089A674 /* HostPickWordViewController.swift */; };
-		B86319CB216369AF0089A674 /* HostPickWordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */; };
-		B86319CD216369B80089A674 /* HostPickWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CC216369B80089A674 /* HostPickWordView.swift */; };
-		B86319CF21636A860089A674 /* GuesserPickWordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */; };
-		B86319D121636A910089A674 /* GuesserPickWordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */; };
-		B86319D321636A980089A674 /* GuesserWaitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D221636A980089A674 /* GuesserWaitView.swift */; };
-		B86319D521636E280089A674 /* HostGameplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D421636E280089A674 /* HostGameplayViewController.swift */; };
-		B86319D721636E3F0089A674 /* HostGameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */; };
-		B86319D921636E500089A674 /* HostGameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D821636E500089A674 /* HostGameplayView.swift */; };
-		B86319DB216374C40089A674 /* GuesserGameplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */; };
-		B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */; };
-		B86319DF216374D40089A674 /* GuesserGameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319DE216374D40089A674 /* GuesserGameplayView.swift */; };
+		B86319C3216368870089A674 /* GameSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C2216368870089A674 /* GameSetupViewController.swift */; };
+		B86319C5216368AA0089A674 /* GameSetupPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C4216368AA0089A674 /* GameSetupPresenter.swift */; };
+		B86319C7216368CD0089A674 /* GameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C6216368CD0089A674 /* GameSetupView.swift */; };
+		B86319C9216369A30089A674 /* PickWordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319C8216369A30089A674 /* PickWordViewController.swift */; };
+		B86319CB216369AF0089A674 /* PickWordPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CA216369AF0089A674 /* PickWordPresenter.swift */; };
+		B86319CD216369B80089A674 /* PickWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319CC216369B80089A674 /* PickWordView.swift */; };
+		B86319D521636E280089A674 /* GameplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D421636E280089A674 /* GameplayViewController.swift */; };
+		B86319D721636E3F0089A674 /* GameplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D621636E3F0089A674 /* GameplayPresenter.swift */; };
+		B86319D921636E500089A674 /* GameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86319D821636E500089A674 /* GameplayView.swift */; };
 		B873AC53216393A000B5C8AC /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B873AC52216393A000B5C8AC /* Communicator.swift */; };
+		B8AAE4EC21664B80008C6178 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8AAE4EB21664B80008C6178 /* GameModels.swift */; };
 		B8B2840E2165F57600B62A88 /* NetworkObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B2840D2165F57600B62A88 /* NetworkObserver.swift */; };
 		B8B284142165FAE200B62A88 /* CommunicatorCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */; };
+		B8C452F0216773AD0089CFA7 /* PickWordPincodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */; };
+		B8C452F2216780410089CFA7 /* GameUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C452F1216780410089CFA7 /* GameUtilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +77,8 @@
 		B80BF6502163B47800F8B1EE /* ClientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientView.swift; sourceTree = "<group>"; };
 		B80BF6522163B48600F8B1EE /* ClientView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClientView.xib; sourceTree = "<group>"; };
 		B82D8A6321649A5300CD3890 /* splash.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = splash.jpeg; sourceTree = "<group>"; };
+		B83720CE21673A7B00D4B145 /* GameConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConstants.swift; sourceTree = "<group>"; };
+		B83720D021673D3B00D4B145 /* GameErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameErrors.swift; sourceTree = "<group>"; };
 		B863198121635F860089A674 /* CowsAndBulls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowsAndBulls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B863198421635F860089A674 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B863198621635F860089A674 /* HostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostViewController.swift; sourceTree = "<group>"; };
@@ -92,35 +88,27 @@
 		B863199521635F870089A674 /* CowsAndBullsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CowsAndBullsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B863199921635F870089A674 /* CowsAndBullsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CowsAndBullsTests.swift; sourceTree = "<group>"; };
 		B863199B21635F870089A674 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B86319AB2163603C0089A674 /* CABSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABSession.swift; sourceTree = "<group>"; };
-		B86319AD216360510089A674 /* CABGameHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABGameHost.swift; sourceTree = "<group>"; };
-		B86319AF216360620089A674 /* CABGameGuesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABGameGuesser.swift; sourceTree = "<group>"; };
 		B86319B1216360DF0089A674 /* HostView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostView.xib; sourceTree = "<group>"; };
-		B86319B3216360F30089A674 /* PickRoleView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PickRoleView.xib; sourceTree = "<group>"; };
-		B86319B5216361070089A674 /* HostPickWordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostPickWordView.xib; sourceTree = "<group>"; };
-		B86319B72163611B0089A674 /* HostGameplayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HostGameplayView.xib; sourceTree = "<group>"; };
-		B86319B92163612D0089A674 /* GuesserPickWordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GuesserPickWordView.xib; sourceTree = "<group>"; };
-		B86319BB216361390089A674 /* GuesserGameplayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GuesserGameplayView.xib; sourceTree = "<group>"; };
+		B86319B3216360F30089A674 /* GameSetupView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameSetupView.xib; sourceTree = "<group>"; };
+		B86319B5216361070089A674 /* PickWordView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PickWordView.xib; sourceTree = "<group>"; };
+		B86319B72163611B0089A674 /* GameplayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameplayView.xib; sourceTree = "<group>"; };
 		B86319BD216361FA0089A674 /* HostPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPresenter.swift; sourceTree = "<group>"; };
 		B86319C0216362640089A674 /* HostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostView.swift; sourceTree = "<group>"; };
-		B86319C2216368870089A674 /* PickRoleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRoleViewController.swift; sourceTree = "<group>"; };
-		B86319C4216368AA0089A674 /* PickRolePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRolePresenter.swift; sourceTree = "<group>"; };
-		B86319C6216368CD0089A674 /* PickRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickRoleView.swift; sourceTree = "<group>"; };
-		B86319C8216369A30089A674 /* HostPickWordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordViewController.swift; sourceTree = "<group>"; };
-		B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordPresenter.swift; sourceTree = "<group>"; };
-		B86319CC216369B80089A674 /* HostPickWordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPickWordView.swift; sourceTree = "<group>"; };
-		B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserPickWordViewController.swift; sourceTree = "<group>"; };
-		B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserPickWordPresenter.swift; sourceTree = "<group>"; };
-		B86319D221636A980089A674 /* GuesserWaitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserWaitView.swift; sourceTree = "<group>"; };
-		B86319D421636E280089A674 /* HostGameplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayViewController.swift; sourceTree = "<group>"; };
-		B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayPresenter.swift; sourceTree = "<group>"; };
-		B86319D821636E500089A674 /* HostGameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostGameplayView.swift; sourceTree = "<group>"; };
-		B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayViewController.swift; sourceTree = "<group>"; };
-		B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayPresenter.swift; sourceTree = "<group>"; };
-		B86319DE216374D40089A674 /* GuesserGameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuesserGameplayView.swift; sourceTree = "<group>"; };
+		B86319C2216368870089A674 /* GameSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetupViewController.swift; sourceTree = "<group>"; };
+		B86319C4216368AA0089A674 /* GameSetupPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetupPresenter.swift; sourceTree = "<group>"; };
+		B86319C6216368CD0089A674 /* GameSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetupView.swift; sourceTree = "<group>"; };
+		B86319C8216369A30089A674 /* PickWordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWordViewController.swift; sourceTree = "<group>"; };
+		B86319CA216369AF0089A674 /* PickWordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWordPresenter.swift; sourceTree = "<group>"; };
+		B86319CC216369B80089A674 /* PickWordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWordView.swift; sourceTree = "<group>"; };
+		B86319D421636E280089A674 /* GameplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayViewController.swift; sourceTree = "<group>"; };
+		B86319D621636E3F0089A674 /* GameplayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayPresenter.swift; sourceTree = "<group>"; };
+		B86319D821636E500089A674 /* GameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayView.swift; sourceTree = "<group>"; };
 		B873AC52216393A000B5C8AC /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
+		B8AAE4EB21664B80008C6178 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		B8B2840D2165F57600B62A88 /* NetworkObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObserver.swift; sourceTree = "<group>"; };
 		B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicatorCommands.swift; sourceTree = "<group>"; };
+		B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWordPincodeView.swift; sourceTree = "<group>"; };
+		B8C452F1216780410089CFA7 /* GameUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameUtilities.swift; sourceTree = "<group>"; };
 		CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBullsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBullsTests/Pods-CowsAndBullsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,10 +174,10 @@
 			children = (
 				B863198421635F860089A674 /* AppDelegate.swift */,
 				B86319BF2163623A0089A674 /* ViewControllers */,
-				B86319AA2163602B0089A674 /* Models */,
 				B86319A6216360080089A674 /* Presenters */,
 				B86319A72163600F0089A674 /* Views */,
 				B86319A421635FF00089A674 /* Interface */,
+				B8AAE4EA21664B6C008C6178 /* Game */,
 				B8B2840C2165F55400B62A88 /* Network */,
 				B86319A521635FF60089A674 /* Utilities */,
 				B82D8A6021649A3C00CD3890 /* Resources */,
@@ -215,11 +203,9 @@
 				B80BF6462163B20800F8B1EE /* MainView.xib */,
 				B86319B1216360DF0089A674 /* HostView.xib */,
 				B80BF6522163B48600F8B1EE /* ClientView.xib */,
-				B86319B3216360F30089A674 /* PickRoleView.xib */,
-				B86319B5216361070089A674 /* HostPickWordView.xib */,
-				B86319B72163611B0089A674 /* HostGameplayView.xib */,
-				B86319B92163612D0089A674 /* GuesserPickWordView.xib */,
-				B86319BB216361390089A674 /* GuesserGameplayView.xib */,
+				B86319B3216360F30089A674 /* GameSetupView.xib */,
+				B86319B5216361070089A674 /* PickWordView.xib */,
+				B86319B72163611B0089A674 /* GameplayView.xib */,
 			);
 			path = Interface;
 			sourceTree = "<group>";
@@ -238,11 +224,9 @@
 				B80BF64A2163B21F00F8B1EE /* MainPresenter.swift */,
 				B86319BD216361FA0089A674 /* HostPresenter.swift */,
 				B80BF64E2163B46D00F8B1EE /* ClientPresenter.swift */,
-				B86319C4216368AA0089A674 /* PickRolePresenter.swift */,
-				B86319CA216369AF0089A674 /* HostPickWordPresenter.swift */,
-				B86319D021636A910089A674 /* GuesserPickWordPresenter.swift */,
-				B86319D621636E3F0089A674 /* HostGameplayPresenter.swift */,
-				B86319DC216374CC0089A674 /* GuesserGameplayPresenter.swift */,
+				B86319C4216368AA0089A674 /* GameSetupPresenter.swift */,
+				B86319CA216369AF0089A674 /* PickWordPresenter.swift */,
+				B86319D621636E3F0089A674 /* GameplayPresenter.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -253,23 +237,12 @@
 				B80BF6482163B21400F8B1EE /* MainView.swift */,
 				B86319C0216362640089A674 /* HostView.swift */,
 				B80BF6502163B47800F8B1EE /* ClientView.swift */,
-				B86319C6216368CD0089A674 /* PickRoleView.swift */,
-				B86319CC216369B80089A674 /* HostPickWordView.swift */,
-				B86319D221636A980089A674 /* GuesserWaitView.swift */,
-				B86319D821636E500089A674 /* HostGameplayView.swift */,
-				B86319DE216374D40089A674 /* GuesserGameplayView.swift */,
+				B86319C6216368CD0089A674 /* GameSetupView.swift */,
+				B86319CC216369B80089A674 /* PickWordView.swift */,
+				B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */,
+				B86319D821636E500089A674 /* GameplayView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		B86319AA2163602B0089A674 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				B86319AB2163603C0089A674 /* CABSession.swift */,
-				B86319AD216360510089A674 /* CABGameHost.swift */,
-				B86319AF216360620089A674 /* CABGameGuesser.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		B86319BF2163623A0089A674 /* ViewControllers */ = {
@@ -278,21 +251,30 @@
 				B80BF6422163B1F000F8B1EE /* MainViewController.swift */,
 				B863198621635F860089A674 /* HostViewController.swift */,
 				B80BF64C2163B46300F8B1EE /* ClientViewController.swift */,
-				B86319C2216368870089A674 /* PickRoleViewController.swift */,
-				B86319C8216369A30089A674 /* HostPickWordViewController.swift */,
-				B86319CE21636A860089A674 /* GuesserPickWordViewController.swift */,
-				B86319D421636E280089A674 /* HostGameplayViewController.swift */,
-				B86319DA216374C40089A674 /* GuesserGameplayViewController.swift */,
+				B86319C2216368870089A674 /* GameSetupViewController.swift */,
+				B86319C8216369A30089A674 /* PickWordViewController.swift */,
+				B86319D421636E280089A674 /* GameplayViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B8AAE4EA21664B6C008C6178 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				B8AAE4EB21664B80008C6178 /* GameModels.swift */,
+				B83720D021673D3B00D4B145 /* GameErrors.swift */,
+				B83720CE21673A7B00D4B145 /* GameConstants.swift */,
+				B8C452F1216780410089CFA7 /* GameUtilities.swift */,
+			);
+			path = Game;
 			sourceTree = "<group>";
 		};
 		B8B2840C2165F55400B62A88 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				B873AC52216393A000B5C8AC /* Communicator.swift */,
-				B80B2641216638C20037A05D /* CommunicatorError.swift */,
 				B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */,
+				B80B2641216638C20037A05D /* CommunicatorError.swift */,
 				B8B2840D2165F57600B62A88 /* NetworkObserver.swift */,
 			);
 			path = Network;
@@ -396,14 +378,12 @@
 				B863198F21635F870089A674 /* LaunchScreen.storyboard in Resources */,
 				B86319B2216360DF0089A674 /* HostView.xib in Resources */,
 				B80BF6532163B48600F8B1EE /* ClientView.xib in Resources */,
-				B86319BC216361390089A674 /* GuesserGameplayView.xib in Resources */,
 				B80BF6472163B20800F8B1EE /* MainView.xib in Resources */,
 				B82D8A6421649A5300CD3890 /* splash.jpeg in Resources */,
-				B86319B4216360F30089A674 /* PickRoleView.xib in Resources */,
-				B86319BA2163612D0089A674 /* GuesserPickWordView.xib in Resources */,
-				B86319B6216361070089A674 /* HostPickWordView.xib in Resources */,
+				B86319B4216360F30089A674 /* GameSetupView.xib in Resources */,
+				B86319B6216361070089A674 /* PickWordView.xib in Resources */,
 				B863198C21635F870089A674 /* Assets.xcassets in Resources */,
-				B86319B82163611B0089A674 /* HostGameplayView.xib in Resources */,
+				B86319B82163611B0089A674 /* GameplayView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,12 +450,14 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-CowsAndBulls/Pods-CowsAndBulls-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/PinCodeTextField/PinCodeTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftSocket/SwiftSocket.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PinCodeTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSocket.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,9 +472,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B86319D521636E280089A674 /* HostGameplayViewController.swift in Sources */,
+				B86319D521636E280089A674 /* GameplayViewController.swift in Sources */,
+				B8AAE4EC21664B80008C6178 /* GameModels.swift in Sources */,
 				B80BF6492163B21400F8B1EE /* MainView.swift in Sources */,
-				B86319CF21636A860089A674 /* GuesserPickWordViewController.swift in Sources */,
 				B863198721635F860089A674 /* HostViewController.swift in Sources */,
 				B80BF64B2163B21F00F8B1EE /* MainPresenter.swift in Sources */,
 				B80B2642216638C20037A05D /* CommunicatorError.swift in Sources */,
@@ -500,27 +482,23 @@
 				B80BF64D2163B46300F8B1EE /* ClientViewController.swift in Sources */,
 				B86319BE216361FA0089A674 /* HostPresenter.swift in Sources */,
 				B8B284142165FAE200B62A88 /* CommunicatorCommands.swift in Sources */,
-				B86319B0216360620089A674 /* CABGameGuesser.swift in Sources */,
-				B86319DD216374CC0089A674 /* GuesserGameplayPresenter.swift in Sources */,
-				B86319AC2163603C0089A674 /* CABSession.swift in Sources */,
-				B86319DB216374C40089A674 /* GuesserGameplayViewController.swift in Sources */,
-				B86319AE216360510089A674 /* CABGameHost.swift in Sources */,
-				B86319D721636E3F0089A674 /* HostGameplayPresenter.swift in Sources */,
-				B86319D121636A910089A674 /* GuesserPickWordPresenter.swift in Sources */,
+				B83720D121673D3B00D4B145 /* GameErrors.swift in Sources */,
+				B86319D721636E3F0089A674 /* GameplayPresenter.swift in Sources */,
 				B8B2840E2165F57600B62A88 /* NetworkObserver.swift in Sources */,
-				B86319C5216368AA0089A674 /* PickRolePresenter.swift in Sources */,
+				B8C452F0216773AD0089CFA7 /* PickWordPincodeView.swift in Sources */,
+				B86319C5216368AA0089A674 /* GameSetupPresenter.swift in Sources */,
 				B80BF64F2163B46D00F8B1EE /* ClientPresenter.swift in Sources */,
 				B863198521635F860089A674 /* AppDelegate.swift in Sources */,
+				B8C452F2216780410089CFA7 /* GameUtilities.swift in Sources */,
 				B80BF6432163B1F000F8B1EE /* MainViewController.swift in Sources */,
-				B86319C3216368870089A674 /* PickRoleViewController.swift in Sources */,
-				B86319DF216374D40089A674 /* GuesserGameplayView.swift in Sources */,
-				B86319C7216368CD0089A674 /* PickRoleView.swift in Sources */,
+				B86319C3216368870089A674 /* GameSetupViewController.swift in Sources */,
+				B83720CF21673A7B00D4B145 /* GameConstants.swift in Sources */,
+				B86319C7216368CD0089A674 /* GameSetupView.swift in Sources */,
 				B80BF64121639C3000F8B1EE /* LocalIPAddress.swift in Sources */,
-				B86319D921636E500089A674 /* HostGameplayView.swift in Sources */,
-				B86319CD216369B80089A674 /* HostPickWordView.swift in Sources */,
-				B86319C9216369A30089A674 /* HostPickWordViewController.swift in Sources */,
-				B86319D321636A980089A674 /* GuesserWaitView.swift in Sources */,
-				B86319CB216369AF0089A674 /* HostPickWordPresenter.swift in Sources */,
+				B86319D921636E500089A674 /* GameplayView.swift in Sources */,
+				B86319CD216369B80089A674 /* PickWordView.swift in Sources */,
+				B86319C9216369A30089A674 /* PickWordViewController.swift in Sources */,
+				B86319CB216369AF0089A674 /* PickWordPresenter.swift in Sources */,
 				B80BF6512163B47800F8B1EE /* ClientView.swift in Sources */,
 				B873AC53216393A000B5C8AC /* Communicator.swift in Sources */,
 			);

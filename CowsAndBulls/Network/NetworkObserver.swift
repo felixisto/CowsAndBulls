@@ -10,15 +10,23 @@ import Foundation
 
 protocol NetworkObserver: class
 {
-    func beginConnect()
-    
-    func connect(data: CommunicatorInitialConnection)
-    
-    func failedToConnect()
-    
+    // Connection status
     func lostConnectingAttemptingToReconnect()
     func reconnect()
-    
     func disconnect()
     func disconnect(error: String)
+    
+    // Host/Client scenes
+    func beginConnect()
+    func connect(data: CommunicatorInitialConnection)
+    func failedToConnect()
+    
+    // Game Setup scene
+    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    
+    // Game Pick Word scene
+    func opponentDidSendPlaySession(turnValue: UInt)
+    
+    // Game Play scene
+    
 }

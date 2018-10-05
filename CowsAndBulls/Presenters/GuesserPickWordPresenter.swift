@@ -79,4 +79,9 @@ extension GuesserPickWordPresenter : NetworkObserver
         print("GuesserPickWordPresenter failed to connect!")
         delegate?.connectionFailure(errorMessage: error)
     }
+    
+    func opponentDidSelectGuessWordCharacterCount(number: UInt)
+    {
+        
+    }
 }
