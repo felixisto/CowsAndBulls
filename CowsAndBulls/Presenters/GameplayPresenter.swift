@@ -63,11 +63,13 @@ extension GameplayPresenter : NetworkObserver
     func lostConnectingAttemptingToReconnect()
     {
         print("GameplayPresenter lostConnectingAttemptingToReconnect!")
+        delegate?.lostConnectingAttemptingToReconnect()
     }
     
     func reconnect()
     {
         print("GameplayPresenter reconnect!")
+        delegate?.reconnect()
     }
     
     func disconnect()

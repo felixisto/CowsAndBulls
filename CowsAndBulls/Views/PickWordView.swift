@@ -17,6 +17,9 @@ protocol PickWordViewDelegate : class
     func updateEnterXCharacterWord(length: UInt)
     
     func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWord guessWord: String)
+    
+    func lostConnectingAttemptingToReconnect()
+    func reconnect()
 }
 
 protocol PickWordActionDelegate : PinCodeTextFieldDelegate
@@ -26,10 +29,15 @@ protocol PickWordActionDelegate : PinCodeTextFieldDelegate
 
 class PickWordView : UIView
 {
+    static let ALERT_MESSAGE_RECONNECTING = "Lost connection. Reconnecting..."
+    static let ALERT_MESSAGE_RECONNECTED = "Reconnected!"
+    
     weak var delegate : PickWordActionDelegate?
     @IBOutlet private weak var labelTip: UILabel!
     @IBOutlet private weak var labelOpponentStatus: UILabel!
     @IBOutlet private weak var pincodeGuessWord: PinCodeTextField!
+    @IBOutlet private weak var layoutConnectionStatus: UIView!
+    @IBOutlet private weak var labelConnectionStatus: UILabel!
     
     override init(frame: CGRect)
     {
@@ -67,9 +75,20 @@ class PickWordView : UIView
         labelOpponentStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelOpponentStatus.textAlignment = .center
         
+        layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
+        layoutConnectionStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
+        layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+        layoutConnectionStatus.isHidden = true
+        
+        labelConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
+        labelConnectionStatus.centerXAnchor.constraint(equalTo: layoutConnectionStatus.centerXAnchor).isActive = true
+        labelConnectionStatus.centerYAnchor.constraint(equalTo: layoutConnectionStatus.centerYAnchor).isActive = true
+        labelConnectionStatus.textAlignment = .center
     }
 }
 
+// Methods for updating the interface
 extension PickWordView
 {
     func setNumberOfCharacter(length: UInt)
@@ -94,6 +113,38 @@ extension PickWordView
     {
         DispatchQueue.main.async {
             self.pincodeGuessWord.delegate = delegate
+        }
+    }
+    
+    func hideConnectionStatus()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = true
+        }
+    }
+    
+    func changeConnectionStatusToReconnecting()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = false
+            self.layoutConnectionStatus.backgroundColor = .orange
+            self.labelConnectionStatus.text = PickWordView.ALERT_MESSAGE_RECONNECTING
+        }
+    }
+    
+    func changeConnectionStatusToReconnected()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = false
+            self.layoutConnectionStatus.backgroundColor = .green
+            self.labelConnectionStatus.text = PickWordView.ALERT_MESSAGE_RECONNECTED
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                if !self.layoutConnectionStatus.isHidden && self.labelConnectionStatus.text == PickWordView.ALERT_MESSAGE_RECONNECTED
+                {
+                    self.hideConnectionStatus()
+                }
+            }
         }
     }
 }

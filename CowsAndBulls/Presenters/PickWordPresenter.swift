@@ -119,11 +119,13 @@ extension PickWordPresenter : NetworkObserver
     func lostConnectingAttemptingToReconnect()
     {
         print("PickWordPresenter lostConnectingAttemptingToReconnect!")
+        delegate?.lostConnectingAttemptingToReconnect()
     }
     
     func reconnect()
     {
         print("PickWordPresenter reconnect!")
+        delegate?.reconnect()
     }
     
     func disconnect()

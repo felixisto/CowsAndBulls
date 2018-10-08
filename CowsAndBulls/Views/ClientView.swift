@@ -62,6 +62,7 @@ class ClientView : UIView
     }
 }
 
+// Methods for updating the interface
 extension ClientView
 {
     func beginConnecting()

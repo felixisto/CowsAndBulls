@@ -139,6 +139,16 @@ extension GameSetupViewController : GameSetupViewDelegate
             navigationController?.viewControllers = viewControllers
         }
     }
+    
+    func lostConnectingAttemptingToReconnect()
+    {
+        customView?.changeConnectionStatusToReconnecting()
+    }
+    
+    func reconnect()
+    {
+        customView?.changeConnectionStatusToReconnected()
+    }
 }
 
 extension GameSetupViewController : GameSetupActionDelegate

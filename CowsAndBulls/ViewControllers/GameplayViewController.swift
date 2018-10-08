@@ -82,6 +82,16 @@ extension GameplayViewController : GameplayViewDelegate
         
         navigationController?.popToRootViewController(animated: false)
     }
+    
+    func lostConnectingAttemptingToReconnect()
+    {
+        customView?.changeConnectionStatusToReconnecting()
+    }
+    
+    func reconnect()
+    {
+        customView?.changeConnectionStatusToReconnected()
+    }
 }
 
 extension GameplayViewController : GameplayActionDelegate

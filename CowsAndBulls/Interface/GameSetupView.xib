@@ -56,14 +56,30 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YdC-zk-kpL">
+                    <rect key="frame" x="0.0" y="632" width="376" height="35"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Connection status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zkn-ci-8C4">
+                            <rect key="frame" x="8" y="6" width="360" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.052215915879999998" green="1" blue="0.48899092929999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="labelConnectionStatus" destination="Zkn-ci-8C4" id="1dy-cn-ram"/>
                 <outlet property="labelInfo" destination="53O-ly-Ot3" id="EwP-Vw-qaS"/>
                 <outlet property="labelOpponentStatus" destination="J8U-Qs-ShZ" id="kR7-xV-Wg3"/>
                 <outlet property="labelTip" destination="Jgm-WJ-Pbd" id="UDU-tq-E0Q"/>
                 <outlet property="labelWhoGoesFirst" destination="OS8-Gq-rAv" id="tmv-vN-2Gt"/>
+                <outlet property="layoutConnectionStatus" destination="YdC-zk-kpL" id="iEW-HT-fSf"/>
                 <outlet property="pickerNumberOfCharacters" destination="ufa-ti-MDd" id="wFQ-ei-KPP"/>
                 <outlet property="pickerTurn" destination="OY0-M0-g4k" id="BA5-gX-D88"/>
             </connections>

@@ -193,11 +193,13 @@ extension GameSetupPresenter : NetworkObserver
     func lostConnectingAttemptingToReconnect()
     {
         print("GameSetupPresenter lostConnectingAttemptingToReconnect!")
+        delegate?.lostConnectingAttemptingToReconnect()
     }
     
     func reconnect()
     {
         print("GameSetupPresenter reconnect!")
+        delegate?.reconnect()
     }
     
     func disconnect()
