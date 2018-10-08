@@ -46,6 +46,11 @@ class PickWordViewController: UIViewController
     {
         super.viewWillAppear(animated)
         
+        // Reset the current screen to its default values
+        self.presenter?.resetToDefaults()
+        
+        customView?.clearPincode()
+        customView?.setOpponentStatus(status: "Opponent is picking a guess word...")
     }
     
     override func didReceiveMemoryWarning()
@@ -125,15 +130,13 @@ extension PickWordViewController : PickWordViewDelegate
     
     func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
     {
-        if let comm = communicator, var viewControllers = navigationController?.viewControllers
+        if let comm = communicator
         {
             let gameSession = GameSession(firstToGo: firstToGo, guessWord: guessWord)
             let presenter = GameplayPresenter(communicator: comm, connectionData: connectionData, gameSession: gameSession)
             let viewController = GameplayViewController(withPresenter: presenter)
             
-            viewControllers.insert(viewController, at: viewControllers.count)
-            
-            navigationController?.viewControllers = viewControllers
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
     

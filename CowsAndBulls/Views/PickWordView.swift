@@ -111,6 +111,13 @@ extension PickWordView
         }
     }
     
+    func clearPincode()
+    {
+        DispatchQueue.main.async {
+            self.pincodeGuessWord.text = ""
+        }
+    }
+    
     func setActionDelegate(delegate: PinCodeTextFieldDelegate?)
     {
         DispatchQueue.main.async {

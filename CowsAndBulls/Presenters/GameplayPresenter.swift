@@ -148,7 +148,7 @@ extension GameplayPresenter : NetworkObserver
                 
                 communicator?.sendGuessCorrectMessage()
                 
-                //delegate?.
+                delegate?.defeat()
             }
         }
         catch
@@ -184,7 +184,7 @@ extension GameplayPresenter : NetworkObserver
             print("GameplayPresenter opponent says you correctly guessed! You win!")
             
             // Show winners screen
-            //
+            delegate?.victory()
         }
         catch
         {

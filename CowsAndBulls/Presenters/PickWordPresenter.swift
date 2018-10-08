@@ -14,6 +14,8 @@ protocol PickWordPresenterDelegate : class
     func quit()
     
     func tryToPlay(guessWord: String)
+    
+    func resetToDefaults()
 }
 
 class PickWordPresenter : NSObject
@@ -92,6 +94,15 @@ extension PickWordPresenter : PickWordPresenterDelegate
         }
         
         communicator?.sendPlaySessionMessage()
+    }
+    
+    func resetToDefaults()
+    {
+        self.guessWordPicked = ""
+        self.turnValue = 0
+        
+        self.opponentHasPickedGuessWord = false
+        self.opponentPickedTurn = 0
     }
 }
 

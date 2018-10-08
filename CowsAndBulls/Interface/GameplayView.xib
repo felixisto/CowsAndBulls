@@ -20,6 +20,21 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WbA-CM-vtc">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="You WIN!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y96-DX-xmv">
+                            <rect key="frame" x="132" y="323" width="141" height="40"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="33"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <viewLayoutGuide key="safeArea" id="XF6-UQ-q3d"/>
+                </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Opponent: Unknown" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OYj-Zz-K01">
                     <rect key="frame" x="16" y="37" width="191" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -51,6 +66,14 @@
                         <constraint firstAttribute="bottom" secondItem="apR-lH-Q2B" secondAttribute="bottom" id="moo-80-lGA"/>
                     </constraints>
                 </scrollView>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k9z-Yi-jYp">
+                    <rect key="frame" x="282" y="49" width="85" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                    <state key="normal" title="Guess">
+                        <color key="titleColor" red="0.0" green="0.57879917510000001" blue="0.4813193966" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                </button>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eTR-AT-Nya" customClass="PinCodeTextField" customModule="PinCodeTextField">
                     <rect key="frame" x="0.0" y="131" width="375" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -114,14 +137,6 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k9z-Yi-jYp">
-                    <rect key="frame" x="282" y="49" width="85" height="30"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
-                    <state key="normal" title="Guess">
-                        <color key="titleColor" red="0.0" green="0.57879917510000001" blue="0.4813193966" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </state>
-                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
@@ -130,11 +145,13 @@
                 <outlet property="labelConnectionStatus" destination="bxb-bm-BEX" id="QzX-zL-KEP"/>
                 <outlet property="labelGameDescription" destination="OYj-Zz-K01" id="jeK-Mc-0am"/>
                 <outlet property="labelLog" destination="apR-lH-Q2B" id="5HV-U0-Mhk"/>
+                <outlet property="labelOutcome" destination="Y96-DX-xmv" id="Rez-uX-JhI"/>
                 <outlet property="labelPincodeGuess" destination="4kM-Yd-vUh" id="laq-Op-ITP"/>
                 <outlet property="labelStatus" destination="7Q2-Fe-n3O" id="wPR-s3-EbX"/>
                 <outlet property="labelTurn" destination="5jU-1H-C2a" id="Bfr-ez-M1X"/>
                 <outlet property="labelYourGuessWord" destination="po7-Mi-wJL" id="6Dg-gZ-fpd"/>
                 <outlet property="layoutConnectionStatus" destination="E9Z-1P-ilb" id="Kyu-3d-jxY"/>
+                <outlet property="layoutOutcomeScreen" destination="WbA-CM-vtc" id="cub-2i-zN3"/>
                 <outlet property="pincodeGuess" destination="eTR-AT-Nya" id="8Pp-1b-8cp"/>
                 <outlet property="scrollLog" destination="lWp-pz-FWH" id="raL-Me-Jgv"/>
             </connections>

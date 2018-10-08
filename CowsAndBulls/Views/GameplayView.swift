@@ -22,11 +22,14 @@ protocol GameplayViewDelegate : class
     
     func lostConnectingAttemptingToReconnect()
     func reconnect()
+    
+    func victory()
+    func defeat()
 }
 
 protocol GameplayActionDelegate : PinCodeTextFieldDelegate
 {
-    
+    func leaveOutcomeScreen()
 }
 
 class GameplayView : UIView
@@ -47,6 +50,9 @@ class GameplayView : UIView
     @IBOutlet private weak var labelStatus: UILabel!
     @IBOutlet private weak var layoutConnectionStatus: UIView!
     @IBOutlet private weak var labelConnectionStatus: UILabel!
+    
+    @IBOutlet private weak var layoutOutcomeScreen: UIView!
+    @IBOutlet private weak var labelOutcome: UILabel!
     
     override init(frame: CGRect)
     {
@@ -129,6 +135,25 @@ class GameplayView : UIView
         labelConnectionStatus.centerXAnchor.constraint(equalTo: layoutConnectionStatus.centerXAnchor).isActive = true
         labelConnectionStatus.centerYAnchor.constraint(equalTo: layoutConnectionStatus.centerYAnchor).isActive = true
         labelConnectionStatus.textAlignment = .center
+        
+        layoutOutcomeScreen.translatesAutoresizingMaskIntoConstraints = false
+        layoutOutcomeScreen.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
+        layoutOutcomeScreen.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
+        layoutOutcomeScreen.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
+        layoutOutcomeScreen.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
+        layoutOutcomeScreen.isHidden = true
+        layoutOutcomeScreen.isUserInteractionEnabled = false
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(actionLeaveOutcomeScreen(_:)))
+        gesture.numberOfTapsRequired = 1
+        gesture.numberOfTouchesRequired = 1
+        layoutOutcomeScreen.addGestureRecognizer(gesture)
+        bringSubviewToFront(layoutOutcomeScreen)
+        
+        labelOutcome.translatesAutoresizingMaskIntoConstraints = false
+        labelOutcome.centerXAnchor.constraint(equalTo: layoutOutcomeScreen.centerXAnchor).isActive = true
+        labelOutcome.centerYAnchor.constraint(equalTo: layoutOutcomeScreen.centerYAnchor).isActive = true
+        labelOutcome.widthAnchor.constraint(equalTo: layoutOutcomeScreen.widthAnchor, multiplier: 1.0).isActive = true
+        labelOutcome.isHidden = true
     }
 }
 
@@ -259,6 +284,32 @@ extension GameplayView
             }
         }
     }
+    
+    func showVictoryScreen()
+    {
+        DispatchQueue.main.async {
+            self.layoutOutcomeScreen.isHidden = false
+            self.layoutOutcomeScreen.isUserInteractionEnabled = true
+            self.layoutOutcomeScreen.backgroundColor = .green
+            
+            self.labelOutcome.isHidden = false
+            self.labelOutcome.text = "YOU WIN"
+            self.labelOutcome.tintColor = .white
+        }
+    }
+    
+    func showDefeatScreen()
+    {
+        DispatchQueue.main.async {
+            self.layoutOutcomeScreen.isHidden = false
+            self.layoutOutcomeScreen.isUserInteractionEnabled = true
+            self.layoutOutcomeScreen.backgroundColor = .red
+            
+            self.labelOutcome.isHidden = false
+            self.labelOutcome.text = "YOU LOSE"
+            self.labelOutcome.tintColor = .white
+        }
+    }
 }
 
 extension GameplayView
@@ -277,6 +328,11 @@ extension GameplayView
                 self.pincodeGuess.resignFirstResponder()
             }
         }
+    }
+    
+    @objc func actionLeaveOutcomeScreen(_ sender: Any)
+    {
+        delegate?.leaveOutcomeScreen()
     }
 }
 extension GameplayView

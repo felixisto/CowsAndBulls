@@ -112,7 +112,10 @@ class CommunicatorHost : Communicator
         lastPingFromClient = nil
         lastPingRetryingToConnect = false
         
-        observers.removeAll()
+        for observer in observers
+        {
+            detachObserver(key: observer.key)
+        }
     }
     
     func quit()
@@ -651,13 +654,18 @@ class CommunicatorClient : Communicator
         lastPingFromServer = nil
         lastPingRetryingToConnect = false
         
-        observers.removeAll()
+        for observer in observers
+        {
+            detachObserver(key: observer.key)
+        }
     }
     
     func quit()
     {
-        sendQuitMessage()
-        destroy()
+        DispatchQueue.main.sync {
+            sendQuitMessage()
+            destroy()
+        }
     }
     
     func start(connectTo host: String)

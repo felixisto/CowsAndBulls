@@ -140,6 +140,20 @@ extension GameplayViewController : GameplayViewDelegate
     {
         customView?.changeConnectionStatusToReconnected()
     }
+    
+    func victory()
+    {
+        customView?.showVictoryScreen()
+        
+        navigationItem.leftBarButtonItem?.isEnabled = false
+    }
+    
+    func defeat()
+    {
+        customView?.showDefeatScreen()
+        
+        navigationItem.leftBarButtonItem?.isEnabled = false
+    }
 }
 
 extension GameplayViewController : GameplayActionDelegate
@@ -151,5 +165,10 @@ extension GameplayViewController : GameplayActionDelegate
             presenter?.guess(guess: text)
             customView?.hidePincode()
         }
+    }
+    
+    func leaveOutcomeScreen()
+    {
+        navigationController?.popViewController(animated: false)
     }
 }
