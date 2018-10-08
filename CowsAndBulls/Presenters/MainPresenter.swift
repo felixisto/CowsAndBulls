@@ -8,6 +8,13 @@
 
 import Foundation
 
+enum MainPresenterConnectionStatus
+{
+    case none
+    case quit
+    case disconnected
+}
+
 protocol MainPresenterDelegate : class
 {
     
@@ -17,9 +24,11 @@ class MainPresenter
 {
     weak var delegate : MainViewDelegate?
     
-    required init()
+    let initialConnectionStatus : MainPresenterConnectionStatus
+    
+    required init(initialConnectionStatus : MainPresenterConnectionStatus = .none)
     {
-        
+        self.initialConnectionStatus = initialConnectionStatus
     }
 }
 

@@ -12,18 +12,21 @@ class ClientViewController: UIViewController
 {
     private var customView: ClientView?
     
-    private var presenter: ClientPresenterDelegate? = nil
+    private let presenter: ClientPresenterDelegate?
     
     init(withPresenter presenter: ClientPresenter)
     {
+        self.presenter = presenter
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
+        self.presenter = nil
+        
         super.init(coder: aDecoder)
     }
     

@@ -8,6 +8,8 @@
 
 import UIKit
 
+let CommunicatorCommandsParemeterWhitespaceReplacement = "%20"
+
 enum CommunicatorCommand : String
 {
     case GREETINGS = "GREETINGS"
@@ -17,6 +19,10 @@ enum CommunicatorCommand : String
     
     case PLAYSETUP = "PLAYSETUP"
     case PLAYSESSION = "PLAYSESSION"
+    
+    case GAMEGUESS = "GAMEGUESS"
+    case GAMEGUESSRESPONSE = "GAMEGUESSRESPONSE"
+    case GAMECORRECTGUESS = "GAMECORRECTGUESS"
 }
 
 struct CommunicatorCommands
@@ -51,7 +57,9 @@ struct CommunicatorCommands
     
     static func constructMessage(_ command: CommunicatorCommand, text: String) -> String
     {
-        var string = String("\(command.rawValue) \(text)")
+        let parameter = text.replacingOccurrences(of: " ", with: CommunicatorCommandsParemeterWhitespaceReplacement)
+        
+        var string = String("\(command.rawValue) \(parameter)")
         
         string.append(CommunicatorMessageEndingTag)
         
@@ -69,7 +77,9 @@ struct CommunicatorCommands
     
     static func constructPlaySetupMessage(length: UInt, turnToGo: String) -> String
     {
-        var string = String("\(CommunicatorCommand.PLAYSETUP.rawValue) \(length) \(turnToGo)")
+        let parameter = turnToGo.replacingOccurrences(of: " ", with: CommunicatorCommandsParemeterWhitespaceReplacement)
+        
+        var string = String("\(CommunicatorCommand.PLAYSETUP.rawValue) \(length) \(parameter)")
         
         string.append(CommunicatorMessageEndingTag)
         
@@ -85,9 +95,40 @@ struct CommunicatorCommands
         return string
     }
     
-    static func constructPlaySessionMessage(turnValue: UInt) -> String
+    static func constructPlaySessionMessage() -> String
     {
-        var string = String("\(CommunicatorCommand.PLAYSESSION.rawValue) \(turnValue)")
+        var string = String("\(CommunicatorCommand.PLAYSESSION.rawValue)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructGameGuessMessage(guess: String) -> String
+    {
+        let parameter = guess.replacingOccurrences(of: " ", with: CommunicatorCommandsParemeterWhitespaceReplacement)
+        
+        var string = String("\(CommunicatorCommand.GAMEGUESS.rawValue) \(parameter)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructGameGuessResponseMessage(response: String) -> String
+    {
+        let parameter = response.replacingOccurrences(of: " ", with: CommunicatorCommandsParemeterWhitespaceReplacement)
+        
+        var string = String("\(CommunicatorCommand.GAMEGUESSRESPONSE.rawValue) \(parameter)")
+        
+        string.append(CommunicatorMessageEndingTag)
+        
+        return string
+    }
+    
+    static func constructGameCorrectGuessMessage() -> String
+    {
+        var string = String("\(CommunicatorCommand.GAMECORRECTGUESS.rawValue)")
         
         string.append(CommunicatorMessageEndingTag)
         
@@ -114,7 +155,7 @@ struct CommunicatorCommands
         
         let second = split[1]
         
-        return String(second)
+        return second.replacingOccurrences(of: CommunicatorCommandsParemeterWhitespaceReplacement, with: " ")
     }
     
     static func extractSecondParameter(command: CommunicatorCommand, message: String) -> String?
@@ -126,8 +167,8 @@ struct CommunicatorCommands
             return nil
         }
         
-        let second = split[2]
+        let third = split[2]
         
-        return String(second)
+        return third.replacingOccurrences(of: CommunicatorCommandsParemeterWhitespaceReplacement, with: " ")
     }
 }

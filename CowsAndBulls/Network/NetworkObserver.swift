@@ -25,8 +25,10 @@ protocol NetworkObserver: class
     func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
     
     // Game Pick Word scene
-    func opponentDidSendPlaySession(turnValue: UInt)
+    func opponentDidSendPlaySession()
     
     // Game Play scene
-    
+    func opponentGuess(guess: String)
+    func guessResponse(response: String)
+    func correctGuess()
 }

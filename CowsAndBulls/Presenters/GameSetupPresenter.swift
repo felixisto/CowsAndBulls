@@ -169,7 +169,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         
         print("GameSetupPresenter we have agree with the opponent on the game setup values! Guess words will be \(selectedGuessWordCharacterCount) characters long and we are \(selectedTurnToGo.rawValue) to go!")
         
-        delegate?.goToPickWord(communicator: communicator, connectionData: connectionData, withGuessWordLength: selectedGuessWordCharacterCount)
+        delegate?.goToPickWord(communicator: communicator, connectionData: connectionData, guessWordLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo)
     }
 }
 
@@ -205,7 +205,7 @@ extension GameSetupPresenter : NetworkObserver
     func disconnect()
     {
         print("GameSetupPresenter failed to connect!")
-        delegate?.connectionFailure(errorMessage: "Disconnect")
+        delegate?.connectionFailure()
     }
     
     func disconnect(error: String)
@@ -250,7 +250,22 @@ extension GameSetupPresenter : NetworkObserver
         }
     }
     
-    func opponentDidSendPlaySession(turnValue: UInt)
+    func opponentDidSendPlaySession()
+    {
+        
+    }
+    
+    func opponentGuess(guess: String)
+    {
+        
+    }
+    
+    func guessResponse(response: String)
+    {
+        
+    }
+    
+    func correctGuess()
     {
         
     }

@@ -12,18 +12,21 @@ class GameSetupViewController: UIViewController
 {
     private var customView: GameSetupView?
     
-    private var presenter: GameSetupPresenterDelegate? = nil
+    private let presenter: GameSetupPresenterDelegate?
     
     init(withPresenter presenter: GameSetupPresenter)
     {
+        self.presenter = presenter
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
+        self.presenter = nil
+        
         super.init(coder: aDecoder)
     }
     
@@ -95,11 +98,32 @@ extension GameSetupViewController : GameSetupViewDelegate
         customView?.updateConnectionData(playerAddress: playerAddress, playerName: playerName, playerColor: playerColor)
     }
     
+    func connectionFailure()
+    {
+        presenter?.quit()
+        
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .quit)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
+    }
+    
     func connectionFailure(errorMessage: String)
     {
         presenter?.quit()
         
-        navigationController?.popToRootViewController(animated: false)
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .disconnected)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
     }
     
     func updateOpponentPlaySetup(guessWordLength: UInt, turnToGo: String)
@@ -127,11 +151,11 @@ extension GameSetupViewController : GameSetupViewDelegate
         presenter?.playSetupMatchesOpponentPlayerSetup()
     }
     
-    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWordLength guessWordLength: UInt)
+    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     {
         if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
-            let presenter = PickWordPresenter(communicator: comm, connectionData: connectionData, guessWordLength: guessWordLength)
+            let presenter = PickWordPresenter(communicator: comm, connectionData: connectionData, guessWordLength: guessWordLength, turnToGo: turnToGo)
             let viewController = PickWordViewController(withPresenter: presenter)
             
             viewControllers.insert(viewController, at: viewControllers.count)

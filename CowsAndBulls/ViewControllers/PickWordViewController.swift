@@ -13,18 +13,21 @@ class PickWordViewController: UIViewController
 {
     private var customView: PickWordView?
     
-    private var presenter: PickWordPresenterDelegate? = nil
+    private let presenter: PickWordPresenterDelegate?
     
     init(withPresenter presenter: PickWordPresenter)
     {
+        self.presenter = presenter
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
+        self.presenter = nil
+        
         super.init(coder: aDecoder)
     }
     
@@ -34,8 +37,9 @@ class PickWordViewController: UIViewController
         
         initInterface()
         
-        presenter?.start()
         customView?.setActionDelegate(delegate: self)
+        
+        presenter?.start()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -81,11 +85,32 @@ extension PickWordViewController
 
 extension PickWordViewController : PickWordViewDelegate
 {
+    func connectionFailure()
+    {
+        presenter?.quit()
+        
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .quit)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
+    }
+    
     func connectionFailure(errorMessage: String)
     {
         presenter?.quit()
         
-        navigationController?.popToRootViewController(animated: false)
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .disconnected)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
     }
     
     func setOpponentStatus(status: String)
@@ -95,14 +120,15 @@ extension PickWordViewController : PickWordViewDelegate
     
     func updateEnterXCharacterWord(length: UInt)
     {
-        customView?.setNumberOfCharacter(length: length)
+        customView?.setNumberOfCharacters(length: length)
     }
     
-    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWord guessWord: String)
+    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
     {
         if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
-            let presenter = GameplayPresenter(communicator: comm, connectionData: connectionData)
+            let gameSession = GameSession(firstToGo: firstToGo, guessWord: guessWord)
+            let presenter = GameplayPresenter(communicator: comm, connectionData: connectionData, gameSession: gameSession)
             let viewController = GameplayViewController(withPresenter: presenter)
             
             viewControllers.insert(viewController, at: viewControllers.count)

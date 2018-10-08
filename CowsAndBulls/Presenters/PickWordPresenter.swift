@@ -25,6 +25,7 @@ class PickWordPresenter : NSObject
     var connectionData: CommunicatorInitialConnection
     
     let guessWordLength: UInt
+    let turnToGo: GameTurn
     
     var guessWordPicked: String
     var turnValue: UInt
@@ -32,12 +33,13 @@ class PickWordPresenter : NSObject
     var opponentHasPickedGuessWord: Bool
     var opponentPickedTurn: UInt
     
-    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection, guessWordLength: UInt)
+    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     {
         self.communicator = communicator
         self.connectionData = connectionData
         
         self.guessWordLength = guessWordLength
+        self.turnToGo = turnToGo
         
         self.guessWordPicked = ""
         self.turnValue = 0
@@ -77,25 +79,19 @@ extension PickWordPresenter : PickWordPresenterDelegate
         
         guessWordPicked = guessWord
         
-        // Generate turn value, used to decide which player will go first
-        let ownIPAddress = LocalIPAddress.get()!
-        
-        let newTurnValue : UInt = 0
-        //GameTurnRandom.generateTurnValue(currentTurnValue: turnValue, opponentTurnValue: opponentPickedTurn, currentIPAddress: connectionData.otherPlayerAddress, opponentIPAddress: connectionData.otherPlayerAddress)
-        
         // If opponent has also picked word, then lets play
         if opponentHasPickedGuessWord
         {
-            print("PickWordPresenter play with guess word \(guessWord) with turn value \(newTurnValue)")
+            print("PickWordPresenter play with guess word \(guessWord)")
             
-            delegate?.play(communicator: communicator, connectionData: connectionData, withGuessWord: guessWord)
+            delegate?.play(communicator: communicator, connectionData: connectionData, guessWord: guessWord, firstToGo: turnToGo == .first)
         }
         else
         {
             print("PickWordPresenter picked guess word \(guessWord)")
         }
         
-        communicator?.sendGuessWordAlertAndTurnValue(turnValue: newTurnValue)
+        communicator?.sendPlaySessionMessage()
     }
 }
 
@@ -131,7 +127,7 @@ extension PickWordPresenter : NetworkObserver
     func disconnect()
     {
         print("PickWordPresenter failed to connect!")
-        delegate?.connectionFailure(errorMessage: "Disconnect")
+        delegate?.connectionFailure()
     }
     
     func disconnect(error: String)
@@ -145,7 +141,7 @@ extension PickWordPresenter : NetworkObserver
         
     }
     
-    func opponentDidSendPlaySession(turnValue: UInt)
+    func opponentDidSendPlaySession()
     {
         // Skip if opponent has picked guess word
         if opponentHasPickedGuessWord
@@ -165,5 +161,20 @@ extension PickWordPresenter : NetworkObserver
         {
             tryToPlay(guessWord: guessWordPicked)
         }
+    }
+    
+    func opponentGuess(guess: String)
+    {
+        
+    }
+    
+    func guessResponse(response: String)
+    {
+        
+    }
+    
+    func correctGuess()
+    {
+        
     }
 }

@@ -7,23 +7,27 @@
 //
 
 import UIKit
+import PinCodeTextField
 
 class GameplayViewController: UIViewController
 {
     private var customView: GameplayView?
     
-    private var presenter: GameplayPresenterDelegate? = nil
+    private let presenter: GameplayPresenterDelegate?
     
     init(withPresenter presenter: GameplayPresenter)
     {
+        self.presenter = presenter
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
+        self.presenter = nil
+        
         super.init(coder: aDecoder)
     }
     
@@ -32,6 +36,10 @@ class GameplayViewController: UIViewController
         super.viewDidLoad()
         
         initInterface()
+        
+        customView?.setActionDelegate(delegate: self)
+        
+        presenter?.start()
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -76,11 +84,51 @@ extension GameplayViewController
 
 extension GameplayViewController : GameplayViewDelegate
 {
+    func connectionFailure()
+    {
+        presenter?.quit()
+        
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .quit)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
+    }
+    
     func connectionFailure(errorMessage: String)
     {
         presenter?.quit()
         
-        navigationController?.popToRootViewController(animated: false)
+        if let window = UIApplication.shared.delegate?.window
+        {
+            window?.rootViewController = UINavigationController(rootViewController: MainViewController(withWindow: window, withPresenter: MainPresenter(initialConnectionStatus: .disconnected)))
+        }
+        else
+        {
+            navigationController?.popToRootViewController(animated: false)
+        }
+    }
+    
+    func setupUI(guessCharacters: UInt, playerLabel: String, myGuessWord: String, firstToGo: Bool)
+    {
+        customView?.setNumberOfCharacters(length: guessCharacters)
+        customView?.setOpponentLabel(label: playerLabel)
+        customView?.setGuessWord(guess: myGuessWord)
+        
+        customView?.setCurrentTurn(turn: 1, myTurn: firstToGo)
+    }
+    
+    func setCurrentTurnValue(turn: UInt, myTurn: Bool)
+    {
+        customView?.setCurrentTurn(turn: turn, myTurn: myTurn)
+    }
+    
+    func updateLog(string: String)
+    {
+        customView?.updateLog(string: string)
     }
     
     func lostConnectingAttemptingToReconnect()
@@ -96,5 +144,12 @@ extension GameplayViewController : GameplayViewDelegate
 
 extension GameplayViewController : GameplayActionDelegate
 {
-    
+    func textFieldDidEndEditing(_ textField: PinCodeTextField)
+    {
+        if let text = textField.text
+        {
+            presenter?.guess(guess: text)
+            customView?.hidePincode()
+        }
+    }
 }

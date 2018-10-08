@@ -10,7 +10,10 @@ import Foundation
 
 protocol GameplayPresenterDelegate : class
 {
+    func start()
     func quit()
+    
+    func guess(guess: String)
 }
 
 class GameplayPresenter : NSObject
@@ -19,9 +22,14 @@ class GameplayPresenter : NSObject
     
     var communicator: Communicator?
     
-    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection)
+    let initialConnectionData: CommunicatorInitialConnection
+    var gameSession: GameSession
+    
+    required init(communicator: Communicator, connectionData: CommunicatorInitialConnection, gameSession: GameSession)
     {
         self.communicator = communicator
+        self.initialConnectionData = connectionData
+        self.gameSession = gameSession
         
         super.init()
         
@@ -35,11 +43,31 @@ class GameplayPresenter : NSObject
 
 extension GameplayPresenter : GameplayPresenterDelegate
 {
+    func start()
+    {
+        let playerLabel = String("\(initialConnectionData.otherPlayerName) (\(initialConnectionData.otherPlayerAddress))")
+        delegate?.setupUI(guessCharacters: gameSession.guessWordNumberOfCharacters, playerLabel: playerLabel, myGuessWord: gameSession.guessWordAsString, firstToGo: gameSession.isMyTurn())
+    }
+    
     func quit()
     {
         print("GameplayPresenter quit")
         
         communicator?.quit()
+    }
+    
+    func guess(guess: String)
+    {
+        do
+        {
+            print("GameplayPresenter sending guess to other player \(guess)")
+            
+            communicator?.sendGuessMessage(guess: guess)
+        }
+        catch
+        {
+            
+        }
     }
 }
 
@@ -75,7 +103,7 @@ extension GameplayPresenter : NetworkObserver
     func disconnect()
     {
         print("GameplayPresenter failed to connect!")
-        delegate?.connectionFailure(errorMessage: "Disconnect")
+        delegate?.connectionFailure()
     }
     
     func disconnect(error: String)
@@ -89,8 +117,78 @@ extension GameplayPresenter : NetworkObserver
         
     }
     
-    func opponentDidSendPlaySession(turnValue: UInt)
+    func opponentDidSendPlaySession()
     {
         
+    }
+    
+    func opponentGuess(guess: String)
+    {
+        do
+        {
+            let result = try gameSession.opponentIsGuessing(guess: guess)
+            
+            print("GameplayPresenter received a guess message from opponent \(guess).")
+            
+            delegate?.setCurrentTurnValue(turn: gameSession.getGameTurn(), myTurn: gameSession.isMyTurn())
+            
+            delegate?.updateLog(string: gameSession.getLog(opponentName: initialConnectionData.otherPlayerName))
+            
+            // If not correctly guessed, send a guess response back
+            if !result.hasSuccessfullyGuessed()
+            {
+                print("GameplayPresenter send guess response back to opponent")
+                
+                communicator?.sendGuessResponseMessage(response: result.messageWithGuess)
+            }
+            // Opponent correctly guessed, send message, show loser screen
+            else
+            {
+                print("GameplayPresenter opponent correctly guessed our word! You lose!")
+                
+                communicator?.sendGuessCorrectMessage()
+                
+                //delegate?.
+            }
+        }
+        catch
+        {
+            
+        }
+    }
+    
+    func guessResponse(response: String)
+    {
+        do
+        {
+            try gameSession.opponentGuessResponse(response: response)
+            
+            print("GameplayPresenter opponent guess response \(response)")
+            
+            delegate?.setCurrentTurnValue(turn: gameSession.getGameTurn(), myTurn: gameSession.isMyTurn())
+            
+            delegate?.updateLog(string: gameSession.getLog(opponentName: initialConnectionData.otherPlayerName))
+        }
+        catch
+        {
+            
+        }
+    }
+    
+    func correctGuess()
+    {
+        do
+        {
+            try gameSession.endGame()
+            
+            print("GameplayPresenter opponent says you correctly guessed! You win!")
+            
+            // Show winners screen
+            //
+        }
+        catch
+        {
+            
+        }
     }
 }

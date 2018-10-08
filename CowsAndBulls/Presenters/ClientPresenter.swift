@@ -112,7 +112,22 @@ extension ClientPresenter : NetworkObserver
         
     }
     
-    func opponentDidSendPlaySession(turnValue: UInt)
+    func opponentDidSendPlaySession()
+    {
+        
+    }
+    
+    func opponentGuess(guess: String)
+    {
+        
+    }
+    
+    func guessResponse(response: String)
+    {
+        
+    }
+    
+    func correctGuess()
     {
         
     }

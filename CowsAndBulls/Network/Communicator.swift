@@ -12,14 +12,14 @@ import SwiftSocket
 let CommunicatorDefaultPort : Int32 = 1337
 
 let CommunicatorHostConnectTimeout : Double = 3.0
-let CommunicatorHostUpdateDelay : Double = 0.25
+let CommunicatorHostUpdateDelay : Double = 0.1
 
 let CommunicatorClientConnectTimeout : Double = 10.0
 
 let CommunicatorMessageEndingTag = "$%\n!#!"
 
 let CommunicatorPingInterval : Double = 0.1
-let CommunicatorPingDelayMinimum : Double = 0.3
+let CommunicatorPingDelayMinimum : Double = 0.4
 let CommunicatorPingTimeout : Double = 30.0
 
 // Generic interface that allows you to interact with either host communicator or client communicator
@@ -37,8 +37,11 @@ protocol Communicator
     func sendQuitMessage()
     
     func sendPlaySetupMessage(length: UInt, turnToGo: String)
-    func sendAlertPickedGuessWord()
-    func sendGuessWordAlertAndTurnValue(turnValue: UInt)
+    func sendAlertPickedGuessWordMessage()
+    func sendPlaySessionMessage()
+    func sendGuessMessage(guess: String)
+    func sendGuessResponseMessage(response: String)
+    func sendGuessCorrectMessage()
 }
 
 struct CommunicatorInitialConnection
@@ -243,17 +246,50 @@ class CommunicatorHost : Communicator
                     case .PLAYSESSION:
                         if communicator.isConnectedToClient
                         {
+                            // Observers notification
+                            DispatchQueue.main.async {
+                                for observer in communicator.observers
+                                {
+                                    observer.value.opponentDidSendPlaySession()
+                                }
+                            }
+                        }
+                    case .GAMEGUESS:
+                        if communicator.isConnectedToClient
+                        {
                             if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
                             {
-                                if let turnValue = UInt(parameter)
-                                {
-                                    // Observers notification
-                                    DispatchQueue.main.async {
-                                        for observer in communicator.observers
-                                        {
-                                            observer.value.opponentDidSendPlaySession(turnValue: turnValue)
-                                        }
+                                // Observers notification
+                                DispatchQueue.main.async {
+                                    for observer in communicator.observers
+                                    {
+                                        observer.value.opponentGuess(guess: parameter)
                                     }
+                                }
+                            }
+                        }
+                    case .GAMEGUESSRESPONSE:
+                        if communicator.isConnectedToClient
+                        {
+                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
+                            {
+                                // Observers notification
+                                DispatchQueue.main.async {
+                                    for observer in communicator.observers
+                                    {
+                                        observer.value.guessResponse(response: parameter)
+                                    }
+                                }
+                            }
+                        }
+                    case .GAMECORRECTGUESS:
+                        if communicator.isConnectedToClient
+                        {
+                            // Observers notification
+                            DispatchQueue.main.async {
+                                for observer in communicator.observers
+                                {
+                                    observer.value.correctGuess()
                                 }
                             }
                         }
@@ -512,10 +548,10 @@ extension CommunicatorHost
         
         let _ = client.send(string: CommunicatorCommands.constructPlaySetupMessage(length: length, turnToGo: turnToGo))
         
-        print("CommunicatorHost: sending guess word length message to client")
+        print("CommunicatorHost: sending play setup message to client")
     }
     
-    public func sendAlertPickedGuessWord()
+    public func sendAlertPickedGuessWordMessage()
     {
         guard let client = self.client else {
             return
@@ -523,18 +559,51 @@ extension CommunicatorHost
         
         let _ = client.send(string: CommunicatorCommands.constructPickedGuessWordMessage())
         
-        print("CommunicatorHost: sending notification to client that a guess word has been picked")
+        print("CommunicatorHost: sending alert picked guess word message to client")
     }
     
-    public func sendGuessWordAlertAndTurnValue(turnValue: UInt)
+    public func sendPlaySessionMessage()
     {
         guard let client = self.client else {
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructPlaySessionMessage(turnValue: turnValue))
+        let _ = client.send(string: CommunicatorCommands.constructPlaySessionMessage())
         
-        print("CommunicatorHost: sending notification to client that a guess word has been picked")
+        print("CommunicatorHost: sending play session message to client")
+    }
+    
+    func sendGuessMessage(guess: String)
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructGameGuessMessage(guess: guess))
+        
+        print("CommunicatorHost: sending guess message to client")
+    }
+    
+    func sendGuessResponseMessage(response: String)
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructGameGuessResponseMessage(response: response))
+        
+        print("CommunicatorHost: sending guess response message to client")
+    }
+    
+    func sendGuessCorrectMessage()
+    {
+        guard let client = self.client else {
+            return
+        }
+        
+        let _ = client.send(string: CommunicatorCommands.constructGameCorrectGuessMessage())
+        
+        print("CommunicatorHost: sending guess correct message to client")
     }
 }
 
@@ -719,17 +788,50 @@ class CommunicatorClient : Communicator
                     case .PLAYSESSION:
                         if communicator.isConnectedToServer
                         {
+                            // Observers notification
+                            DispatchQueue.main.async {
+                                for observer in communicator.observers
+                                {
+                                    observer.value.opponentDidSendPlaySession()
+                                }
+                            }
+                        }
+                    case .GAMEGUESS:
+                        if communicator.isConnectedToServer
+                        {
                             if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
                             {
-                                if let turnValue = UInt(parameter)
-                                {
-                                    // Observers notification
-                                    DispatchQueue.main.async {
-                                        for observer in communicator.observers
-                                        {
-                                            observer.value.opponentDidSendPlaySession(turnValue: turnValue)
-                                        }
+                                // Observers notification
+                                DispatchQueue.main.async {
+                                    for observer in communicator.observers
+                                    {
+                                        observer.value.opponentGuess(guess: parameter)
                                     }
+                                }
+                            }
+                        }
+                    case .GAMEGUESSRESPONSE:
+                        if communicator.isConnectedToServer
+                        {
+                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
+                            {
+                                // Observers notification
+                                DispatchQueue.main.async {
+                                    for observer in communicator.observers
+                                    {
+                                        observer.value.guessResponse(response: parameter)
+                                    }
+                                }
+                            }
+                        }
+                    case .GAMECORRECTGUESS:
+                        if communicator.isConnectedToServer
+                        {
+                            // Observers notification
+                            DispatchQueue.main.async {
+                                for observer in communicator.observers
+                                {
+                                    observer.value.correctGuess()
                                 }
                             }
                         }
@@ -988,7 +1090,7 @@ extension CommunicatorClient
         print("CommunicatorClient: sending guess word length message to server")
     }
     
-    public func sendAlertPickedGuessWord()
+    public func sendAlertPickedGuessWordMessage()
     {
         guard let socket = self.socket else {
             return
@@ -999,15 +1101,48 @@ extension CommunicatorClient
         print("CommunicatorClient: sending notification to client that a guess word has been picked")
     }
     
-    public func sendGuessWordAlertAndTurnValue(turnValue: UInt)
+    public func sendPlaySessionMessage()
     {
         guard let socket = self.socket else {
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructPlaySessionMessage(turnValue: turnValue))
+        let _ = socket.send(string: CommunicatorCommands.constructPlaySessionMessage())
         
         print("CommunicatorClient: sending notification to client that a guess word has been picked")
+    }
+    
+    func sendGuessMessage(guess: String)
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructGameGuessMessage(guess: guess))
+        
+        print("CommunicatorClient: sending guess message to server")
+    }
+    
+    func sendGuessResponseMessage(response: String)
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructGameGuessResponseMessage(response: response))
+        
+        print("CommunicatorClient: sending guess response message to server")
+    }
+    
+    func sendGuessCorrectMessage()
+    {
+        guard let socket = self.socket else {
+            return
+        }
+        
+        let _ = socket.send(string: CommunicatorCommands.constructGameCorrectGuessMessage())
+        
+        print("CommunicatorClient: sending guess correct message to server")
     }
 }
 

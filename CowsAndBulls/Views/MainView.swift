@@ -21,11 +21,16 @@ protocol MainActionDelegate : class
 
 class MainView : UIView
 {
+    static let ALERT_MESSAGE_QUIT = "Opponent quit"
+    static let ALERT_MESSAGE_DISCONNECTED = "Disconnected"
+    
     weak var delegate : MainActionDelegate?
     
     @IBOutlet private weak var imageSpash: UIImageView!
     @IBOutlet private weak var buttonHost: UIButton!
     @IBOutlet private weak var buttonJoin: UIButton!
+    @IBOutlet private weak var layoutConnectionStatus: UIView!
+    @IBOutlet private weak var labelConnectionStatus: UILabel!
     
     override init(frame: CGRect)
     {
@@ -64,6 +69,54 @@ class MainView : UIView
         buttonJoin.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         buttonJoin.widthAnchor.constraint(equalToConstant: 168).isActive = true
         buttonJoin.addTarget(self, action: #selector(actionJoin(_:)), for: .touchDown)
+        
+        layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
+        layoutConnectionStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
+        layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+        layoutConnectionStatus.isHidden = true
+        
+        labelConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
+        labelConnectionStatus.centerXAnchor.constraint(equalTo: layoutConnectionStatus.centerXAnchor).isActive = true
+        labelConnectionStatus.centerYAnchor.constraint(equalTo: layoutConnectionStatus.centerYAnchor).isActive = true
+        labelConnectionStatus.textAlignment = .center
+    }
+}
+
+// Methods for updating the interface
+extension MainView
+{
+    func hideConnectionStatus()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = true
+        }
+    }
+    
+    func changeConnectionStatusToQuit()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = false
+            self.layoutConnectionStatus.backgroundColor = .orange
+            self.labelConnectionStatus.text = MainView.ALERT_MESSAGE_QUIT
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.hideConnectionStatus()
+            }
+        }
+    }
+    
+    func changeConnectionStatusToDisconnected()
+    {
+        DispatchQueue.main.async {
+            self.layoutConnectionStatus.isHidden = false
+            self.layoutConnectionStatus.backgroundColor = .red
+            self.labelConnectionStatus.text = MainView.ALERT_MESSAGE_DISCONNECTED
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.hideConnectionStatus()
+            }
+        }
     }
 }
 

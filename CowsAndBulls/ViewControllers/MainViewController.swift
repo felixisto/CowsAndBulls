@@ -14,21 +14,30 @@ class MainViewController: UIViewController
     
     private var customView: MainView?
     
-    private var presenter: MainPresenterDelegate? = nil
+    private let presenter: MainPresenterDelegate?
+    
+    private let initialConnectionStatus : MainPresenterConnectionStatus
     
     init(withWindow window: UIWindow?, withPresenter presenter: MainPresenter)
     {
         self.window = window
         
+        self.presenter = presenter
+        
+        self.initialConnectionStatus = presenter.initialConnectionStatus
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
         self.window = nil
+        
+        self.presenter = nil
+        
+        self.initialConnectionStatus = .none
         
         super.init(coder: aDecoder)
     }
@@ -64,6 +73,15 @@ class MainViewController: UIViewController
         self.customView?.delegate = self
         
         navigationController?.navigationBar.isHidden = true
+        
+        // Connection status
+        switch initialConnectionStatus {
+        case .quit:
+            customView?.changeConnectionStatusToQuit()
+        case .disconnected:
+            customView?.changeConnectionStatusToDisconnected()
+        default: break
+        }
     }
 }
 

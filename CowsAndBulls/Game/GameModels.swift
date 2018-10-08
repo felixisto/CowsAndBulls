@@ -10,16 +10,88 @@ import Foundation
 
 struct GuessCharacter
 {
-    let value : Character
+    let char : Character
+    let position : UInt
     
-    init(_ value: Character)
+    init(char value: Character, position: UInt)
     {
-        self.value = value
+        self.char = value
+        self.position = position
     }
     
-    static func ==(left: GuessCharacter, right: GuessCharacter) -> Bool
+    static func stringToGuessCharacters(_ string: String) -> [GuessCharacter]
     {
-        return left.value == right.value
+        var guessCharacters : [GuessCharacter] = []
+        
+        for e in 0..<string.count
+        {
+            guessCharacters.append(GuessCharacter(char: string[String.Index(encodedOffset: e)], position: UInt(e)))
+        }
+        
+        return guessCharacters
+    }
+    
+    static func guessCharactersToString(_ guessCharacters: [GuessCharacter]) -> String
+    {
+        var string = ""
+        
+        for e in 0..<guessCharacters.count
+        {
+            string.append(guessCharacters[e].char)
+        }
+        
+        return string
+    }
+    
+    static func guessResult(guessWord guessWordConstant: [GuessCharacter], guess guessConstant: [GuessCharacter]) -> GuessResult
+    {
+        var characterGuesses : [GuessCharacterResult] = []
+        
+        var guessWord = guessWordConstant
+        var guess = guessConstant
+        
+        while guessWord.count > 0
+        {
+            let guessWordChar = guessWord.first!
+            
+            var bestComparisonResultForThisChar = GuessCharacterResult(guessedValue: false, guessedPosition: false)
+            var bestComparisonResultIndex = -1
+            
+            for i in 0..<guess.count
+            {
+                let guessChar = guess[i]
+                
+                let comparsionResult = GuessCharacterResult(a: guessWordChar, b: guessChar)
+                
+                if comparsionResult.isCow() || comparsionResult.isBull()
+                {
+                    if bestComparisonResultIndex == -1
+                    {
+                        bestComparisonResultForThisChar = comparsionResult
+                        bestComparisonResultIndex = i
+                    }
+                    else
+                    {
+                        if bestComparisonResultForThisChar.isCow() && comparsionResult.isBull()
+                        {
+                            bestComparisonResultForThisChar = comparsionResult
+                            bestComparisonResultIndex = i
+                        }
+                    }
+                }
+            }
+            
+            characterGuesses.append(bestComparisonResultForThisChar)
+            
+            if bestComparisonResultIndex != -1
+            {
+                guess.remove(at: bestComparisonResultIndex)
+            }
+            
+            guessWord.remove(at: 0)
+        }
+        
+        return GuessResult(guessWordLength: UInt(guessWordConstant.count), guess: guessCharactersToString(guessConstant), characterGuesses: characterGuesses)
     }
 }
 
@@ -34,6 +106,12 @@ struct GuessCharacterResult
         self.guessedPosition = guessedPosition
     }
     
+    init(a: GuessCharacter, b: GuessCharacter)
+    {
+        self.guessedValue = a.char == b.char
+        self.guessedPosition = a.position == b.position
+    }
+    
     func isCow() -> Bool
     {
         return guessedValue && !guessedPosition
@@ -43,16 +121,56 @@ struct GuessCharacterResult
     {
         return guessedValue && guessedPosition
     }
+    
+    static func arrayToString(guessWordLength: UInt, array: [GuessCharacterResult]) -> String
+    {
+        var bulls = 0
+        var cows = 0
+        
+        for c in array
+        {
+            if c.isCow()
+            {
+                cows += 1
+            }
+            
+            if c.isBull()
+            {
+                bulls += 1
+            }
+        }
+        
+        if bulls == guessWordLength
+        {
+            return "Correct guess!"
+        }
+        
+        if bulls == 0 && cows != 0
+        {
+           return String("\(cows) cows")
+        }
+        
+        if cows == 0 && bulls != 0
+        {
+            return String("\(bulls) bulls")
+        }
+        
+        return String("\(cows) cows, \(bulls) bulls")
+    }
 }
 
 struct GuessResult
 {
-    let guessWordNumberOfCharacters : UInt
+    let guessWordLength: UInt
+    let message: String
+    let messageWithGuess: String
     let characterGuesses : [GuessCharacterResult]
     
-    init(guessWordNumberOfCharacters: UInt, characterGuesses: [GuessCharacterResult])
+    init(guessWordLength: UInt, guess: String, characterGuesses: [GuessCharacterResult])
     {
-        self.guessWordNumberOfCharacters = guessWordNumberOfCharacters
+        self.guessWordLength = guessWordLength
+        self.message = GuessCharacterResult.arrayToString(guessWordLength: guessWordLength, array: characterGuesses)
+        self.messageWithGuess = String("\(guess), \(message)")
         self.characterGuesses = characterGuesses
     }
     
@@ -68,33 +186,46 @@ struct GuessResult
             }
         }
         
-        return bulls == guessWordNumberOfCharacters
+        return bulls == guessWordLength
     }
 }
 
 struct GameSession
 {
+    static let YOU_LABEL = "You"
+    static let OPPONENT_LABEL = "Opponent"
+    
     let firstToGo : Bool
     
     private var gameTurn : UInt
     
+    let guessWordAsString : String
     let guessWord : [GuessCharacter]
     let guessWordNumberOfCharacters : UInt
     
-    private var myGuesses : [GuessResult]
-    private var opponentGuesses : [GuessResult]
+    private var gameIsOver: Bool
     
-    init(firstToGo: Bool, guessWord: [GuessCharacter])
+    private var log: String
+    
+    init(firstToGo: Bool, guessWord: String)
     {
         self.firstToGo = firstToGo
         
         self.gameTurn = 1
         
-        self.guessWord = guessWord
+        self.guessWordAsString = guessWord
+        
+        self.guessWord = GuessCharacter.stringToGuessCharacters(guessWord)
         self.guessWordNumberOfCharacters = UInt(guessWord.count)
         
-        self.myGuesses = []
-        self.opponentGuesses = []
+        self.log = ""
+        
+        self.gameIsOver = false
+    }
+    
+    func getGameTurn() -> UInt
+    {
+        return gameTurn
     }
     
     func isMyTurn() -> Bool
@@ -114,8 +245,28 @@ struct GameSession
         return !isMyTurn()
     }
     
-    mutating func IAmIsGuessing(guessCharacters: String) throws -> GuessResult
+    func getLog(opponentName: String) -> String
     {
+        return log.replacingOccurrences(of: GameSession.OPPONENT_LABEL, with: opponentName)
+    }
+    
+    mutating func endGame() throws
+    {
+        guard !gameIsOver else
+        {
+            throw GameError.badLogic_GameIsOver
+        }
+        
+        gameIsOver = true
+    }
+    
+    mutating func opponentGuessResponse(response: String) throws
+    {
+        guard !gameIsOver else
+        {
+            throw GameError.badLogic_GameIsOver
+        }
+        
         guard isMyTurn() else
         {
             throw GameError.badLogic_WrongTurn
@@ -123,40 +274,45 @@ struct GameSession
         
         gameTurn += 1
         
-        var characters: [GuessCharacter] = []
-        
-        var guessCharacters : [GuessCharacterResult] = []
-        
-        let guessResult: GuessResult = GuessResult(guessWordNumberOfCharacters: guessWordNumberOfCharacters, characterGuesses: guessCharacters)
-        
-        myGuesses.append(guessResult)
-        
-        return guessResult
+        addToLog(String("\(GameSession.YOU_LABEL): \(response)"))
     }
     
-    mutating func opponentIsGuessing(guessCharacters: String) throws -> GuessResult
+    mutating func opponentIsGuessing(guess guessCharactersAsString: String) throws -> GuessResult
     {
+        guard !gameIsOver else
+        {
+            throw GameError.badLogic_GameIsOver
+        }
+        
         guard isOpponentTurn() else
         {
             throw GameError.badLogic_WrongTurn
         }
         
+        guard guessCharactersAsString.count == guessWordNumberOfCharacters else
+        {
+            throw GameError.badLogic_InvalidGuessCharacterLength
+        }
+        
         gameTurn += 1
         
-        var characters: [GuessCharacter] = []
+        let guessResult = GuessCharacter.guessResult(guessWord: guessWord, guess: GuessCharacter.stringToGuessCharacters(guessCharactersAsString))
         
-        var guessCharacters : [GuessCharacterResult] = []
+        addToLog(String("\(GameSession.OPPONENT_LABEL): \(guessResult.messageWithGuess)"))
         
-        let guessResult: GuessResult = GuessResult(guessWordNumberOfCharacters: guessWordNumberOfCharacters, characterGuesses: guessCharacters)
-        
-        opponentGuesses.append(guessResult)
+        if guessResult.hasSuccessfullyGuessed()
+        {
+            gameIsOver = true
+        }
         
         return guessResult
     }
     
-    func getGuessLog(myName: String, opponentName: String, printTurnNumbers: Bool, sortByLate: Bool) -> String
+    mutating private func addToLog(_ string: String)
     {
-        return ""
+        var temp = String("\(gameTurn-1). \(string)\n")
+        temp.append(log)
+        log = temp
     }
 }
 

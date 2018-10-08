@@ -12,18 +12,21 @@ class HostViewController: UIViewController
 {
     private var customView: HostView?
     
-    private var presenter: HostPresenterDelegate? = nil
+    private let presenter: HostPresenterDelegate?
     
     init(withPresenter presenter: HostPresenter)
     {
+        self.presenter = presenter
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter = presenter
         presenter.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder)
     {
+        self.presenter = nil
+        
         super.init(coder: aDecoder)
     }
     

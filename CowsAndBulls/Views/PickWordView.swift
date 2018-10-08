@@ -11,12 +11,13 @@ import PinCodeTextField
 
 protocol PickWordViewDelegate : class
 {
+    func connectionFailure()
     func connectionFailure(errorMessage: String)
     
     func setOpponentStatus(status: String)
     func updateEnterXCharacterWord(length: UInt)
     
-    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWord guessWord: String)
+    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
     
     func lostConnectingAttemptingToReconnect()
     func reconnect()
@@ -69,6 +70,7 @@ class PickWordView : UIView
         pincodeGuessWord.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
         pincodeGuessWord.heightAnchor.constraint(equalToConstant: 128.0).isActive = true
         pincodeGuessWord.allowedCharacterSet = CharacterSet.decimalDigits
+        pincodeGuessWord.keyboardType = .decimalPad
         
         labelOpponentStatus.translatesAutoresizingMaskIntoConstraints = false
         labelOpponentStatus.topAnchor.constraint(equalTo: pincodeGuessWord.bottomAnchor, constant: 10.0).isActive = true
@@ -91,7 +93,7 @@ class PickWordView : UIView
 // Methods for updating the interface
 extension PickWordView
 {
-    func setNumberOfCharacter(length: UInt)
+    func setNumberOfCharacters(length: UInt)
     {
         DispatchQueue.main.async {
             self.labelTip.text = String("Enter \(length) digit guess word")

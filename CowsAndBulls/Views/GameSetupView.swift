@@ -14,13 +14,14 @@ protocol GameSetupViewDelegate : class
     func updateTurnToGoPicker(dataSource: GameSetupTurnPickerViewDataSource?, delegate: GameSetupTurnPickerViewDelegate?)
     
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
+    func connectionFailure()
     func connectionFailure(errorMessage: String)
     
     func updateOpponentPlaySetup(guessWordLength: UInt, turnToGo: String)
     func playSetupMismatch()
     func playSetupMatch()
     
-    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, withGuessWordLength guessWordLength: UInt)
+    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     
     func lostConnectingAttemptingToReconnect()
     func reconnect()

@@ -11,5 +11,7 @@ import Foundation
 enum GameError : Error
 {
     case badLogic
+    case badLogic_GameIsOver
     case badLogic_WrongTurn
+    case badLogic_InvalidGuessCharacterLength
 }
