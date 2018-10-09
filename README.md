@@ -1,17 +1,20 @@
 # CowsAndBulls
 Cows and Bulls game. Must be played online, on a LAN network. This is the numerical version of the game.
 
-Hosting game
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn1.png)
+# Main Screen
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn0.png)
 
-Game setup
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn2.png)
+# Hosting game
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn1.png)
 
-Pick guess word
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn3.png)
+# Game setup
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn2.png)
 
-Play
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn4.png)
+# Pick guess word
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn3.png)
 
-Outcome screen
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn5.png)
+# Play
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn4.png)
+
+# Outcome screen
+!(https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn5.png)
