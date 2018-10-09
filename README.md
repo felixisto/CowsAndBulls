@@ -11,7 +11,7 @@ Pick guess word
 ![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn3.png)
 
 Play
-![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn6.png)
+![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn4.png)
 
 Outcome screen
 ![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn5.png)
