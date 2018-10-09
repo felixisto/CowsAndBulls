@@ -128,6 +128,17 @@ extension PickWordViewController : PickWordViewDelegate
         customView?.setNumberOfCharacters(length: length)
     }
     
+    func invalidGuessWord(error: String)
+    {
+        let alert = UIAlertController(title: "Invalid guess word", message: error, preferredStyle: .alert)
+        
+        customView?.clearPincode()
+        
+        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
     {
         if let comm = communicator

@@ -8,6 +8,22 @@
 
 import Foundation
 
+struct WeakNetworkObserver
+{
+    weak var observer : NetworkObserver?
+    
+    init(_ observer: NetworkObserver)
+    {
+        self.observer = observer
+    }
+    
+    var value : NetworkObserver? {
+        get {
+           return observer
+        }
+    }
+}
+
 protocol NetworkObserver: class
 {
     // Connection status

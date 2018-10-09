@@ -71,7 +71,8 @@ class MainView : UIView
         buttonJoin.addTarget(self, action: #selector(actionJoin(_:)), for: .touchDown)
         
         layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
-        layoutConnectionStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        layoutConnectionStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        layoutConnectionStatus.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
         layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
         layoutConnectionStatus.isHidden = true

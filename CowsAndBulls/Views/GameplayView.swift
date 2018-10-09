@@ -23,8 +23,8 @@ protocol GameplayViewDelegate : class
     func lostConnectingAttemptingToReconnect()
     func reconnect()
     
-    func victory()
-    func defeat()
+    func victory(opponentGuessWord: String)
+    func defeat(myGuessWord: String)
 }
 
 protocol GameplayActionDelegate : PinCodeTextFieldDelegate
@@ -126,7 +126,8 @@ class GameplayView : UIView
         labelStatus.textAlignment = .center
         
         layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
-        layoutConnectionStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        layoutConnectionStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        layoutConnectionStatus.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
         layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
         layoutConnectionStatus.isHidden = true
@@ -154,6 +155,10 @@ class GameplayView : UIView
         labelOutcome.centerYAnchor.constraint(equalTo: layoutOutcomeScreen.centerYAnchor).isActive = true
         labelOutcome.widthAnchor.constraint(equalTo: layoutOutcomeScreen.widthAnchor, multiplier: 1.0).isActive = true
         labelOutcome.isHidden = true
+        labelOutcome.numberOfLines = 10
+        
+        // Layout connection status should be ontop of everything, including the outcome screen
+        bringSubviewToFront(layoutConnectionStatus)
     }
 }
 
@@ -285,29 +290,39 @@ extension GameplayView
         }
     }
     
-    func showVictoryScreen()
+    func showVictoryScreen(opponentGuessWord guessWord: String)
     {
         DispatchQueue.main.async {
             self.layoutOutcomeScreen.isHidden = false
             self.layoutOutcomeScreen.isUserInteractionEnabled = true
             self.layoutOutcomeScreen.backgroundColor = .green
+            self.layoutOutcomeScreen.alpha = 0
             
             self.labelOutcome.isHidden = false
-            self.labelOutcome.text = "YOU WIN"
+            self.labelOutcome.text = "YOU WIN!\n\(guessWord)"
             self.labelOutcome.tintColor = .white
+            
+            UIView.animate(withDuration: 1.0, animations: {
+                self.layoutOutcomeScreen.alpha = 1.0
+            })
         }
     }
     
-    func showDefeatScreen()
+    func showDefeatScreen(myGuessWord guessWord: String)
     {
         DispatchQueue.main.async {
             self.layoutOutcomeScreen.isHidden = false
             self.layoutOutcomeScreen.isUserInteractionEnabled = true
             self.layoutOutcomeScreen.backgroundColor = .red
+            self.layoutOutcomeScreen.alpha = 0
             
             self.labelOutcome.isHidden = false
-            self.labelOutcome.text = "YOU LOSE"
+            self.labelOutcome.text = "YOU LOSE\n\(guessWord)"
             self.labelOutcome.tintColor = .white
+            
+            UIView.animate(withDuration: 1.0, animations: {
+                self.layoutOutcomeScreen.alpha = 1.0
+            })
         }
     }
 }

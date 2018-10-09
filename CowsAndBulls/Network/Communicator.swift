@@ -62,7 +62,7 @@ struct CommunicatorInitialConnection
 
 class CommunicatorHost : Communicator
 {
-    private var observers: [String : NetworkObserver] = [:]
+    private var observers: [String : WeakNetworkObserver] = [:]
     
     private var server: TCPServer?
     private var client: TCPClient?
@@ -112,10 +112,7 @@ class CommunicatorHost : Communicator
         lastPingFromClient = nil
         lastPingRetryingToConnect = false
         
-        for observer in observers
-        {
-            detachObserver(key: observer.key)
-        }
+        observers.removeAll()
     }
     
     func quit()
@@ -160,7 +157,7 @@ class CommunicatorHost : Communicator
                 DispatchQueue.main.async {
                     for observer in communicator.observers
                     {
-                        observer.value.failedToConnect()
+                        observer.value.value?.failedToConnect()
                     }
                 }
             }
@@ -240,7 +237,7 @@ class CommunicatorHost : Communicator
                                     DispatchQueue.main.async {
                                         for observer in communicator.observers
                                         {
-                                            observer.value.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
+                                            observer.value.value?.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
                                         }
                                     }
                                 }
@@ -253,7 +250,7 @@ class CommunicatorHost : Communicator
                             DispatchQueue.main.async {
                                 for observer in communicator.observers
                                 {
-                                    observer.value.opponentDidSendPlaySession()
+                                    observer.value.value?.opponentDidSendPlaySession()
                                 }
                             }
                         }
@@ -266,7 +263,7 @@ class CommunicatorHost : Communicator
                                 DispatchQueue.main.async {
                                     for observer in communicator.observers
                                     {
-                                        observer.value.opponentGuess(guess: parameter)
+                                        observer.value.value?.opponentGuess(guess: parameter)
                                     }
                                 }
                             }
@@ -280,7 +277,7 @@ class CommunicatorHost : Communicator
                                 DispatchQueue.main.async {
                                     for observer in communicator.observers
                                     {
-                                        observer.value.guessResponse(response: parameter)
+                                        observer.value.value?.guessResponse(response: parameter)
                                     }
                                 }
                             }
@@ -292,7 +289,7 @@ class CommunicatorHost : Communicator
                             DispatchQueue.main.async {
                                 for observer in communicator.observers
                                 {
-                                    observer.value.correctGuess()
+                                    observer.value.value?.correctGuess()
                                 }
                             }
                         }
@@ -385,7 +382,7 @@ extension CommunicatorHost
     {
         if let obs = observer
         {
-            self.observers[key] = obs
+            self.observers[key] = WeakNetworkObserver(obs)
         }
     }
     
@@ -417,7 +414,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.beginConnect()
+                observer.value.value?.beginConnect()
             }
         }
     }
@@ -439,7 +436,7 @@ extension CommunicatorHost
                 
                 for observer in self.observers
                 {
-                    observer.value.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
+                    observer.value.value?.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
                 }
             }
         }
@@ -452,7 +449,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.disconnect()
+                observer.value.value?.disconnect()
             }
             
             self.destroy()
@@ -473,7 +470,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in observers
             {
-                observer.value.disconnect(error: "Disconnected")
+                observer.value.value?.disconnect(error: "Disconnected")
             }
         }
     }
@@ -487,7 +484,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.lostConnectingAttemptingToReconnect()
+                observer.value.value?.lostConnectingAttemptingToReconnect()
             }
         }
     }
@@ -501,7 +498,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.reconnect()
+                observer.value.value?.reconnect()
             }
         }
     }
@@ -612,7 +609,7 @@ extension CommunicatorHost
 
 class CommunicatorClient : Communicator
 {
-    private var observers: [String : NetworkObserver] = [:]
+    private var observers: [String : WeakNetworkObserver] = [:]
     
     private var socket: TCPClient?
     
@@ -654,18 +651,13 @@ class CommunicatorClient : Communicator
         lastPingFromServer = nil
         lastPingRetryingToConnect = false
         
-        for observer in observers
-        {
-            detachObserver(key: observer.key)
-        }
+        observers.removeAll()
     }
     
     func quit()
     {
-        DispatchQueue.main.sync {
-            sendQuitMessage()
-            destroy()
-        }
+        sendQuitMessage()
+        destroy()
     }
     
     func start(connectTo host: String)
@@ -707,7 +699,7 @@ class CommunicatorClient : Communicator
                 DispatchQueue.main.async {
                     for observer in communicator.observers
                     {
-                        observer.value.disconnect(error: "Disconnected")
+                        observer.value.value?.disconnect(error: "Disconnected")
                     }
                 }
             }
@@ -787,7 +779,7 @@ class CommunicatorClient : Communicator
                                     DispatchQueue.main.async {
                                         for observer in communicator.observers
                                         {
-                                            observer.value.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
+                                            observer.value.value?.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
                                         }
                                     }
                                 }
@@ -800,7 +792,7 @@ class CommunicatorClient : Communicator
                             DispatchQueue.main.async {
                                 for observer in communicator.observers
                                 {
-                                    observer.value.opponentDidSendPlaySession()
+                                    observer.value.value?.opponentDidSendPlaySession()
                                 }
                             }
                         }
@@ -813,7 +805,7 @@ class CommunicatorClient : Communicator
                                 DispatchQueue.main.async {
                                     for observer in communicator.observers
                                     {
-                                        observer.value.opponentGuess(guess: parameter)
+                                        observer.value.value?.opponentGuess(guess: parameter)
                                     }
                                 }
                             }
@@ -827,7 +819,7 @@ class CommunicatorClient : Communicator
                                 DispatchQueue.main.async {
                                     for observer in communicator.observers
                                     {
-                                        observer.value.guessResponse(response: parameter)
+                                        observer.value.value?.guessResponse(response: parameter)
                                     }
                                 }
                             }
@@ -839,7 +831,7 @@ class CommunicatorClient : Communicator
                             DispatchQueue.main.async {
                                 for observer in communicator.observers
                                 {
-                                    observer.value.correctGuess()
+                                    observer.value.value?.correctGuess()
                                 }
                             }
                         }
@@ -935,7 +927,7 @@ extension CommunicatorClient
     {
         if let obs = observer
         {
-            self.observers[key] = obs
+            self.observers[key] = WeakNetworkObserver(obs)
         }
     }
     
@@ -963,7 +955,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.beginConnect()
+                observer.value.value?.beginConnect()
             }
         }
     }
@@ -988,7 +980,7 @@ extension CommunicatorClient
                 
                 for observer in self.observers
                 {
-                    observer.value.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
+                    observer.value.value?.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
                 }
             }
         }
@@ -1001,7 +993,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.disconnect()
+                observer.value.value?.disconnect()
             }
             
             self.destroy()
@@ -1015,7 +1007,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.disconnect(error: "Disconnected")
+                observer.value.value?.disconnect(error: "Disconnected")
             }
             
             self.destroy()
@@ -1031,7 +1023,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.lostConnectingAttemptingToReconnect()
+                observer.value.value?.lostConnectingAttemptingToReconnect()
             }
         }
     }
@@ -1045,7 +1037,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.reconnect()
+                observer.value.value?.reconnect()
             }
         }
     }

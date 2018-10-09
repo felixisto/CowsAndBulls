@@ -58,16 +58,11 @@ extension GameplayPresenter : GameplayPresenterDelegate
     
     func guess(guess: String)
     {
-        do
-        {
-            print("GameplayPresenter sending guess to other player \(guess)")
-            
-            communicator?.sendGuessMessage(guess: guess)
-        }
-        catch
-        {
-            
-        }
+        print("GameplayPresenter sending guess to other player \(guess)")
+        
+        gameSession.guessAttempt(guess: guess)
+        
+        communicator?.sendGuessMessage(guess: guess)
     }
 }
 
@@ -148,7 +143,7 @@ extension GameplayPresenter : NetworkObserver
                 
                 communicator?.sendGuessCorrectMessage()
                 
-                delegate?.defeat()
+                delegate?.defeat(myGuessWord: guess)
             }
         }
         catch
@@ -184,7 +179,7 @@ extension GameplayPresenter : NetworkObserver
             print("GameplayPresenter opponent says you correctly guessed! You win!")
             
             // Show winners screen
-            delegate?.victory()
+            delegate?.victory(opponentGuessWord: gameSession.getLastGuessAttempt())
         }
         catch
         {

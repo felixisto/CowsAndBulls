@@ -17,6 +17,7 @@ protocol PickWordViewDelegate : class
     func setOpponentStatus(status: String)
     func updateEnterXCharacterWord(length: UInt)
     
+    func invalidGuessWord(error: String)
     func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
     
     func lostConnectingAttemptingToReconnect()
@@ -78,7 +79,8 @@ class PickWordView : UIView
         labelOpponentStatus.textAlignment = .center
         
         layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
-        layoutConnectionStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        layoutConnectionStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        layoutConnectionStatus.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
         layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
         layoutConnectionStatus.isHidden = true
@@ -115,6 +117,13 @@ extension PickWordView
     {
         DispatchQueue.main.async {
             self.pincodeGuessWord.text = ""
+        }
+    }
+    
+    func stopPincodeKeyboard()
+    {
+        DispatchQueue.main.async {
+            self.pincodeGuessWord.resignFirstResponder()
         }
     }
     

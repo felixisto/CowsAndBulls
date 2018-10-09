@@ -141,16 +141,16 @@ extension GameplayViewController : GameplayViewDelegate
         customView?.changeConnectionStatusToReconnected()
     }
     
-    func victory()
+    func victory(opponentGuessWord: String)
     {
-        customView?.showVictoryScreen()
+        customView?.showVictoryScreen(opponentGuessWord: opponentGuessWord)
         
         navigationItem.leftBarButtonItem?.isEnabled = false
     }
     
-    func defeat()
+    func defeat(myGuessWord: String)
     {
-        customView?.showDefeatScreen()
+        customView?.showDefeatScreen(myGuessWord: myGuessWord)
         
         navigationItem.leftBarButtonItem?.isEnabled = false
     }

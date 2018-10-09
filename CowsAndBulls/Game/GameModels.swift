@@ -207,6 +207,8 @@ struct GameSession
     
     private var log: String
     
+    private var lastGuessAttempt: String
+    
     init(firstToGo: Bool, guessWord: String)
     {
         self.firstToGo = firstToGo
@@ -221,6 +223,8 @@ struct GameSession
         self.log = ""
         
         self.gameIsOver = false
+        
+        self.lastGuessAttempt = ""
     }
     
     func getGameTurn() -> UInt
@@ -258,6 +262,11 @@ struct GameSession
         }
         
         gameIsOver = true
+    }
+    
+    mutating func guessAttempt(guess: String)
+    {
+        lastGuessAttempt = guess
     }
     
     mutating func opponentGuessResponse(response: String) throws
@@ -313,6 +322,11 @@ struct GameSession
         var temp = String("\(gameTurn-1). \(string)\n")
         temp.append(log)
         log = temp
+    }
+    
+    func getLastGuessAttempt() -> String
+    {
+        return lastGuessAttempt
     }
 }
 

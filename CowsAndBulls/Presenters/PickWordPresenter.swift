@@ -79,6 +79,30 @@ extension PickWordPresenter : PickWordPresenterDelegate
             return
         }
         
+        // Guess word must not have repeating symbols
+        var symbols : [Int] = []
+        
+        for c in guessWord
+        {
+            if let symbol = Int(String(c))
+            {
+                if symbols.contains(symbol)
+                {
+                    delegate?.invalidGuessWord(error: "Guess word must not contain same digit twice")
+                    return
+                }
+                else
+                {
+                    symbols.append(symbol)
+                }
+            }
+            else
+            {
+                delegate?.invalidGuessWord(error: "Guess word must contain only digits")
+                return
+            }
+        }
+        
         guessWordPicked = guessWord
         
         // If opponent has also picked word, then lets play
