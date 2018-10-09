@@ -167,7 +167,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
             return
         }
         
-        print("GameSetupPresenter we have agree with the opponent on the game setup values! Guess words will be \(selectedGuessWordCharacterCount) characters long and we are \(selectedTurnToGo.rawValue) to go!")
+        print("GameSetupPresenter we have agreed with the opponent on the game setup values! Guess words will be \(selectedGuessWordCharacterCount) characters long and we are \(selectedTurnToGo.rawValue) to go!")
         
         delegate?.goToPickWord(communicator: communicator, connectionData: connectionData, guessWordLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo)
     }

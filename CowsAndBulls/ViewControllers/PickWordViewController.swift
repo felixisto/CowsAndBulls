@@ -46,8 +46,8 @@ class PickWordViewController: UIViewController
     {
         super.viewWillAppear(animated)
         
-        // Reset the current screen to its default values
-        self.presenter?.resetToDefaults()
+        // Prepare for new game
+        self.presenter?.prepareForNewGame()
         
         customView?.clearPincode()
         customView?.setOpponentStatus(status: "Opponent is picking a guess word...")

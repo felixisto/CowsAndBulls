@@ -299,7 +299,7 @@ extension GameplayView
             self.layoutOutcomeScreen.alpha = 0
             
             self.labelOutcome.isHidden = false
-            self.labelOutcome.text = "YOU WIN!\n\(guessWord)"
+            self.labelOutcome.text = "YOU WIN!\nYou guessed \(guessWord)"
             self.labelOutcome.tintColor = .white
             
             UIView.animate(withDuration: 1.0, animations: {
@@ -317,7 +317,7 @@ extension GameplayView
             self.layoutOutcomeScreen.alpha = 0
             
             self.labelOutcome.isHidden = false
-            self.labelOutcome.text = "YOU LOSE\n\(guessWord)"
+            self.labelOutcome.text = "YOU LOSE!\nOpponent guessed \(guessWord)"
             self.labelOutcome.tintColor = .white
             
             UIView.animate(withDuration: 1.0, animations: {

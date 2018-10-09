@@ -20,7 +20,7 @@ let CommunicatorMessageEndingTag = "$%\n!#!"
 
 let CommunicatorPingInterval : Double = 0.1
 let CommunicatorPingDelayMinimum : Double = 0.4
-let CommunicatorPingTimeout : Double = 30.0
+let CommunicatorPingTimeout : Double = 15.0
 
 // Generic interface that allows you to interact with either host communicator or client communicator
 protocol Communicator
@@ -221,7 +221,6 @@ class CommunicatorHost : Communicator
                         if communicator.isConnectedToClient
                         {
                             communicator.lastPingFromClient = Date()
-                            print("\(communicator.lastPingFromClient!) Ping from client")
                         }
                     case .PLAYSETUP:
                         if communicator.isConnectedToClient
@@ -763,7 +762,6 @@ class CommunicatorClient : Communicator
                         if communicator.isConnectedToServer
                         {
                             communicator.lastPingFromServer = Date()
-                            print("\(communicator.lastPingFromServer!) Ping from server")
                         }
                     case .PLAYSETUP:
                         if communicator.isConnectedToServer

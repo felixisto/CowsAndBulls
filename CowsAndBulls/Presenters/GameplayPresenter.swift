@@ -58,7 +58,7 @@ extension GameplayPresenter : GameplayPresenterDelegate
     
     func guess(guess: String)
     {
-        print("GameplayPresenter sending guess to other player \(guess)")
+        print("GameplayPresenter sending guess to opponent \(guess)")
         
         gameSession.guessAttempt(guess: guess)
         

@@ -15,7 +15,7 @@ protocol PickWordPresenterDelegate : class
     
     func tryToPlay(guessWord: String)
     
-    func resetToDefaults()
+    func prepareForNewGame()
 }
 
 class PickWordPresenter : NSObject
@@ -27,7 +27,7 @@ class PickWordPresenter : NSObject
     var connectionData: CommunicatorInitialConnection
     
     let guessWordLength: UInt
-    let turnToGo: GameTurn
+    var turnToGo: GameTurn
     
     var guessWordPicked: String
     var turnValue: UInt
@@ -120,13 +120,15 @@ extension PickWordPresenter : PickWordPresenterDelegate
         communicator?.sendPlaySessionMessage()
     }
     
-    func resetToDefaults()
+    func prepareForNewGame()
     {
         self.guessWordPicked = ""
         self.turnValue = 0
         
         self.opponentHasPickedGuessWord = false
         self.opponentPickedTurn = 0
+        
+        self.turnToGo = self.turnToGo.nextTurn()
     }
 }
 
