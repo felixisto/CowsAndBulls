@@ -2,6 +2,8 @@ Created: 2018 October
 
 Technologies: Swift 4.2, SwiftSocket 2.0.2, PinCodeTextField 0.1.0
 
+Usage: Game
+
 Cows and Bulls video game on iOS.
 
 Must be played on a LAN network. This is the numerical version of "Cows and Bulls".
