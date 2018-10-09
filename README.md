@@ -1,6 +1,7 @@
-Cows and Bulls game. Must be played online, on a LAN network. This is the numerical version of the game.
-
+Cows and Bulls video game on iOS.
 Technologies: Swift 4.2, SwiftSocket, PinCodeTextField
+
+Must be played on a LAN network. This is the numerical version of "Cows and Bulls".
 
 # Main Screen
 ![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn0.png)
