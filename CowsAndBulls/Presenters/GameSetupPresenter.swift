@@ -214,7 +214,7 @@ extension GameSetupPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
+    func opponentPickedPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
         // Zero value means mismatch, always
         guard guessWordLength > 0 else {
@@ -250,7 +250,7 @@ extension GameSetupPresenter : NetworkObserver
         }
     }
     
-    func opponentDidSendPlaySession()
+    func opponentPickedPlaySession()
     {
         
     }

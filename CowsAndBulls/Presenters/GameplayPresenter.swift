@@ -107,12 +107,12 @@ extension GameplayPresenter : NetworkObserver
         delegate?.connectionFailure(errorMessage: error)
     }
     
-    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
+    func opponentPickedPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
         
     }
     
-    func opponentDidSendPlaySession()
+    func opponentPickedPlaySession()
     {
         
     }

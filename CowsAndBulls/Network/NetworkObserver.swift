@@ -38,10 +38,10 @@ protocol NetworkObserver: class
     func failedToConnect()
     
     // Game Setup scene
-    func opponentSendPlaySetup(guessWordLength: UInt, turnToGo: String)
+    func opponentPickedPlaySetup(guessWordLength: UInt, turnToGo: String)
     
     // Game Pick Word scene
-    func opponentDidSendPlaySession()
+    func opponentPickedPlaySession()
     
     // Game Play scene
     func opponentGuess(guess: String)

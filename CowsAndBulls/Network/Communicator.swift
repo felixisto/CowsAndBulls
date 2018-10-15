@@ -16,8 +16,6 @@ let CommunicatorHostUpdateDelay : Double = 0.1
 
 let CommunicatorClientConnectTimeout : Double = 10.0
 
-let CommunicatorMessageEndingTag = "$%\n!#!"
-
 let CommunicatorPingInterval : Double = 0.1
 let CommunicatorPingDelayMinimum : Double = 0.4
 let CommunicatorPingTimeout : Double = 15.0
@@ -32,10 +30,7 @@ protocol Communicator
     
     func quit()
     
-    func sendMessageToClient(message: String)
-    func sendActionMessage(message: String)
     func sendQuitMessage()
-    
     func sendPlaySetupMessage(length: UInt, turnToGo: String)
     func sendAlertPickedGuessWordMessage()
     func sendPlaySessionMessage()
@@ -66,10 +61,9 @@ class CommunicatorHost : Communicator
     
     private var server: TCPServer?
     private var client: TCPClient?
+    private var reader: CommunicatorReader?
     
     private var isConnectedToClient = false
-    
-    private var clientMessage : String = ""
     
     private var lastPingFromClient : Date?
     private var lastPingRetryingToConnect : Bool
@@ -101,13 +95,13 @@ class CommunicatorHost : Communicator
     {
         server?.close()
         client?.close()
+        reader?.stop()
         
         server = nil
         client = nil
+        reader = nil
         
         isConnectedToClient = false
-        
-        clientMessage = ""
         
         lastPingFromClient = nil
         lastPingRetryingToConnect = false
@@ -163,215 +157,6 @@ class CommunicatorHost : Communicator
             }
         }
     }
-    
-    private func connectionLoop()
-    {
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let communicator = self else
-            {
-                return
-            }
-            
-            guard let client = communicator.client else
-            {
-                return
-            }
-            
-            // Read output from server into the property @serverMessage
-            if let bytes = client.read(1, timeout: 10)
-            {
-                if let string = String(bytes: bytes, encoding: .utf8)
-                {
-                    communicator.clientMessage.append(string)
-                }
-            }
-            
-            // Check if these variables are valid, again
-            guard let _ = self else
-            {
-                return
-            }
-            
-            guard let _ = communicator.client else
-            {
-                return
-            }
-            
-            // Full message received?
-            if communicator.clientMessage.hasSuffix(CommunicatorMessageEndingTag)
-            {
-                let message = communicator.clientMessage.replacingOccurrences(of: CommunicatorMessageEndingTag, with: "")
-                communicator.clientMessage = ""
-                
-                if let command = CommunicatorCommands.extractCommand(fromMessage: message)
-                {
-                    switch command
-                    {
-                    case .GREETINGS:
-                        if !communicator.isConnectedToClient
-                        {
-                            communicator.onConnect(client: client, command: command, message: message)
-                        }
-                    case .QUIT:
-                        if communicator.isConnectedToClient
-                        {
-                            communicator.onClientQuit()
-                        }
-                    case .PING:
-                        if communicator.isConnectedToClient
-                        {
-                            communicator.lastPingFromClient = Date()
-                        }
-                    case .PLAYSETUP:
-                        if communicator.isConnectedToClient
-                        {
-                            let param1 = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            let param2 = CommunicatorCommands.extractSecondParameter(command: command, message: message)
-                            
-                            if param1 != nil && param2 != nil
-                            {
-                                if let wordLength = UInt(param1!)
-                                {
-                                    // Observers notification
-                                    DispatchQueue.main.async {
-                                        for observer in communicator.observers
-                                        {
-                                            observer.value.value?.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    case .PLAYSESSION:
-                        if communicator.isConnectedToClient
-                        {
-                            // Observers notification
-                            DispatchQueue.main.async {
-                                for observer in communicator.observers
-                                {
-                                    observer.value.value?.opponentDidSendPlaySession()
-                                }
-                            }
-                        }
-                    case .GAMEGUESS:
-                        if communicator.isConnectedToClient
-                        {
-                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            {
-                                // Observers notification
-                                DispatchQueue.main.async {
-                                    for observer in communicator.observers
-                                    {
-                                        observer.value.value?.opponentGuess(guess: parameter)
-                                    }
-                                }
-                            }
-                        }
-                    case .GAMEGUESSRESPONSE:
-                        if communicator.isConnectedToClient
-                        {
-                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            {
-                                // Observers notification
-                                DispatchQueue.main.async {
-                                    for observer in communicator.observers
-                                    {
-                                        observer.value.value?.guessResponse(response: parameter)
-                                    }
-                                }
-                            }
-                        }
-                    case .GAMECORRECTGUESS:
-                        if communicator.isConnectedToClient
-                        {
-                            // Observers notification
-                            DispatchQueue.main.async {
-                                for observer in communicator.observers
-                                {
-                                    observer.value.value?.correctGuess()
-                                }
-                            }
-                        }
-                    default:
-                        print("Bad command \(command.rawValue)!")
-                    }
-                }
-            }
-            
-            // Repeat
-            communicator.connectionLoop()
-        }
-    }
-    
-    private func pingLoop()
-    {
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + CommunicatorPingInterval, execute: { [weak self] in
-            guard let communicator = self else
-            {
-                return
-            }
-            
-            guard let client = communicator.client else
-            {
-                return
-            }
-            
-            if communicator.isConnectedToClient
-            {
-                let _ = client.send(string: CommunicatorCommands.constructPingMessage())
-                
-                // Check if server has been pinging back
-                if let lastPingFromClient = communicator.lastPingFromClient
-                {
-                    let currentDate = Date()
-                    
-                    let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromClient))
-                    
-                    let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
-                    
-                    // Lost connection
-                    if noPingReceivedShort
-                    {
-                        let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
-                        
-                        // Timeout, end the connection
-                        if pingTimeout
-                        {
-                            communicator.onDisconnected()
-                            return
-                        }
-                        else
-                        {
-                            // Try to reconnect
-                            if !communicator.lastPingRetryingToConnect
-                            {
-                                communicator.lostConnectionAttemptingToReconnect()
-                            }
-                        }
-                    }
-                    // Reconnect, if connection was lost
-                    else
-                    {
-                        if communicator.lastPingRetryingToConnect
-                        {
-                            communicator.reconnect()
-                        }
-                    }
-                }
-                else
-                {
-                    print("Communicator last ping date was not initialized properly")
-                    
-                    communicator.onDisconnected()
-                    
-                    return
-                }
-            }
-            
-            // Repeat
-            communicator.pingLoop()
-        })
-    }
 }
 
 // Observers
@@ -399,15 +184,14 @@ extension CommunicatorHost
         print("CommunicatorHost: sending greetings to client: \(client.address):\(client.port), waiting to be greeted back on \(Date())")
         
         self.client = client
-        self.clientMessage = ""
+        self.reader = CommunicatorReader(socket: client)
+        self.reader?.delegate = self
+        self.reader?.begin()
         self.lastPingFromClient = Date()
         
         // Send greetings to client
-        let _ = client.send(string: CommunicatorCommands.constructGreetingsMessage())
-        
-        // Start loops
-        connectionLoop()
-        pingLoop()
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().name)
+        let _ = client.send(string: dataToSend!.getData())
         
         // Observers notification
         DispatchQueue.main.async {
@@ -418,7 +202,7 @@ extension CommunicatorHost
         }
     }
     
-    private func onConnect(client: TCPClient, command: CommunicatorCommand, message: String)
+    private func onConnect(client: TCPClient, parameter: String)
     {
         print("CommunicatorHost: connected with client: \(client.address):\(client.port) on \(Date())")
         
@@ -430,7 +214,7 @@ extension CommunicatorHost
             {
                 let dateConnected = Date()
                 let otherPlayerAddress = client.address
-                let otherPlayerName = CommunicatorCommands.extractFirstParameter(command: command, message: message) ?? "Unknown"
+                let otherPlayerName = parameter
                 let otherPlayerColor = UIColor.red
                 
                 for observer in self.observers
@@ -506,35 +290,14 @@ extension CommunicatorHost
 // Send message to other end
 extension CommunicatorHost
 {
-    public func sendMessageToClient(message: String)
-    {
-        guard let client = self.client else {
-            return
-        }
-        
-        let _ = client.send(string: message)
-        
-        print("CommunicatorHost: sending chat message to client")
-    }
-    
-    public func sendActionMessage(message: String)
-    {
-        guard let client = self.client else {
-            return
-        }
-        
-        let _ = client.send(string: message)
-        
-        print("CommunicatorHost: sending action message to client")
-    }
-    
     public func sendQuitMessage()
     {
         guard let client = self.client else {
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructQuitMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.QUIT.rawValue)
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending quit message to client")
     }
@@ -545,7 +308,8 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructPlaySetupMessage(length: length, turnToGo: turnToGo))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending play setup message to client")
     }
@@ -556,7 +320,8 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructPickedGuessWordMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let _ = client.send(string:dataToSend!.getData())
         
         print("CommunicatorHost: sending alert picked guess word message to client")
     }
@@ -567,7 +332,8 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructPlaySessionMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending play session message to client")
     }
@@ -578,7 +344,8 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructGameGuessMessage(guess: guess))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESS.rawValue, parameter: guess)
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess message to client")
     }
@@ -589,7 +356,8 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructGameGuessResponseMessage(response: response))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESSRESPONSE.rawValue, parameter: response)
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess response message to client")
     }
@@ -600,9 +368,155 @@ extension CommunicatorHost
             return
         }
         
-        let _ = client.send(string: CommunicatorCommands.constructGameCorrectGuessMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMECORRECTGUESS.rawValue, parameter: "")
+        let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess correct message to client")
+    }
+}
+
+// Reader delegates
+extension CommunicatorHost : CommunicatorReaderDelegate
+{
+    func ping()
+    {
+        lastPingFromClient = Date()
+        
+        if lastPingRetryingToConnect
+        {
+            reconnect()
+        }
+        
+        lastPingRetryingToConnect = false
+    }
+    
+    func pingRefresh()
+    {
+        // Check if server has been pinging back
+        if let lastPingFromClient = self.lastPingFromClient
+        {
+            let currentDate = Date()
+            
+            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromClient))
+            
+            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+            
+            // Lost connection
+            if noPingReceivedShort
+            {
+                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                
+                // Timeout, end the connection
+                if pingTimeout
+                {
+                    onDisconnected()
+                    return
+                }
+                else
+                {
+                    // Try to reconnect
+                    if !lastPingRetryingToConnect
+                    {
+                        lostConnectionAttemptingToReconnect()
+                    }
+                }
+            }
+        }
+        else
+        {
+            print("Communicator last ping date was not initialized properly")
+            
+            onDisconnected()
+            
+            return
+        }
+    }
+    
+    func greetingsMessageReceived(parameter: String)
+    {
+        guard self.client != nil else {
+            return
+        }
+        
+        if !isConnectedToClient
+        {
+            onConnect(client: self.client!, parameter: parameter)
+        }
+    }
+    
+    func messageReceived(command: String, parameter: String)
+    {
+        guard let cmd = CommunicatorCommand(rawValue: command) else {
+            return
+        }
+        
+        guard self.client != nil else {
+            return
+        }
+        
+        if !isConnectedToClient
+        {
+            return
+        }
+        
+        switch cmd
+        {
+        case .QUIT:
+            onClientQuit()
+        case .PLAYSETUP:
+            let parameters = parameter.split(separator: " ")
+            
+            guard parameters.count == 2 else {
+                return
+            }
+            
+            let param1 = parameters.first!.description
+            let param2 = parameters[1].description
+            
+            if let wordLength = UInt(param1)
+            {
+                // Observers notification
+                DispatchQueue.main.async {
+                    for observer in self.observers
+                    {
+                        observer.value.value?.opponentPickedPlaySetup(guessWordLength: wordLength, turnToGo: param2)
+                    }
+                }
+            }
+        case .PLAYSESSION:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentPickedPlaySession()
+                }
+            }
+        case .GAMEGUESS:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentGuess(guess: parameter)
+                }
+            }
+        case .GAMEGUESSRESPONSE:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.guessResponse(response: parameter)
+                }
+            }
+        case .GAMECORRECTGUESS:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.correctGuess()
+                }
+            }
+        default: break
+        }
     }
 }
 
@@ -611,10 +525,9 @@ class CommunicatorClient : Communicator
     private var observers: [String : WeakNetworkObserver] = [:]
     
     private var socket: TCPClient?
+    private var reader: CommunicatorReader?
     
     private var isConnectedToServer: Bool = false
-    
-    private var serverMessage: String = ""
     
     private var lastPingFromServer : Date?
     private var lastPingRetryingToConnect : Bool
@@ -641,11 +554,12 @@ class CommunicatorClient : Communicator
     func destroy()
     {
         socket?.close()
+        reader?.stop()
+        
         socket = nil
+        reader = nil
         
         isConnectedToServer = false
-        
-        serverMessage = ""
         
         lastPingFromServer = nil
         lastPingRetryingToConnect = false
@@ -704,216 +618,6 @@ class CommunicatorClient : Communicator
             }
         }
     }
-    
-    private func connectionLoop()
-    {
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let communicator = self else
-            {
-                return
-            }
-            
-            guard let socket = communicator.socket else
-            {
-                return
-            }
-            
-            // Read output from server into the property @serverMessage
-            if let bytes = socket.read(1, timeout: 10)
-            {
-                if let string = String(bytes: bytes, encoding: .utf8)
-                {
-                    self?.serverMessage.append(string)
-                }
-            }
-            
-            // Check if these variables are valid, again
-            guard let _ = self else
-            {
-                return
-            }
-            
-            guard let _ = communicator.socket else
-            {
-                return
-            }
-            
-            // Full message received?
-            if communicator.serverMessage.hasSuffix(CommunicatorMessageEndingTag)
-            {
-                let message = communicator.serverMessage.replacingOccurrences(of: CommunicatorMessageEndingTag, with: "")
-                communicator.serverMessage = ""
-                
-                if let command = CommunicatorCommands.extractCommand(fromMessage: message)
-                {
-                    switch command
-                    {
-                    case .GREETINGS:
-                        if !communicator.isConnectedToServer
-                        {
-                            communicator.onConnected(command: command, message: message)
-                        }
-                    case .QUIT:
-                        if communicator.isConnectedToServer
-                        {
-                            communicator.onServerQuit()
-                        }
-                    case .PING:
-                        if communicator.isConnectedToServer
-                        {
-                            communicator.lastPingFromServer = Date()
-                        }
-                    case .PLAYSETUP:
-                        if communicator.isConnectedToServer
-                        {
-                            let param1 = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            let param2 = CommunicatorCommands.extractSecondParameter(command: command, message: message)
-                            
-                            if param1 != nil && param2 != nil
-                            {
-                                if let wordLength = UInt(param1!)
-                                {
-                                    // Observers notification
-                                    DispatchQueue.main.async {
-                                        for observer in communicator.observers
-                                        {
-                                            observer.value.value?.opponentSendPlaySetup(guessWordLength: wordLength, turnToGo: param2!)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    case .PLAYSESSION:
-                        if communicator.isConnectedToServer
-                        {
-                            // Observers notification
-                            DispatchQueue.main.async {
-                                for observer in communicator.observers
-                                {
-                                    observer.value.value?.opponentDidSendPlaySession()
-                                }
-                            }
-                        }
-                    case .GAMEGUESS:
-                        if communicator.isConnectedToServer
-                        {
-                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            {
-                                // Observers notification
-                                DispatchQueue.main.async {
-                                    for observer in communicator.observers
-                                    {
-                                        observer.value.value?.opponentGuess(guess: parameter)
-                                    }
-                                }
-                            }
-                        }
-                    case .GAMEGUESSRESPONSE:
-                        if communicator.isConnectedToServer
-                        {
-                            if let parameter = CommunicatorCommands.extractFirstParameter(command: command, message: message)
-                            {
-                                // Observers notification
-                                DispatchQueue.main.async {
-                                    for observer in communicator.observers
-                                    {
-                                        observer.value.value?.guessResponse(response: parameter)
-                                    }
-                                }
-                            }
-                        }
-                    case .GAMECORRECTGUESS:
-                        if communicator.isConnectedToServer
-                        {
-                            // Observers notification
-                            DispatchQueue.main.async {
-                                for observer in communicator.observers
-                                {
-                                    observer.value.value?.correctGuess()
-                                }
-                            }
-                        }
-                    default:
-                        print("Bad command \(command.rawValue)!")
-                    }
-                }
-            }
-            
-            // Repeat
-            communicator.connectionLoop()
-        }
-    }
-    
-    private func pingLoop()
-    {
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + CommunicatorPingInterval, execute: { [weak self] in
-            guard let communicator = self else
-            {
-                return
-            }
-            
-            guard let socket = communicator.socket else
-            {
-                return
-            }
-            
-            // Ping server
-            if communicator.isConnectedToServer
-            {
-                let _ = socket.send(string: CommunicatorCommands.constructPingMessage())
-                
-                // Check if server has been pinging back
-                if let lastPingFromServer = communicator.lastPingFromServer
-                {
-                    let currentDate = Date()
-                    
-                    let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromServer))
-                    
-                    let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
-                    
-                    // Lost connection
-                    if noPingReceivedShort
-                    {
-                        let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
-                        
-                        // Timeout, end the connection
-                        if pingTimeout
-                        {
-                            communicator.onDisconnected()
-                            return
-                        }
-                        else
-                        {
-                            // Try to reconnect
-                            if !communicator.lastPingRetryingToConnect
-                            {
-                                communicator.lostConnectionAttemptingToReconnect()
-                            }
-                        }
-                    }
-                        // Reconnect, if connection was lost
-                    else
-                    {
-                        if communicator.lastPingRetryingToConnect
-                        {
-                            communicator.reconnect()
-                        }
-                    }
-                }
-                else
-                {
-                    print("Communicator last ping date was not initialized properly")
-                    
-                    communicator.onDisconnected()
-                    
-                    return
-                }
-            }
-            
-            // Repeat
-            communicator.pingLoop()
-        })
-    }
 }
 
 // Observers
@@ -942,12 +646,10 @@ extension CommunicatorClient
     {
         print("CommunicatorClient: beginning new connection with server on \(Date())")
         
-        self.serverMessage = ""
+        self.reader = CommunicatorReader(socket: socket!)
+        self.reader?.delegate = self
+        self.reader?.begin()
         self.lastPingFromServer = Date()
-        
-        // Start loops
-        connectionLoop()
-        pingLoop()
         
         // Observers notification
         DispatchQueue.main.async {
@@ -958,14 +660,15 @@ extension CommunicatorClient
         }
     }
     
-    private func onConnected(command: CommunicatorCommand, message: String)
+    private func onConnected(parameter: String)
     {
         print("CommunicatorClient: received greetings, sending greetings message to server on \(Date())")
         
         isConnectedToServer = true
         
         // Send greetings BACK to server
-        let _ = socket?.send(string: CommunicatorCommands.constructGreetingsMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().name)
+        let _ = socket?.send(string: dataToSend!.getData())
         
         // Observers notification
         DispatchQueue.main.async {
@@ -973,7 +676,7 @@ extension CommunicatorClient
             {
                 let dateConnected = Date()
                 let otherPlayerAddress = socket.address
-                let otherPlayerName = CommunicatorCommands.extractFirstParameter(command: command, message: message) ?? "Unknown"
+                let otherPlayerName = parameter
                 let otherPlayerColor = UIColor.red
                 
                 for observer in self.observers
@@ -1044,35 +747,14 @@ extension CommunicatorClient
 // Send message to other end
 extension CommunicatorClient
 {
-    public func sendMessageToClient(message: String)
-    {
-        guard let socket = self.socket else {
-            return
-        }
-        
-        let _ = socket.send(string: message)
-        
-        print("CommunicatorClient: sending chat message to server")
-    }
-    
-    public func sendActionMessage(message: String)
-    {
-        guard let socket = self.socket else {
-            return
-        }
-        
-        let _ = socket.send(string: message)
-        
-        print("CommunicatorClient: sending action message to server")
-    }
-    
     public func sendQuitMessage()
     {
         guard let socket = self.socket else {
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructQuitMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.QUIT.rawValue)
+        let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending quit message to server")
     }
@@ -1083,9 +765,10 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructPlaySetupMessage(length: length, turnToGo: turnToGo))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
+        let _ = socket.send(string: dataToSend!.getData())
         
-        print("CommunicatorClient: sending guess word length message to server")
+        print("CommunicatorClient: sending play setup message to server")
     }
     
     public func sendAlertPickedGuessWordMessage()
@@ -1094,9 +777,10 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructPickedGuessWordMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let _ = socket.send(string:dataToSend!.getData())
         
-        print("CommunicatorClient: sending notification to client that a guess word has been picked")
+        print("CommunicatorClient: sending alert picked guess word message to server")
     }
     
     public func sendPlaySessionMessage()
@@ -1105,9 +789,10 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructPlaySessionMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let _ = socket.send(string: dataToSend!.getData())
         
-        print("CommunicatorClient: sending notification to client that a guess word has been picked")
+        print("CommunicatorClient: sending play session message to server")
     }
     
     func sendGuessMessage(guess: String)
@@ -1116,7 +801,8 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructGameGuessMessage(guess: guess))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESS.rawValue, parameter: guess)
+        let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess message to server")
     }
@@ -1127,7 +813,8 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructGameGuessResponseMessage(response: response))
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESSRESPONSE.rawValue, parameter: response)
+        let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess response message to server")
     }
@@ -1138,9 +825,155 @@ extension CommunicatorClient
             return
         }
         
-        let _ = socket.send(string: CommunicatorCommands.constructGameCorrectGuessMessage())
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMECORRECTGUESS.rawValue, parameter: "")
+        let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess correct message to server")
+    }
+}
+
+// Reader delegates
+extension CommunicatorClient : CommunicatorReaderDelegate
+{
+    func ping()
+    {
+        lastPingFromServer = Date()
+        
+        if lastPingRetryingToConnect
+        {
+            reconnect()
+        }
+        
+        lastPingRetryingToConnect = false
+    }
+    
+    func pingRefresh()
+    {
+        // Check if server has been pinging back
+        if let lastPingFromServer = self.lastPingFromServer
+        {
+            let currentDate = Date()
+            
+            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromServer))
+            
+            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+            
+            // Lost connection
+            if noPingReceivedShort
+            {
+                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                
+                // Timeout, end the connection
+                if pingTimeout
+                {
+                    onDisconnected()
+                    return
+                }
+                else
+                {
+                    // Try to reconnect
+                    if !lastPingRetryingToConnect
+                    {
+                        lostConnectionAttemptingToReconnect()
+                    }
+                }
+            }
+        }
+        else
+        {
+            print("Communicator last ping date was not initialized properly")
+            
+            onDisconnected()
+            
+            return
+        }
+    }
+    
+    func greetingsMessageReceived(parameter: String)
+    {
+        guard self.socket != nil else {
+            return
+        }
+        
+        if !isConnectedToServer
+        {
+            onConnected(parameter: parameter)
+        }
+    }
+    
+    func messageReceived(command: String, parameter: String)
+    {
+        guard let cmd = CommunicatorCommand(rawValue: command) else {
+            return
+        }
+        
+        guard self.socket != nil else {
+            return
+        }
+        
+        if !isConnectedToServer
+        {
+            return
+        }
+        
+        switch cmd
+        {
+        case .QUIT:
+            onServerQuit()
+        case .PLAYSETUP:
+            let parameters = parameter.split(separator: " ")
+            
+            guard parameters.count == 2 else {
+                return
+            }
+            
+            let param1 = parameters.first!.description
+            let param2 = parameters[1].description
+            
+            if let wordLength = UInt(param1)
+            {
+                // Observers notification
+                DispatchQueue.main.async {
+                    for observer in self.observers
+                    {
+                        observer.value.value?.opponentPickedPlaySetup(guessWordLength: wordLength, turnToGo: param2)
+                    }
+                }
+            }
+        case .PLAYSESSION:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentPickedPlaySession()
+                }
+            }
+        case .GAMEGUESS:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentGuess(guess: parameter)
+                }
+            }
+        case .GAMEGUESSRESPONSE:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.guessResponse(response: parameter)
+                }
+            }
+        case .GAMECORRECTGUESS:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.correctGuess()
+                }
+            }
+        default: break
+        }
     }
 }
 

@@ -45,11 +45,15 @@ class PickWordViewController: UIViewController
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool)
+    {
         // Prepare for new game
         self.presenter?.prepareForNewGame()
         
         customView?.clearPincode()
+        
         customView?.setOpponentStatus(status: "Opponent is picking a guess word...")
     }
     
