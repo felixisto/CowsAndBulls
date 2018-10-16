@@ -66,7 +66,7 @@ extension GameplayPresenter : GameplayPresenterDelegate
     }
 }
 
-extension GameplayPresenter : NetworkObserver
+extension GameplayPresenter : CommunicatorObserver
 {
     func beginConnect()
     {

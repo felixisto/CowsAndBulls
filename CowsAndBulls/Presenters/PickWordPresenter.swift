@@ -132,7 +132,7 @@ extension PickWordPresenter : PickWordPresenterDelegate
     }
 }
 
-extension PickWordPresenter : NetworkObserver
+extension PickWordPresenter : CommunicatorObserver
 {
     func beginConnect()
     {

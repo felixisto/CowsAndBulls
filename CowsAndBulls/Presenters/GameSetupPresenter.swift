@@ -173,7 +173,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
     }
 }
 
-extension GameSetupPresenter : NetworkObserver
+extension GameSetupPresenter : CommunicatorObserver
 {
     func beginConnect()
     {

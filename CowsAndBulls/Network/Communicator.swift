@@ -25,7 +25,7 @@ protocol Communicator
 {
     func isConnected() -> Bool
     
-    func attachObserver(observer: NetworkObserver?, key: String)
+    func attachObserver(observer: CommunicatorObserver?, key: String)
     func detachObserver(key: String)
     
     func quit()
@@ -57,7 +57,7 @@ struct CommunicatorInitialConnection
 
 class CommunicatorHost : Communicator
 {
-    private var observers: [String : WeakNetworkObserver] = [:]
+    private var observers: [String : CommunicatorObserverValue] = [:]
     
     private var server: TCPServer?
     private var client: TCPClient?
@@ -162,11 +162,11 @@ class CommunicatorHost : Communicator
 // Observers
 extension CommunicatorHost
 {
-    public func attachObserver(observer: NetworkObserver?, key: String)
+    public func attachObserver(observer: CommunicatorObserver?, key: String)
     {
         if let obs = observer
         {
-            self.observers[key] = WeakNetworkObserver(obs)
+            self.observers[key] = CommunicatorObserverValue(obs)
         }
     }
     
@@ -190,7 +190,7 @@ extension CommunicatorHost
         self.lastPingFromClient = Date()
         
         // Send greetings to client
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().name)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().value)
         let _ = client.send(string: dataToSend!.getData())
         
         // Observers notification
@@ -522,7 +522,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
 
 class CommunicatorClient : Communicator
 {
-    private var observers: [String : WeakNetworkObserver] = [:]
+    private var observers: [String : CommunicatorObserverValue] = [:]
     
     private var socket: TCPClient?
     private var reader: CommunicatorReader?
@@ -625,11 +625,11 @@ class CommunicatorClient : Communicator
 // Call them from main thread only
 extension CommunicatorClient
 {
-    public func attachObserver(observer: NetworkObserver?, key: String)
+    public func attachObserver(observer: CommunicatorObserver?, key: String)
     {
         if let obs = observer
         {
-            self.observers[key] = WeakNetworkObserver(obs)
+            self.observers[key] = CommunicatorObserverValue(obs)
         }
     }
     
@@ -667,7 +667,7 @@ extension CommunicatorClient
         isConnectedToServer = true
         
         // Send greetings BACK to server
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().name)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().value)
         let _ = socket?.send(string: dataToSend!.getData())
         
         // Observers notification

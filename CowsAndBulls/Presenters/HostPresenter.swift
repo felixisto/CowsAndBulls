@@ -65,7 +65,7 @@ extension HostPresenter : HostPresenterDelegate
     }
 }
 
-extension HostPresenter : NetworkObserver
+extension HostPresenter : CommunicatorObserver
 {
     func beginConnect()
     {

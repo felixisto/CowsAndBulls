@@ -8,23 +8,23 @@
 
 import Foundation
 
-struct WeakNetworkObserver
+struct CommunicatorObserverValue
 {
-    weak var observer : NetworkObserver?
+    weak var observer : CommunicatorObserver?
     
-    init(_ observer: NetworkObserver)
+    init(_ observer: CommunicatorObserver)
     {
         self.observer = observer
     }
     
-    var value : NetworkObserver? {
+    var value : CommunicatorObserver? {
         get {
            return observer
         }
     }
 }
 
-protocol NetworkObserver: class
+protocol CommunicatorObserver: class
 {
     // Connection status
     func lostConnectingAttemptingToReconnect()

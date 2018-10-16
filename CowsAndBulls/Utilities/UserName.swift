@@ -10,17 +10,17 @@ import UIKit
 
 struct UserName
 {
-    let name : String
+    let value : String
     
     init()
     {
         if let n = UIDevice.current.name.split(separator: " ").first
         {
-            self.name = n.description
+            self.value = n.description
         }
         else
         {
-            self.name = "Unknown"
+            self.value = "Unknown"
         }
     }
 }

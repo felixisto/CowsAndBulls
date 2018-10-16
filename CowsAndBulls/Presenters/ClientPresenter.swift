@@ -64,7 +64,7 @@ extension ClientPresenter : ClientPresenterDelegate
     }
 }
 
-extension ClientPresenter : NetworkObserver
+extension ClientPresenter : CommunicatorObserver
 {
     func beginConnect()
     {
