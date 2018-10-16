@@ -11,5 +11,5 @@ import Foundation
 struct GameConstants
 {
     static let GuessWordCharacterCountMin : UInt = 4
-    static let GuessWordCharacterCountMax : UInt = 6
+    static let GuessWordCharacterCountMax : UInt = 7
 }
