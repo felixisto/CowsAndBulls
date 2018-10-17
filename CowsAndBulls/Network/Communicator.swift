@@ -198,7 +198,7 @@ extension CommunicatorHost
         self.lastPingFromClient = Date()
         
         // Send greetings to client
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().value)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GREETINGS.rawValue, parameter: UserName().value)
         let _ = client.send(string: dataToSend!.getData())
         
         // Observers notification
@@ -324,7 +324,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.QUIT.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending quit message to client")
@@ -336,7 +336,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending play setup message to client")
@@ -348,7 +348,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
         let _ = client.send(string:dataToSend!.getData())
         
         print("CommunicatorHost: sending alert picked guess word message to client")
@@ -360,7 +360,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending play session message to client")
@@ -372,7 +372,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESS.rawValue, parameter: guess)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess message to client")
@@ -384,7 +384,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESSRESPONSE.rawValue, parameter: response)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess response message to client")
@@ -396,7 +396,7 @@ extension CommunicatorHost
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMECORRECTGUESS.rawValue, parameter: "")
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         let _ = client.send(string: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess correct message to client")
@@ -474,7 +474,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
     
     func messageReceived(command: String, parameter: String)
     {
-        guard let cmd = CommunicatorCommand(rawValue: command) else {
+        guard let cmd = CommunicatorCommands(rawValue: command) else {
             return
         }
         
@@ -722,7 +722,7 @@ extension CommunicatorClient
         isConnectedToServer = true
         
         // Send greetings BACK to server
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GREETINGS.rawValue, parameter: UserName().value)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GREETINGS.rawValue, parameter: UserName().value)
         let _ = socket?.send(string: dataToSend!.getData())
         
         // Observers notification
@@ -808,7 +808,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.QUIT.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending quit message to server")
@@ -820,7 +820,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending play setup message to server")
@@ -832,7 +832,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
         let _ = socket.send(string:dataToSend!.getData())
         
         print("CommunicatorClient: sending alert picked guess word message to server")
@@ -844,7 +844,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PLAYSESSION.rawValue)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending play session message to server")
@@ -856,7 +856,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESS.rawValue, parameter: guess)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess message to server")
@@ -868,7 +868,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMEGUESSRESPONSE.rawValue, parameter: response)
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess response message to server")
@@ -880,7 +880,7 @@ extension CommunicatorClient
             return
         }
         
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.GAMECORRECTGUESS.rawValue, parameter: "")
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         let _ = socket.send(string: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess correct message to server")
@@ -958,7 +958,7 @@ extension CommunicatorClient : CommunicatorReaderDelegate
     
     func messageReceived(command: String, parameter: String)
     {
-        guard let cmd = CommunicatorCommand(rawValue: command) else {
+        guard let cmd = CommunicatorCommands(rawValue: command) else {
             return
         }
         

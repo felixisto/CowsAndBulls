@@ -102,7 +102,7 @@ extension CommunicatorReader
                 // Message received
                 DispatchQueue.main.async {
                     // Upon receiving greetings, start the loop ping functionality
-                    if CommunicatorCommand(rawValue: command) == .GREETINGS
+                    if CommunicatorCommands(rawValue: command) == .GREETINGS
                     {
                         self.loopPing()
                         
@@ -112,7 +112,7 @@ extension CommunicatorReader
                     }
                     
                     // Ping received
-                    if CommunicatorCommand(rawValue: command) == .PING
+                    if CommunicatorCommands(rawValue: command) == .PING
                     {
                         self.delegate?.ping()
                         
@@ -140,7 +140,7 @@ extension CommunicatorReader
             }
             
             // Ping other end
-            let pingMessage = CommunicatorMessage.createWriteMessage(command: CommunicatorCommand.PING.rawValue)
+            let pingMessage = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PING.rawValue)
             
             let _ = self.socket.send(string: pingMessage!.getData())
             

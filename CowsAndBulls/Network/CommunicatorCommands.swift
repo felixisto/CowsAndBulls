@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum CommunicatorCommand : String
+enum CommunicatorCommands : String
 {
     case PING = "PING_"
     case GREETINGS = "GREET"
