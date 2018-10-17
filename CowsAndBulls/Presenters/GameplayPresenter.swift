@@ -53,7 +53,7 @@ extension GameplayPresenter : GameplayPresenterDelegate
     {
         print("GameplayPresenter quit")
         
-        communicator?.quit()
+        communicator?.terminate()
     }
     
     func guess(guess: String)

@@ -30,7 +30,7 @@ protocol Communicator
     func attachObserver(observer: CommunicatorObserver?, key: String)
     func detachObserver(key: String)
     
-    func quit()
+    func terminate()
     
     func sendQuitMessage()
     func sendPlaySetupMessage(length: UInt, turnToGo: String)
@@ -84,41 +84,47 @@ class CommunicatorHost : Communicator
         return isConnectedToClient
     }
     
-    func create() throws
+    private func reset()
     {
-        guard let address = LocalIPAddress.get() else {
-            throw CommunicatorError.invalidIPAddress
-        }
-        
-        server = TCPServer(address: address, port: CommunicatorDefaultPort)
-    }
-    
-    func destroy()
-    {
-        server?.close()
-        client?.close()
         reader?.stop()
+        client?.close()
+        server?.close()
         
-        server = nil
-        client = nil
         reader = nil
+        client = nil
+        server = nil
         
         isConnectedToClient = false
         
         lastPingFromClient = nil
         lastPingRetryingToConnect = false
+    }
+    
+    private func destroy()
+    {
+        reset()
         
         observers.removeAll()
     }
     
-    func quit()
+    func terminate()
     {
         sendQuitMessage()
         destroy()
     }
     
-    func start()
+    func start() throws
     {
+        guard server == nil else {
+            return
+        }
+        
+        guard let address = LocalIPAddress.get() else {
+            throw CommunicatorError.invalidIPAddress
+        }
+        
+        server = TCPServer(address: address, port: CommunicatorDefaultPort)
+        
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let communicator = self else {
                 return
@@ -210,10 +216,7 @@ extension CommunicatorHost
             {
                 if !communicator.isConnectedToClient
                 {
-                    communicator.client?.close()
-                    communicator.client = nil
-                    communicator.reader = nil
-                    communicator.lastPingFromClient = nil
+                    communicator.reset()
                     
                     // Observers notification
                     DispatchQueue.main.async {
@@ -576,7 +579,7 @@ class CommunicatorClient : Communicator
         
     }
     
-    func destroy()
+    private func reset()
     {
         socket?.close()
         reader?.stop()
@@ -588,11 +591,16 @@ class CommunicatorClient : Communicator
         
         lastPingFromServer = nil
         lastPingRetryingToConnect = false
+    }
+    
+    private func destroy()
+    {
+        reset()
         
         observers.removeAll()
     }
     
-    func quit()
+    func terminate()
     {
         sendQuitMessage()
         destroy()
@@ -691,10 +699,7 @@ extension CommunicatorClient
             {
                 if !communicator.isConnectedToServer
                 {
-                    communicator.socket?.close()
-                    communicator.socket = nil
-                    communicator.reader = nil
-                    communicator.lastPingFromServer = nil
+                    communicator.reset()
                     
                     // Observers notification
                     DispatchQueue.main.async {

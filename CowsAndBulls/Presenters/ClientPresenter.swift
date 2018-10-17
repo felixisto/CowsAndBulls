@@ -60,7 +60,7 @@ extension ClientPresenter : ClientPresenterDelegate
     {
         print("ClientPresenter: quit.")
         
-        communicator?.quit()
+        communicator?.terminate()
     }
 }
 

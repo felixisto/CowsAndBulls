@@ -89,7 +89,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
     {
         print("GameSetupPresenter quit")
         
-        communicator?.quit()
+        communicator?.terminate()
     }
     
     func didSelectGuessWordCharacterCount(number: UInt)

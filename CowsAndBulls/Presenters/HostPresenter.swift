@@ -43,7 +43,7 @@ extension HostPresenter : HostPresenterDelegate
         // Start server
         do
         {
-            try communicator?.create()
+            try communicator?.start()
         }
         catch
         {
@@ -53,15 +53,13 @@ extension HostPresenter : HostPresenterDelegate
             
             return
         }
-        
-        communicator?.start()
     }
     
     func quit()
     {
         print("HostPresenter: quit")
         
-        communicator?.quit()
+        communicator?.terminate()
     }
 }
 

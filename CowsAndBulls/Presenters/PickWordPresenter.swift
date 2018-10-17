@@ -70,7 +70,7 @@ extension PickWordPresenter : PickWordPresenterDelegate
     {
         print("PickWordPresenter quit")
         
-        communicator?.quit()
+        communicator?.terminate()
     }
     
     func tryToPlay(guessWord: String)
