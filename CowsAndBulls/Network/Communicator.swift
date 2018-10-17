@@ -630,6 +630,8 @@ class CommunicatorClient : Communicator
                     success = true
                     break
                 }
+                
+                sleep(1)
             }
             
             guard let _ = self else {

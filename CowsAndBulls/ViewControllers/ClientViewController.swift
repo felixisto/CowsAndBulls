@@ -98,6 +98,11 @@ extension ClientViewController : ClientViewDelegate
         customView?.stopConnecting()
         
         navigationItem.leftBarButtonItem?.isEnabled = true
+        
+        let alert = UIAlertController(title: "Error", message: "Could not find host server.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        navigationController?.present(alert, animated: true, completion: nil)
     }
     
     func timeout()
