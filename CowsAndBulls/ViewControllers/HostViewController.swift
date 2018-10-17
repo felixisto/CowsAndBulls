@@ -119,6 +119,18 @@ extension HostViewController : HostViewDelegate
         
         navigationController?.present(alert, animated: true, completion: nil)
     }
+    
+    func timeout()
+    {
+        customView?.stopConnecting()
+        
+        navigationItem.leftBarButtonItem?.isEnabled = true
+        
+        let alert = UIAlertController(title: "Error", message: "Connection timeout. Could not connect with client.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        navigationController?.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension HostViewController : HostActionDelegate

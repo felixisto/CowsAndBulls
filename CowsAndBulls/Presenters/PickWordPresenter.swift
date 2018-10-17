@@ -149,6 +149,11 @@ extension PickWordPresenter : CommunicatorObserver
         
     }
     
+    func timeout()
+    {
+        
+    }
+    
     func lostConnectingAttemptingToReconnect()
     {
         print("PickWordPresenter lostConnectingAttemptingToReconnect!")

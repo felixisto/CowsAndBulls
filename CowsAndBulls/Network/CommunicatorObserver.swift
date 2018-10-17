@@ -36,6 +36,7 @@ protocol CommunicatorObserver: class
     func beginConnect()
     func connect(data: CommunicatorInitialConnection)
     func failedToConnect()
+    func timeout()
     
     // Game Setup scene
     func opponentPickedPlaySetup(guessWordLength: UInt, turnToGo: String)

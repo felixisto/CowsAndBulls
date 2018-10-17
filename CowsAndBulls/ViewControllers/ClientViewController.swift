@@ -99,6 +99,18 @@ extension ClientViewController : ClientViewDelegate
         
         navigationItem.leftBarButtonItem?.isEnabled = true
     }
+    
+    func timeout()
+    {
+        customView?.stopConnecting()
+        
+        navigationItem.leftBarButtonItem?.isEnabled = true
+        
+        let alert = UIAlertController(title: "Error", message: "Connection timeout. Could not connect with server.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        navigationController?.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension ClientViewController : ClientActionDelegate

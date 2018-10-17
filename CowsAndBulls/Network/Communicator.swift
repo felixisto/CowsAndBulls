@@ -12,9 +12,11 @@ import SwiftSocket
 let CommunicatorDefaultPort : Int32 = 1337
 
 let CommunicatorHostConnectTimeout : Double = 3.0
+let CommunicatorHostBeginConnectTimeout : Double = 3.0
 let CommunicatorHostUpdateDelay : Double = 0.1
 
 let CommunicatorClientConnectTimeout : Double = 10.0
+let CommunicatorClientBeginConnectTimeout : Double = 3.0
 
 let CommunicatorPingInterval : Double = 0.1
 let CommunicatorPingDelayMinimum : Double = 0.4
@@ -200,6 +202,28 @@ extension CommunicatorHost
                 observer.value.value?.beginConnect()
             }
         }
+        
+        // Timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + CommunicatorHostBeginConnectTimeout, execute: { [weak self] in
+            if let communicator = self
+            {
+                if !communicator.isConnectedToClient
+                {
+                    communicator.client?.close()
+                    communicator.client = nil
+                    communicator.reader = nil
+                    communicator.lastPingFromClient = nil
+                    
+                    // Observers notification
+                    DispatchQueue.main.async {
+                        for observer in communicator.observers
+                        {
+                            observer.value.value?.timeout()
+                        }
+                    }
+                }
+            }
+        })
     }
     
     private func onConnect(client: TCPClient, parameter: String)
@@ -658,6 +682,28 @@ extension CommunicatorClient
                 observer.value.value?.beginConnect()
             }
         }
+        
+        // Timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + CommunicatorClientBeginConnectTimeout, execute: { [weak self] in
+            if let communicator = self
+            {
+                if !communicator.isConnectedToServer
+                {
+                    communicator.socket?.close()
+                    communicator.socket = nil
+                    communicator.reader = nil
+                    communicator.lastPingFromServer = nil
+                    
+                    // Observers notification
+                    DispatchQueue.main.async {
+                        for observer in communicator.observers
+                        {
+                            observer.value.value?.timeout()
+                        }
+                    }
+                }
+            }
+        })
     }
     
     private func onConnected(parameter: String)

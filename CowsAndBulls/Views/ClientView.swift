@@ -13,6 +13,7 @@ protocol ClientViewDelegate : class
     func connectionBegin()
     func connectionSuccessful(communicator: CommunicatorClient?, initialData: CommunicatorInitialConnection)
     func connectionFailure(errorMessage: String)
+    func timeout()
 }
 
 protocol ClientActionDelegate : class

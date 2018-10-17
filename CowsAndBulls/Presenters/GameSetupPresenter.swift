@@ -190,6 +190,11 @@ extension GameSetupPresenter : CommunicatorObserver
         
     }
     
+    func timeout()
+    {
+        
+    }
+    
     func lostConnectingAttemptingToReconnect()
     {
         print("GameSetupPresenter lostConnectingAttemptingToReconnect!")

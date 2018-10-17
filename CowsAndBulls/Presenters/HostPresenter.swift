@@ -86,6 +86,12 @@ extension HostPresenter : CommunicatorObserver
         delegate?.connectionFailure(errorMessage: "Could not find player")
     }
     
+    func timeout()
+    {
+        print("HostPresenter failed to connect with client! Timeout!")
+        delegate?.timeout()
+    }
+    
     func lostConnectingAttemptingToReconnect()
     {
         print("HostPresenter lostConnectingAttemptingToReconnect!")
