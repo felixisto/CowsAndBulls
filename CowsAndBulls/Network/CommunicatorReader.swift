@@ -39,7 +39,7 @@ class CommunicatorReader
     init(socket: TCPClient)
     {
         self.socket = socket
-        self.data = CommunicatorMessage.createBufferMessage()
+        self.data = CommunicatorMessage.createReaderMessage()
     }
     
     func getState() -> CommunicatorReaderState

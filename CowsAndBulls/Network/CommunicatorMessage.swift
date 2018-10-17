@@ -66,20 +66,11 @@ struct CommunicatorMessage
     
     mutating func append(string: String)
     {
-        if string.count == 0
+        for e in 0..<string.count
         {
-            return
-        }
-        
-        var str = string
-        
-        while data.count < CommunicatorMessageLength
-        {
-            data.append(str.first!)
+            data.append(string[String.Index(encodedOffset: e)])
             
-            str = str[String.Index(encodedOffset: 1)...].description
-            
-            if str.count == 0
+            if isFullyWritten()
             {
                 return
             }
@@ -98,47 +89,23 @@ struct CommunicatorMessage
 // Factories
 extension CommunicatorMessage
 {
-    static func createBufferMessage(commandLength: UInt8=CommunicatorMessageCommandLength, parameterLength: UInt8=CommunicatorMessageParameterLength) -> CommunicatorMessage
+    static func createReaderMessage() -> CommunicatorMessage
     {
-        return CommunicatorMessage(commandLength: commandLength, parameterLength: parameterLength)
+        return CommunicatorMessage(commandLength: CommunicatorMessageCommandLength, parameterLength: CommunicatorMessageParameterLength)
     }
     
-    static func createWriteMessage(commandLength: UInt8=CommunicatorMessageCommandLength, parameterLength: UInt8=CommunicatorMessageParameterLength, command: String, parameter: String="") -> CommunicatorMessage?
+    static func createWriteMessage(command: String, parameter: String="") -> CommunicatorMessage?
     {
-        guard command.count == commandLength else {
-            return nil
-        }
-        
-        guard parameter.count <= parameterLength else {
-            return nil
-        }
-        
-        var cmd = CommunicatorMessage(commandLength: commandLength, parameterLength: parameterLength)
-        
-        cmd.data = command
-        cmd.data.append(contentsOf: parameter)
+        var cmd = CommunicatorMessage(parameterLength: CommunicatorMessageParameterLength, command: command, parameter: parameter)
         
         cmd.fillMessage()
         
         return cmd
     }
     
-    static func createWriteMessage(commandLength: UInt8=CommunicatorMessageCommandLength, parameterLength: UInt8=CommunicatorMessageParameterLength, command: String, parameter1: String, parameter2: String) -> CommunicatorMessage?
+    static func createWriteMessage(command: String, parameter1: String, parameter2: String) -> CommunicatorMessage?
     {
-        guard command.count == commandLength else {
-            return nil
-        }
-        
-        guard parameter1.count + parameter2.count + 1 <= parameterLength else {
-            return nil
-        }
-        
-        var cmd = CommunicatorMessage(commandLength: commandLength, parameterLength: parameterLength)
-        
-        cmd.data = command
-        cmd.data.append(contentsOf: parameter1)
-        cmd.data.append(contentsOf: " ")
-        cmd.data.append(contentsOf: parameter2)
+        var cmd = CommunicatorMessage(parameterLength: CommunicatorMessageParameterLength, command: command, parameter: String("\(parameter1) \(parameter2)"))
         
         cmd.fillMessage()
         
