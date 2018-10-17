@@ -685,7 +685,7 @@ extension CommunicatorClient
         }
         
         // Timeout
-        // If a formal connection is not established in @CommunicatorHostBeginConnectTimeout seconds, terminate connection
+        // If a formal connection is not established in @CommunicatorClientBeginConnectTimeout seconds, terminate connection
         DispatchQueue.main.asyncAfter(deadline: .now() + CommunicatorClientBeginConnectTimeout, execute: { [weak self] in
             if let communicator = self
             {
