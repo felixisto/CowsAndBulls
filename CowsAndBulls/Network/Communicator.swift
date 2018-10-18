@@ -192,7 +192,7 @@ extension CommunicatorHost
 {
     private func onBeginConnection(client: TCPClient)
     {
-        print("CommunicatorHost: sending greetings to client: \(client.address):\(client.port), waiting to be greeted back on \(Date())")
+        print("CommunicatorHost: beginning new connection with a client \(client.address):\(client.port), sending greetings, waiting to be greeted back. Date: \(Date())")
         
         self.client = client
         self.reader = CommunicatorReader(socket: client)
@@ -200,6 +200,7 @@ extension CommunicatorHost
         self.reader?.begin()
         self.writer = CommunicatorWriter(socket: client)
         self.writer?.delegate = self
+        self.writer?.begin()
         self.lastPingFromClient = Date()
         
         // Send greetings to client
@@ -293,7 +294,7 @@ extension CommunicatorHost
         }
     }
     
-    private func lostConnectionAttemptingToReconnect()
+    private func onLostConnectionAttemptingToReconnect()
     {
         print("CommunicatorHost: lost connection attempting to reconnect on \(Date())")
         
@@ -307,7 +308,7 @@ extension CommunicatorHost
         }
     }
     
-    private func reconnect()
+    private func onReconnect()
     {
         print("CommunicatorHost: reconnected")
         
@@ -391,7 +392,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
         
         if lastPingRetryingToConnect
         {
-            reconnect()
+            onReconnect()
         }
         
         lastPingRetryingToConnect = false
@@ -515,7 +516,7 @@ extension CommunicatorHost : CommunicatorWriterDelegate
                     // Try to reconnect
                     if !lastPingRetryingToConnect
                     {
-                        lostConnectionAttemptingToReconnect()
+                        onLostConnectionAttemptingToReconnect()
                     }
                 }
             }
@@ -763,7 +764,7 @@ extension CommunicatorClient
         }
     }
     
-    private func lostConnectionAttemptingToReconnect()
+    private func onLostConnectionAttemptingToReconnect()
     {
         print("CommunicatorClient: lost connection attempting to reconnect on \(Date())")
         
@@ -777,7 +778,7 @@ extension CommunicatorClient
         }
     }
     
-    private func reconnect()
+    private func onReconnect()
     {
         print("CommunicatorClient: reconnected on \(Date())")
         
@@ -861,7 +862,7 @@ extension CommunicatorClient : CommunicatorReaderDelegate
         
         if lastPingRetryingToConnect
         {
-            reconnect()
+            onReconnect()
         }
         
         lastPingRetryingToConnect = false
@@ -985,7 +986,7 @@ extension CommunicatorClient : CommunicatorWriterDelegate
                     // Try to reconnect
                     if !lastPingRetryingToConnect
                     {
-                        lostConnectionAttemptingToReconnect()
+                        onLostConnectionAttemptingToReconnect()
                     }
                 }
             }

@@ -50,6 +50,11 @@ class CommunicatorWriter
     
     public func send(data: String)
     {
+        if !active
+        {
+            return
+        }
+        
         let _ = socket.send(string: data)
     }
 }
