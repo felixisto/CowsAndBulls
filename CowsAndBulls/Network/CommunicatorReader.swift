@@ -34,7 +34,7 @@ class CommunicatorReader
     {
         self.active = false
         self.socket = socket
-        self.data = CommunicatorMessage.createReaderMessage()
+        self.data = CommunicatorMessage.createReadMessage()
     }
     
     func begin()

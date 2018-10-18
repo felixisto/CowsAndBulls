@@ -89,7 +89,7 @@ struct CommunicatorMessage
 // Factories
 extension CommunicatorMessage
 {
-    static func createReaderMessage() -> CommunicatorMessage
+    static func createReadMessage() -> CommunicatorMessage
     {
         return CommunicatorMessage(commandLength: CommunicatorMessageCommandLength, parameterLength: CommunicatorMessageParameterLength)
     }
