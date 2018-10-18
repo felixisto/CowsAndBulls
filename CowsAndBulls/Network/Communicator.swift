@@ -64,6 +64,7 @@ class CommunicatorHost : Communicator
     private var server: TCPServer?
     private var client: TCPClient?
     private var reader: CommunicatorReader?
+    private var writer: CommunicatorWriter?
     
     private var isConnectedToClient = false
     
@@ -87,10 +88,12 @@ class CommunicatorHost : Communicator
     private func reset()
     {
         reader?.stop()
+        writer?.stop()
         client?.close()
         server?.close()
         
         reader = nil
+        writer = nil
         client = nil
         server = nil
         
@@ -195,11 +198,13 @@ extension CommunicatorHost
         self.reader = CommunicatorReader(socket: client)
         self.reader?.delegate = self
         self.reader?.begin()
+        self.writer = CommunicatorWriter(socket: client)
+        self.writer?.delegate = self
         self.lastPingFromClient = Date()
         
         // Send greetings to client
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GREETINGS.rawValue, parameter: UserName().value)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         // Observers notification
         DispatchQueue.main.async {
@@ -230,7 +235,7 @@ extension CommunicatorHost
         })
     }
     
-    private func onConnect(client: TCPClient, parameter: String)
+    private func onConnected(client: TCPClient, parameter: String)
     {
         print("CommunicatorHost: connected with client: \(client.address):\(client.port) on \(Date())")
         
@@ -320,84 +325,56 @@ extension CommunicatorHost
 {
     public func sendQuitMessage()
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending quit message to client")
     }
     
     public func sendPlaySetupMessage(length: UInt, turnToGo: String)
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending play setup message to client")
     }
     
     public func sendAlertPickedGuessWordMessage()
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        let _ = client.send(string:dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending alert picked guess word message to client")
     }
     
     public func sendPlaySessionMessage()
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending play session message to client")
     }
     
     func sendGuessMessage(guess: String)
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess message to client")
     }
     
     func sendGuessResponseMessage(response: String)
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess response message to client")
     }
     
     func sendGuessCorrectMessage()
     {
-        guard let client = self.client else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
-        let _ = client.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorHost: sending guess correct message to client")
     }
@@ -418,48 +395,6 @@ extension CommunicatorHost : CommunicatorReaderDelegate
         lastPingRetryingToConnect = false
     }
     
-    func pingRefresh()
-    {
-        // Check if server has been pinging back
-        if let lastPingFromClient = self.lastPingFromClient
-        {
-            let currentDate = Date()
-            
-            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromClient))
-            
-            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
-            
-            // Lost connection
-            if noPingReceivedShort
-            {
-                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
-                
-                // Timeout, end the connection
-                if pingTimeout
-                {
-                    onDisconnected()
-                    return
-                }
-                else
-                {
-                    // Try to reconnect
-                    if !lastPingRetryingToConnect
-                    {
-                        lostConnectionAttemptingToReconnect()
-                    }
-                }
-            }
-        }
-        else
-        {
-            print("Communicator last ping date was not initialized properly")
-            
-            onDisconnected()
-            
-            return
-        }
-    }
-    
     func greetingsMessageReceived(parameter: String)
     {
         guard self.client != nil else {
@@ -468,7 +403,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
         
         if !isConnectedToClient
         {
-            onConnect(client: self.client!, parameter: parameter)
+            onConnected(client: self.client!, parameter: parameter)
         }
     }
     
@@ -548,12 +483,59 @@ extension CommunicatorHost : CommunicatorReaderDelegate
     }
 }
 
+// Writer delegates
+extension CommunicatorHost : CommunicatorWriterDelegate
+{
+    func pingRefresh()
+    {
+        // Check if server has been pinging back
+        if let lastPingFromClient = self.lastPingFromClient
+        {
+            let currentDate = Date()
+            
+            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromClient))
+            
+            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+            
+            // Lost connection
+            if noPingReceivedShort
+            {
+                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                
+                // Timeout, end the connection
+                if pingTimeout
+                {
+                    onDisconnected()
+                    return
+                }
+                else
+                {
+                    // Try to reconnect
+                    if !lastPingRetryingToConnect
+                    {
+                        lostConnectionAttemptingToReconnect()
+                    }
+                }
+            }
+        }
+        else
+        {
+            print("Communicator last ping date was not initialized properly")
+            
+            onDisconnected()
+            
+            return
+        }
+    }
+}
+
 class CommunicatorClient : Communicator
 {
     private var observers: [String : CommunicatorObserverValue] = [:]
     
     private var socket: TCPClient?
     private var reader: CommunicatorReader?
+    private var writer: CommunicatorWriter?
     
     private var isConnectedToServer: Bool = false
     
@@ -581,11 +563,13 @@ class CommunicatorClient : Communicator
     
     private func reset()
     {
-        socket?.close()
         reader?.stop()
+        writer?.stop()
+        socket?.close()
         
-        socket = nil
         reader = nil
+        writer = nil
+        socket = nil
         
         isConnectedToServer = false
         
@@ -721,9 +705,14 @@ extension CommunicatorClient
         
         isConnectedToServer = true
         
+        // Writer start
+        self.writer = CommunicatorWriter(socket: socket!)
+        self.writer?.delegate = self
+        self.writer?.begin()
+        
         // Send greetings BACK to server
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GREETINGS.rawValue, parameter: UserName().value)
-        let _ = socket?.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         // Observers notification
         DispatchQueue.main.async {
@@ -804,90 +793,62 @@ extension CommunicatorClient
 {
     public func sendQuitMessage()
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending quit message to server")
     }
     
     public func sendPlaySetupMessage(length: UInt, turnToGo: String)
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending play setup message to server")
     }
     
     public func sendAlertPickedGuessWordMessage()
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        let _ = socket.send(string:dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending alert picked guess word message to server")
     }
     
     public func sendPlaySessionMessage()
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending play session message to server")
     }
     
     func sendGuessMessage(guess: String)
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess message to server")
     }
     
     func sendGuessResponseMessage(response: String)
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess response message to server")
     }
     
     func sendGuessCorrectMessage()
     {
-        guard let socket = self.socket else {
-            return
-        }
-        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
-        let _ = socket.send(string: dataToSend!.getData())
+        writer?.send(data: dataToSend!.getData())
         
         print("CommunicatorClient: sending guess correct message to server")
     }
 }
 
-// Reader delegates
+// Reader delegate
 extension CommunicatorClient : CommunicatorReaderDelegate
 {
     func ping()
@@ -900,48 +861,6 @@ extension CommunicatorClient : CommunicatorReaderDelegate
         }
         
         lastPingRetryingToConnect = false
-    }
-    
-    func pingRefresh()
-    {
-        // Check if server has been pinging back
-        if let lastPingFromServer = self.lastPingFromServer
-        {
-            let currentDate = Date()
-            
-            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromServer))
-            
-            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
-            
-            // Lost connection
-            if noPingReceivedShort
-            {
-                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
-                
-                // Timeout, end the connection
-                if pingTimeout
-                {
-                    onDisconnected()
-                    return
-                }
-                else
-                {
-                    // Try to reconnect
-                    if !lastPingRetryingToConnect
-                    {
-                        lostConnectionAttemptingToReconnect()
-                    }
-                }
-            }
-        }
-        else
-        {
-            print("Communicator last ping date was not initialized properly")
-            
-            onDisconnected()
-            
-            return
-        }
     }
     
     func greetingsMessageReceived(parameter: String)
@@ -1028,6 +947,52 @@ extension CommunicatorClient : CommunicatorReaderDelegate
                 }
             }
         default: break
+        }
+    }
+}
+
+// Writer delegate
+extension CommunicatorClient : CommunicatorWriterDelegate
+{
+    func pingRefresh()
+    {
+        // Check if server has been pinging back
+        if let lastPingFromServer = self.lastPingFromServer
+        {
+            let currentDate = Date()
+            
+            let timeElapsedSinceLastPing = Double(currentDate.timeIntervalSince(lastPingFromServer))
+            
+            let noPingReceivedShort = timeElapsedSinceLastPing >= CommunicatorPingDelayMinimum
+            
+            // Lost connection
+            if noPingReceivedShort
+            {
+                let pingTimeout = timeElapsedSinceLastPing >= CommunicatorPingTimeout
+                
+                // Timeout, end the connection
+                if pingTimeout
+                {
+                    onDisconnected()
+                    return
+                }
+                else
+                {
+                    // Try to reconnect
+                    if !lastPingRetryingToConnect
+                    {
+                        lostConnectionAttemptingToReconnect()
+                    }
+                }
+            }
+        }
+        else
+        {
+            print("Communicator last ping date was not initialized properly")
+            
+            onDisconnected()
+            
+            return
         }
     }
 }

@@ -12,15 +12,9 @@ import SwiftSocket
 let CommunicatorReaderPingInterval = 0.1
 let CommunicatorReaderReadTimeout = 1
 
-enum CommunicatorReaderState
-{
-    case inactive, active, reading
-}
-
 protocol CommunicatorReaderDelegate : class
 {
     func ping()
-    func pingRefresh()
     
     func greetingsMessageReceived(parameter: String)
     func messageReceived(command: String, parameter: String)
@@ -30,7 +24,7 @@ class CommunicatorReader
 {
     weak var delegate: CommunicatorReaderDelegate?
     
-    var state: CommunicatorReaderState = .inactive
+    var active: Bool
     
     let socket: TCPClient
     
@@ -38,35 +32,39 @@ class CommunicatorReader
     
     init(socket: TCPClient)
     {
+        self.active = false
         self.socket = socket
         self.data = CommunicatorMessage.createReaderMessage()
     }
     
-    func getState() -> CommunicatorReaderState
-    {
-        return state
-    }
-    
     func begin()
     {
-        if state == .inactive
+        if !active
         {
-            print("CommunicatorReader begin")
+            active = true
             
-            state = .active
-            
-            loop()
+            onBegin()
         }
     }
     
     func stop()
     {
-        if state != .inactive
-        {
-            print("CommunicatorReader stop")
-            
-            state = .inactive
-        }
+        active = false
+    }
+    
+    private func onBegin()
+    {
+        loop()
+    }
+    
+    private func onReceivedGreetings(parameter: String)
+    {
+        self.delegate?.greetingsMessageReceived(parameter: parameter)
+    }
+    
+    private func onPingReceived()
+    {
+        self.delegate?.ping()
     }
 }
 
@@ -75,14 +73,12 @@ extension CommunicatorReader
     private func loop()
     {
         DispatchQueue.global(qos: .background).async {
-            if self.state == .inactive
+            if !self.active
             {
                 return
             }
             
             // Read output from socket
-            self.state = .reading
-            
             if let bytes = self.socket.read(Int(CommunicatorMessageLength), timeout: CommunicatorReaderReadTimeout)
             {
                 if let receivedData = String(bytes: bytes, encoding: .utf8)
@@ -90,8 +86,6 @@ extension CommunicatorReader
                     self.data.append(string: receivedData)
                 }
             }
-            
-            self.state = .active
             
             // Message was received
             if self.data.isFullyWritten()
@@ -104,9 +98,7 @@ extension CommunicatorReader
                     // Upon receiving greetings, start the loop ping functionality
                     if CommunicatorCommands(rawValue: command) == .GREETINGS
                     {
-                        self.loopPing()
-                        
-                        self.delegate?.greetingsMessageReceived(parameter: parameter)
+                        self.onReceivedGreetings(parameter: parameter)
                         
                         return
                     }
@@ -114,7 +106,7 @@ extension CommunicatorReader
                     // Ping received
                     if CommunicatorCommands(rawValue: command) == .PING
                     {
-                        self.delegate?.ping()
+                        self.onPingReceived()
                         
                         return
                     }
@@ -129,27 +121,5 @@ extension CommunicatorReader
             
             self.loop()
         }
-    }
-    
-    private func loopPing()
-    {
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + CommunicatorReaderPingInterval, execute: {
-            if self.state == .inactive
-            {
-                return
-            }
-            
-            // Ping other end
-            let pingMessage = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PING.rawValue)
-            
-            let _ = self.socket.send(string: pingMessage!.getData())
-            
-            // Refresh ping
-            DispatchQueue.main.async {
-                self.delegate?.pingRefresh()
-            }
-            
-            self.loopPing()
-        })
     }
 }
