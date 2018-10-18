@@ -79,7 +79,7 @@ struct CommunicatorMessage
     
     mutating func fillMessage()
     {
-        while data.count < CommunicatorMessageLength
+        while !isFullyWritten()
         {
             data.append(contentsOf: CommunicatorMessageFillerCharacter)
         }

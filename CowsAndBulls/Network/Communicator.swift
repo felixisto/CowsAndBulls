@@ -221,6 +221,8 @@ extension CommunicatorHost
             {
                 if !communicator.isConnectedToClient
                 {
+                    print("CommunicatorHost: Connection timeout, did not receive greetings from server!")
+                    
                     communicator.reset()
                     
                     // Observers notification
@@ -685,6 +687,8 @@ extension CommunicatorClient
             {
                 if !communicator.isConnectedToServer
                 {
+                    print("CommunicatorClient: Connection timeout, did not receive greetings from server!")
+                    
                     communicator.reset()
                     
                     // Observers notification
