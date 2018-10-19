@@ -222,7 +222,7 @@ extension CommunicatorHost
             {
                 if !communicator.isConnectedToClient
                 {
-                    print("CommunicatorHost: Connection timeout, did not receive greetings from server!")
+                    print("CommunicatorHost: Connection timeout, did not receive greetings from client!")
                     
                     communicator.reset()
                     
@@ -268,7 +268,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.value?.disconnect()
+                observer.value.value?.opponentQuit()
             }
             
             self.destroy()
@@ -303,7 +303,7 @@ extension CommunicatorHost
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.value?.lostConnectingAttemptingToReconnect()
+                observer.value.value?.lostConnectionAttemptingToReconnect()
             }
         }
     }
@@ -470,7 +470,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
             DispatchQueue.main.async {
                 for observer in self.observers
                 {
-                    observer.value.value?.guessResponse(response: parameter)
+                    observer.value.value?.incorrectGuessResponse(response: parameter)
                 }
             }
         case .GAMECORRECTGUESS:
@@ -478,7 +478,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
             DispatchQueue.main.async {
                 for observer in self.observers
                 {
-                    observer.value.value?.correctGuess()
+                    observer.value.value?.correctGuessResponse()
                 }
             }
         default: break
@@ -743,7 +743,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.value?.disconnect()
+                observer.value.value?.opponentQuit()
             }
             
             self.destroy()
@@ -773,7 +773,7 @@ extension CommunicatorClient
         DispatchQueue.main.async {
             for observer in self.observers
             {
-                observer.value.value?.lostConnectingAttemptingToReconnect()
+                observer.value.value?.lostConnectionAttemptingToReconnect()
             }
         }
     }
@@ -940,7 +940,7 @@ extension CommunicatorClient : CommunicatorReaderDelegate
             DispatchQueue.main.async {
                 for observer in self.observers
                 {
-                    observer.value.value?.guessResponse(response: parameter)
+                    observer.value.value?.incorrectGuessResponse(response: parameter)
                 }
             }
         case .GAMECORRECTGUESS:
@@ -948,7 +948,7 @@ extension CommunicatorClient : CommunicatorReaderDelegate
             DispatchQueue.main.async {
                 for observer in self.observers
                 {
-                    observer.value.value?.correctGuess()
+                    observer.value.value?.correctGuessResponse()
                 }
             }
         default: break

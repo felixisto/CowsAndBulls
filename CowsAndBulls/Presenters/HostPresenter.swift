@@ -90,7 +90,7 @@ extension HostPresenter : CommunicatorObserver
         delegate?.timeout()
     }
     
-    func lostConnectingAttemptingToReconnect()
+    func lostConnectionAttemptingToReconnect()
     {
         print("HostPresenter lostConnectingAttemptingToReconnect!")
     }
@@ -100,7 +100,7 @@ extension HostPresenter : CommunicatorObserver
         print("HostPresenter reconnect!")
     }
     
-    func disconnect()
+    func opponentQuit()
     {
         print("HostPresenter disconnect!")
         delegate?.connectionFailure(errorMessage: "Disconnect")
@@ -127,12 +127,12 @@ extension HostPresenter : CommunicatorObserver
         
     }
     
-    func guessResponse(response: String)
+    func incorrectGuessResponse(response: String)
     {
         
     }
     
-    func correctGuess()
+    func correctGuessResponse()
     {
         
     }

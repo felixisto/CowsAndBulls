@@ -154,7 +154,7 @@ extension PickWordPresenter : CommunicatorObserver
         
     }
     
-    func lostConnectingAttemptingToReconnect()
+    func lostConnectionAttemptingToReconnect()
     {
         print("PickWordPresenter lostConnectingAttemptingToReconnect!")
         delegate?.lostConnectingAttemptingToReconnect()
@@ -166,7 +166,7 @@ extension PickWordPresenter : CommunicatorObserver
         delegate?.reconnect()
     }
     
-    func disconnect()
+    func opponentQuit()
     {
         print("PickWordPresenter failed to connect!")
         delegate?.connectionFailure()
@@ -210,12 +210,12 @@ extension PickWordPresenter : CommunicatorObserver
         
     }
     
-    func guessResponse(response: String)
+    func incorrectGuessResponse(response: String)
     {
         
     }
     
-    func correctGuess()
+    func correctGuessResponse()
     {
         
     }

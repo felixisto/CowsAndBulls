@@ -27,9 +27,9 @@ struct CommunicatorObserverValue
 protocol CommunicatorObserver: class
 {
     // Connection status
-    func lostConnectingAttemptingToReconnect()
+    func lostConnectionAttemptingToReconnect()
     func reconnect()
-    func disconnect()
+    func opponentQuit()
     func disconnect(error: String)
     
     // Host/Client scenes
@@ -46,6 +46,6 @@ protocol CommunicatorObserver: class
     
     // Game Play scene
     func opponentGuess(guess: String)
-    func guessResponse(response: String)
-    func correctGuess()
+    func incorrectGuessResponse(response: String)
+    func correctGuessResponse()
 }

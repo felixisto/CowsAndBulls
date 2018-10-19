@@ -195,7 +195,7 @@ extension GameSetupPresenter : CommunicatorObserver
         
     }
     
-    func lostConnectingAttemptingToReconnect()
+    func lostConnectionAttemptingToReconnect()
     {
         print("GameSetupPresenter lostConnectingAttemptingToReconnect!")
         delegate?.lostConnectingAttemptingToReconnect()
@@ -207,7 +207,7 @@ extension GameSetupPresenter : CommunicatorObserver
         delegate?.reconnect()
     }
     
-    func disconnect()
+    func opponentQuit()
     {
         print("GameSetupPresenter failed to connect!")
         delegate?.connectionFailure()
@@ -265,12 +265,12 @@ extension GameSetupPresenter : CommunicatorObserver
         
     }
     
-    func guessResponse(response: String)
+    func incorrectGuessResponse(response: String)
     {
         
     }
     
-    func correctGuess()
+    func correctGuessResponse()
     {
         
     }
