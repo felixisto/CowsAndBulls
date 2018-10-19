@@ -61,20 +61,20 @@ struct GuessCharacter
             {
                 let guessChar = guess[i]
                 
-                let comparsionResult = GuessCharacterResult(a: guessWordChar, b: guessChar)
+                let comparisonResult = GuessCharacterResult(a: guessWordChar, b: guessChar)
                 
-                if comparsionResult.isCow() || comparsionResult.isBull()
+                if comparisonResult.isCow() || comparisonResult.isBull()
                 {
                     if bestComparisonResultIndex == -1
                     {
-                        bestComparisonResultForThisChar = comparsionResult
+                        bestComparisonResultForThisChar = comparisonResult
                         bestComparisonResultIndex = i
                     }
                     else
                     {
-                        if bestComparisonResultForThisChar.isCow() && comparsionResult.isBull()
+                        if bestComparisonResultForThisChar.isCow() && comparisonResult.isBull()
                         {
-                            bestComparisonResultForThisChar = comparsionResult
+                            bestComparisonResultForThisChar = comparisonResult
                             bestComparisonResultIndex = i
                         }
                     }
