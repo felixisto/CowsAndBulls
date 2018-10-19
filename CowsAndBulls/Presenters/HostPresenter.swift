@@ -59,7 +59,7 @@ extension HostPresenter : HostPresenterDelegate
     {
         print("HostPresenter: quit")
         
-        communicator?.terminate()
+        communicator?.stop()
     }
 }
 
@@ -71,7 +71,7 @@ extension HostPresenter : CommunicatorObserver
         delegate?.connectionBegin()
     }
     
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     {
         print("HostPresenter network started server!")
         delegate?.connectionSuccessful(communicator: communicator, initialData: data)

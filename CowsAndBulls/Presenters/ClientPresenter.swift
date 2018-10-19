@@ -60,7 +60,7 @@ extension ClientPresenter : ClientPresenterDelegate
     {
         print("ClientPresenter: quit.")
         
-        communicator?.terminate()
+        communicator?.stop()
     }
 }
 
@@ -72,7 +72,7 @@ extension ClientPresenter : CommunicatorObserver
         delegate?.connectionBegin()
     }
     
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     {
         print("ClientPresenter network connected!")
         delegate?.connectionSuccessful(communicator: communicator, initialData: data)

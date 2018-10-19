@@ -16,7 +16,7 @@ enum CommunicatorCommands : String
     case CHAT = "CHAT_"
     
     case PLAYSETUP = "SETUP"
-    case PLAYSESSION = "PLAY_"
+    case READYTOPLAY = "RPLAY"
     
     case GAMEGUESS = "GUESS"
     case GAMEGUESSRESPONSE = "GRESP"

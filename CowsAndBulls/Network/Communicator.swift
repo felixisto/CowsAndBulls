@@ -25,20 +25,17 @@ let CommunicatorPingTimeout : Double = 15.0
 // Generic interface that allows you to interact with either host communicator or client communicator
 protocol Communicator
 {
-    func isConnected() -> Bool
-    
     func attachObserver(observer: CommunicatorObserver?, key: String)
     func detachObserver(key: String)
     
-    func terminate()
+    func stop()
     
     func sendQuitMessage()
-    func sendPlaySetupMessage(length: UInt, turnToGo: String)
+    func sendPlaySetupMessage(guessLength: UInt, turnToGo: String)
     func sendAlertPickedGuessWordMessage()
-    func sendPlaySessionMessage()
     func sendGuessMessage(guess: String)
-    func sendGuessResponseMessage(response: String)
-    func sendGuessCorrectMessage()
+    func sendGuessIncorrectResponseMessage(response: String)
+    func sendGuessCorrectResponseMessage()
 }
 
 struct CommunicatorInitialConnection
@@ -110,10 +107,11 @@ class CommunicatorHost : Communicator
         observers.removeAll()
     }
     
-    func terminate()
+    func stop()
     {
         sendQuitMessage()
-        destroy()
+        
+        reset()
     }
     
     func start() throws
@@ -220,7 +218,7 @@ extension CommunicatorHost
         DispatchQueue.main.asyncAfter(deadline: .now() + CommunicatorHostBeginConnectTimeout, execute: { [weak self] in
             if let communicator = self
             {
-                if !communicator.isConnectedToClient
+                if communicator.client != nil && !communicator.isConnectedToClient
                 {
                     print("CommunicatorHost: Connection timeout, did not receive greetings from client!")
                     
@@ -255,7 +253,7 @@ extension CommunicatorHost
                 
                 for observer in self.observers
                 {
-                    observer.value.value?.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
+                    observer.value.value?.formallyConnected(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
                 }
             }
         }
@@ -328,58 +326,50 @@ extension CommunicatorHost
 {
     public func sendQuitMessage()
     {
+        print("CommunicatorHost: sending quit message to client")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorHost: sending quit message to client")
     }
     
-    public func sendPlaySetupMessage(length: UInt, turnToGo: String)
+    public func sendPlaySetupMessage(guessLength: UInt, turnToGo: String)
     {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
-        writer?.send(data: dataToSend!.getData())
-        
         print("CommunicatorHost: sending play setup message to client")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(guessLength), parameter2: turnToGo)
+        writer?.send(data: dataToSend!.getData())
     }
     
     public func sendAlertPickedGuessWordMessage()
     {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        writer?.send(data: dataToSend!.getData())
-        
         print("CommunicatorHost: sending alert picked guess word message to client")
-    }
-    
-    public func sendPlaySessionMessage()
-    {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        writer?.send(data: dataToSend!.getData())
         
-        print("CommunicatorHost: sending play session message to client")
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.READYTOPLAY.rawValue)
+        writer?.send(data: dataToSend!.getData())
     }
     
     func sendGuessMessage(guess: String)
     {
+        print("CommunicatorHost: sending guess message to client")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorHost: sending guess message to client")
     }
     
-    func sendGuessResponseMessage(response: String)
+    func sendGuessIncorrectResponseMessage(response: String)
     {
+        print("CommunicatorHost: sending guess response message to client")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorHost: sending guess response message to client")
     }
     
-    func sendGuessCorrectMessage()
+    func sendGuessCorrectResponseMessage()
     {
+        print("CommunicatorHost: sending guess correct message to client")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorHost: sending guess correct message to client")
     }
 }
 
@@ -449,7 +439,7 @@ extension CommunicatorHost : CommunicatorReaderDelegate
                     }
                 }
             }
-        case .PLAYSESSION:
+        case .READYTOPLAY:
             // Observers notification
             DispatchQueue.main.async {
                 for observer in self.observers
@@ -491,6 +481,10 @@ extension CommunicatorHost : CommunicatorWriterDelegate
 {
     func pingRefresh()
     {
+        guard isConnectedToClient else {
+            return
+        }
+        
         // Check if server has been pinging back
         if let lastPingFromClient = self.lastPingFromClient
         {
@@ -587,10 +581,11 @@ class CommunicatorClient : Communicator
         observers.removeAll()
     }
     
-    func terminate()
+    func stop()
     {
         sendQuitMessage()
-        destroy()
+        
+        reset()
     }
     
     func start(connectTo host: String)
@@ -686,7 +681,7 @@ extension CommunicatorClient
         DispatchQueue.main.asyncAfter(deadline: .now() + CommunicatorClientBeginConnectTimeout, execute: { [weak self] in
             if let communicator = self
             {
-                if !communicator.isConnectedToServer
+                if communicator.socket != nil && !communicator.isConnectedToServer
                 {
                     print("CommunicatorClient: Connection timeout, did not receive greetings from server!")
                     
@@ -730,7 +725,7 @@ extension CommunicatorClient
                 
                 for observer in self.observers
                 {
-                    observer.value.value?.connect(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
+                    observer.value.value?.formallyConnected(data: CommunicatorInitialConnection(dateConnected: dateConnected, otherPlayerAddress: otherPlayerAddress, otherPlayerName: otherPlayerName, otherPlayerColor: otherPlayerColor))
                 }
             }
         }
@@ -798,58 +793,50 @@ extension CommunicatorClient
 {
     public func sendQuitMessage()
     {
+        print("CommunicatorClient: sending quit message to server")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.QUIT.rawValue)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorClient: sending quit message to server")
     }
     
-    public func sendPlaySetupMessage(length: UInt, turnToGo: String)
+    public func sendPlaySetupMessage(guessLength: UInt, turnToGo: String)
     {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(length), parameter2: turnToGo)
-        writer?.send(data: dataToSend!.getData())
-        
         print("CommunicatorClient: sending play setup message to server")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSETUP.rawValue, parameter1: String(guessLength), parameter2: turnToGo)
+        writer?.send(data: dataToSend!.getData())
     }
     
     public func sendAlertPickedGuessWordMessage()
     {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        writer?.send(data: dataToSend!.getData())
-        
         print("CommunicatorClient: sending alert picked guess word message to server")
-    }
-    
-    public func sendPlaySessionMessage()
-    {
-        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.PLAYSESSION.rawValue)
-        writer?.send(data: dataToSend!.getData())
         
-        print("CommunicatorClient: sending play session message to server")
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.READYTOPLAY.rawValue)
+        writer?.send(data: dataToSend!.getData())
     }
     
     func sendGuessMessage(guess: String)
     {
+        print("CommunicatorClient: sending guess message to server")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESS.rawValue, parameter: guess)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorClient: sending guess message to server")
     }
     
-    func sendGuessResponseMessage(response: String)
+    func sendGuessIncorrectResponseMessage(response: String)
     {
+        print("CommunicatorClient: sending guess response message to server")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMEGUESSRESPONSE.rawValue, parameter: response)
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorClient: sending guess response message to server")
     }
     
-    func sendGuessCorrectMessage()
+    func sendGuessCorrectResponseMessage()
     {
+        print("CommunicatorClient: sending guess correct message to server")
+        
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         writer?.send(data: dataToSend!.getData())
-        
-        print("CommunicatorClient: sending guess correct message to server")
     }
 }
 
@@ -919,7 +906,7 @@ extension CommunicatorClient : CommunicatorReaderDelegate
                     }
                 }
             }
-        case .PLAYSESSION:
+        case .READYTOPLAY:
             // Observers notification
             DispatchQueue.main.async {
                 for observer in self.observers
@@ -961,6 +948,10 @@ extension CommunicatorClient : CommunicatorWriterDelegate
 {
     func pingRefresh()
     {
+        guard isConnectedToServer else {
+            return
+        }
+        
         // Check if server has been pinging back
         if let lastPingFromServer = self.lastPingFromServer
         {

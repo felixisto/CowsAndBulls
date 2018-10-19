@@ -1,5 +1,5 @@
 //
-//  Errors.swift
+//  GameErrord.swift
 //  CowsAndBulls
 //
 //  Created by Kristiyan Butev on 5.10.18.

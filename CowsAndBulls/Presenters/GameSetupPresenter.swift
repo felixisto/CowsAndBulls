@@ -89,7 +89,9 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
     {
         print("GameSetupPresenter quit")
         
-        communicator?.terminate()
+        communicator?.sendQuitMessage()
+        
+        communicator?.stop()
     }
     
     func didSelectGuessWordCharacterCount(number: UInt)
@@ -121,7 +123,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
                 sentRequestToOpponent = true
                 
                 // Send message to opponent
-                communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
+                communicator?.sendPlaySetupMessage(guessLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
                 
                 // Match
                 delegate?.playSetupMatch()
@@ -138,7 +140,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         // Else, send the character count to opponent
         sentRequestToOpponent = true
         
-        communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
+        communicator?.sendPlaySetupMessage(guessLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
     }
     
     func playSetupMismatchesOpponentPlayerSetup()
@@ -153,7 +155,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         
         if !sentRequestToOpponent
         {
-            communicator?.sendPlaySetupMessage(length: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
+            communicator?.sendPlaySetupMessage(guessLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo.rawValue)
         }
         
         sentRequestToOpponent = false
@@ -180,7 +182,7 @@ extension GameSetupPresenter : CommunicatorObserver
         
     }
     
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     {
         
     }

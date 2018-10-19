@@ -53,7 +53,9 @@ extension GameplayPresenter : GameplayPresenterDelegate
     {
         print("GameplayPresenter quit")
         
-        communicator?.terminate()
+        communicator?.sendQuitMessage()
+        
+        communicator?.stop()
     }
     
     func guess(guess: String)
@@ -73,7 +75,7 @@ extension GameplayPresenter : CommunicatorObserver
         
     }
     
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     {
         
     }
@@ -139,14 +141,14 @@ extension GameplayPresenter : CommunicatorObserver
             {
                 print("GameplayPresenter send guess response back to opponent")
                 
-                communicator?.sendGuessResponseMessage(response: result.messageWithGuess)
+                communicator?.sendGuessIncorrectResponseMessage(response: result.messageWithGuess)
             }
             // Opponent correctly guessed, send message, show loser screen
             else
             {
                 print("GameplayPresenter opponent correctly guessed our word! You lose!")
                 
-                communicator?.sendGuessCorrectMessage()
+                communicator?.sendGuessCorrectResponseMessage()
                 
                 delegate?.defeat(myGuessWord: guess)
             }

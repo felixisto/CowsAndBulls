@@ -70,7 +70,9 @@ extension PickWordPresenter : PickWordPresenterDelegate
     {
         print("PickWordPresenter quit")
         
-        communicator?.terminate()
+        communicator?.sendQuitMessage()
+        
+        communicator?.stop()
     }
     
     func tryToPlay(guessWord: String)
@@ -117,7 +119,7 @@ extension PickWordPresenter : PickWordPresenterDelegate
             print("PickWordPresenter picked guess word \(guessWord)")
         }
         
-        communicator?.sendPlaySessionMessage()
+        communicator?.sendAlertPickedGuessWordMessage()
     }
     
     func prepareForNewGame()
@@ -139,7 +141,7 @@ extension PickWordPresenter : CommunicatorObserver
         
     }
     
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     {
         
     }

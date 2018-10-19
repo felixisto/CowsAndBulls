@@ -34,7 +34,7 @@ protocol CommunicatorObserver: class
     
     // Host/Client scenes
     func beginConnect()
-    func connect(data: CommunicatorInitialConnection)
+    func formallyConnected(data: CommunicatorInitialConnection)
     func failedToConnect()
     func timeout()
     
