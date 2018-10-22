@@ -21,7 +21,7 @@ protocol GameSetupViewDelegate : class
     func playSetupMismatch()
     func playSetupMatch()
     
-    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
+    func goToPickWordScreen(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     
     func lostConnectingAttemptingToReconnect()
     func reconnect()
@@ -228,7 +228,7 @@ extension GameSetupView
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
     {
         DispatchQueue.main.async {
-            self.labelInfo.text = String("You are playing with \(playerName) (\(playerAddress))")
+            self.labelInfo.text = String("Opponent: \(playerName) (\(playerAddress))")
         }
     }
     

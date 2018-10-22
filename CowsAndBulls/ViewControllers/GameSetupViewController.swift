@@ -151,7 +151,7 @@ extension GameSetupViewController : GameSetupViewDelegate
         presenter?.playSetupMatchesOpponentPlayerSetup()
     }
     
-    func goToPickWord(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
+    func goToPickWordScreen(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     {
         if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {

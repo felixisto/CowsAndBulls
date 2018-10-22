@@ -60,7 +60,7 @@ class GameSetupPresenter : NSObject
         self.communicator?.detachObserver(key: self.description)
     }
     
-    private func opponentHasSameSetupParameters() -> Bool
+    private func setupParametersAgreeWithOpponents() -> Bool
     {
         return selectedGuessWordCharacterCount != 0 && selectedGuessWordCharacterCount == opponentPickedGuessWordCharacterCount && selectedTurnToGo != opponentPickedTurnToGo
     }
@@ -118,7 +118,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         // If the opponent has already sent their play setup, compare and we may agree go to the next screen right here
         if opponentSentRequest
         {
-            if opponentHasSameSetupParameters()
+            if setupParametersAgreeWithOpponents()
             {
                 sentRequestToOpponent = true
                 
@@ -171,7 +171,7 @@ extension GameSetupPresenter : GameSetupPresenterDelegate
         
         print("GameSetupPresenter we have agreed with the opponent on the game setup values! Guess words will be \(selectedGuessWordCharacterCount) characters long and we are \(selectedTurnToGo.rawValue) to go!")
         
-        delegate?.goToPickWord(communicator: communicator, connectionData: connectionData, guessWordLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo)
+        delegate?.goToPickWordScreen(communicator: communicator, connectionData: connectionData, guessWordLength: selectedGuessWordCharacterCount, turnToGo: selectedTurnToGo)
     }
 }
 
@@ -223,7 +223,7 @@ extension GameSetupPresenter : CommunicatorObserver
     
     func opponentPickedPlaySetup(guessWordLength: UInt, turnToGo: String)
     {
-        // Zero value means mismatch, always
+        // If guess word length is zero, setup is mismatch
         guard guessWordLength > 0 else {
             delegate?.playSetupMismatch()
             return
@@ -242,11 +242,11 @@ extension GameSetupPresenter : CommunicatorObserver
         
         delegate?.updateOpponentPlaySetup(guessWordLength: opponentPickedGuessWordCharacterCount, turnToGo: opponentPickedTurnToGo.rawValue)
         
-        // If we have already sent our play setup to the opoonent, try to see if the parameters match here
+        // If we have already sent our play setup to the opponent, try to see if the parameters match here
         // We may go to the next screen here
         if sentRequestToOpponent
         {
-            if opponentHasSameSetupParameters()
+            if setupParametersAgreeWithOpponents()
             {
                 delegate?.playSetupMatch()
             }

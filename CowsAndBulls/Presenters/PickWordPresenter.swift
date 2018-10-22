@@ -13,7 +13,7 @@ protocol PickWordPresenterDelegate : class
     func start()
     func quit()
     
-    func tryToPlay(guessWord: String)
+    func goToGameplayScreen(guessWord: String)
     
     func prepareForNewGame()
 }
@@ -57,12 +57,40 @@ class PickWordPresenter : NSObject
     deinit {
         self.communicator?.detachObserver(key: self.description)
     }
+    
+    static public func guessWordIsValid(guessWord: String) -> Bool
+    {
+        var symbols : [Int] = []
+        
+        for c in guessWord
+        {
+            if let symbol = Int(String(c))
+            {
+                if symbols.contains(symbol)
+                {
+                    return false
+                }
+                else
+                {
+                    symbols.append(symbol)
+                }
+            }
+            else
+            {
+                return false
+            }
+        }
+        
+        return true
+    }
 }
 
 extension PickWordPresenter : PickWordPresenterDelegate
 {
     func start()
     {
+        delegate?.updateConnectionData(playerAddress: connectionData.otherPlayerAddress, playerName: connectionData.otherPlayerName, playerColor: connectionData.otherPlayerColor)
+        
         delegate?.updateEnterXCharacterWord(length: guessWordLength)
     }
     
@@ -75,34 +103,17 @@ extension PickWordPresenter : PickWordPresenterDelegate
         communicator?.stop()
     }
     
-    func tryToPlay(guessWord: String)
+    func goToGameplayScreen(guessWord: String)
     {
         guard guessWord.count == guessWordLength else {
             return
         }
         
         // Guess word must not have repeating symbols
-        var symbols : [Int] = []
-        
-        for c in guessWord
+        if !PickWordPresenter.guessWordIsValid(guessWord: guessWord)
         {
-            if let symbol = Int(String(c))
-            {
-                if symbols.contains(symbol)
-                {
-                    delegate?.invalidGuessWord(error: "Guess word must not contain same digit twice")
-                    return
-                }
-                else
-                {
-                    symbols.append(symbol)
-                }
-            }
-            else
-            {
-                delegate?.invalidGuessWord(error: "Guess word must contain only digits")
-                return
-            }
+            delegate?.invalidGuessWord(error: "Guess word must be made of non-repeating digit characters")
+            return
         }
         
         guessWordPicked = guessWord
@@ -112,7 +123,9 @@ extension PickWordPresenter : PickWordPresenterDelegate
         {
             print("PickWordPresenter play with guess word \(guessWord)")
             
-            delegate?.play(communicator: communicator, connectionData: connectionData, guessWord: guessWord, firstToGo: turnToGo == .first)
+            let gameSession = GameSession(firstToGo: turnToGo == .first, guessWord: guessWord)
+            
+            delegate?.goToGameplayScreen(communicator: communicator, connectionData: connectionData, gameSession: gameSession)
         }
         else
         {
@@ -198,12 +211,12 @@ extension PickWordPresenter : CommunicatorObserver
         opponentHasPickedGuessWord = true
         opponentPickedTurn = turnValue
         
-        delegate?.setOpponentStatus(status: "Opponent picked a guess word")
+        delegate?.setOpponentStatus(status: "Opponent picked a guess word!")
         
         // If we have picked word too, play
         if guessWordPicked.count > 0
         {
-            tryToPlay(guessWord: guessWordPicked)
+            goToGameplayScreen(guessWord: guessWordPicked)
         }
     }
     

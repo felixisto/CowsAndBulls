@@ -88,7 +88,7 @@ extension PickWordViewController
     {
         let guessWord = ""
         
-        presenter?.tryToPlay(guessWord: guessWord)
+        presenter?.goToGameplayScreen(guessWord: guessWord)
     }
 }
 
@@ -143,16 +143,20 @@ extension PickWordViewController : PickWordViewDelegate
         self.present(alert, animated: true, completion: nil)
     }
     
-    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
+    func goToGameplayScreen(communicator: Communicator?, connectionData: CommunicatorInitialConnection, gameSession: GameSession)
     {
         if let comm = communicator
         {
-            let gameSession = GameSession(firstToGo: firstToGo, guessWord: guessWord)
             let presenter = GameplayPresenter(communicator: comm, connectionData: connectionData, gameSession: gameSession)
             let viewController = GameplayViewController(withPresenter: presenter)
             
             navigationController?.pushViewController(viewController, animated: true)
         }
+    }
+    
+    func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
+    {
+        customView?.updateConnectionData(playerAddress: playerAddress, playerName: playerName, playerColor: playerColor)
     }
     
     func lostConnectingAttemptingToReconnect()
@@ -172,7 +176,7 @@ extension PickWordViewController : PickWordActionDelegate
     {
         if let text = textField.text
         {
-            presenter?.tryToPlay(guessWord: text)
+            presenter?.goToGameplayScreen(guessWord: text)
         }
     }
 }

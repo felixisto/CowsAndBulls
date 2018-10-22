@@ -11,14 +11,14 @@ import PinCodeTextField
 
 protocol PickWordViewDelegate : class
 {
-    func connectionFailure()
-    func connectionFailure(errorMessage: String)
-    
+    func goToGameplayScreen(communicator: Communicator?, connectionData: CommunicatorInitialConnection, gameSession: GameSession)
+    func invalidGuessWord(error: String)
     func setOpponentStatus(status: String)
     func updateEnterXCharacterWord(length: UInt)
+    func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
     
-    func invalidGuessWord(error: String)
-    func play(communicator: Communicator?, connectionData: CommunicatorInitialConnection, guessWord: String, firstToGo: Bool)
+    func connectionFailure()
+    func connectionFailure(errorMessage: String)
     
     func lostConnectingAttemptingToReconnect()
     func reconnect()
@@ -35,6 +35,7 @@ class PickWordView : UIView
     static let ALERT_MESSAGE_RECONNECTED = "Reconnected!"
     
     weak var delegate : PickWordActionDelegate?
+    @IBOutlet weak var labelInfo: UILabel!
     @IBOutlet private weak var labelTip: UILabel!
     @IBOutlet private weak var labelOpponentStatus: UILabel!
     @IBOutlet private weak var pincodeGuessWord: PinCodeTextField!
@@ -60,8 +61,13 @@ class PickWordView : UIView
     {
         let guide = self.safeAreaLayoutGuide
         
+        labelInfo.translatesAutoresizingMaskIntoConstraints = false
+        labelInfo.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10.0).isActive = true
+        labelInfo.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        labelInfo.textAlignment = .center
+        
         labelTip.translatesAutoresizingMaskIntoConstraints = false
-        labelTip.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10.0).isActive = true
+        labelTip.topAnchor.constraint(equalTo: labelInfo.bottomAnchor, constant: 30.0).isActive = true
         labelTip.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelTip.textAlignment = .center
         
@@ -74,7 +80,7 @@ class PickWordView : UIView
         pincodeGuessWord.keyboardType = .decimalPad
         
         labelOpponentStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelOpponentStatus.topAnchor.constraint(equalTo: pincodeGuessWord.bottomAnchor, constant: 10.0).isActive = true
+        labelOpponentStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 10.0).isActive = true
         labelOpponentStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelOpponentStatus.textAlignment = .center
         
@@ -110,6 +116,13 @@ extension PickWordView
     {
         DispatchQueue.main.async {
             self.labelOpponentStatus.text = status
+        }
+    }
+    
+    func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
+    {
+        DispatchQueue.main.async {
+            self.labelInfo.text = String("Opponent: \(playerName) (\(playerAddress))")
         }
     }
     
