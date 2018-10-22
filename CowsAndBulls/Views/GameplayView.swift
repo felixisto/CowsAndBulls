@@ -110,7 +110,7 @@ class GameplayView : UIView
         scrollLog.heightAnchor.constraint(equalToConstant: 196.0).isActive = true
         
         labelLog.translatesAutoresizingMaskIntoConstraints = false
-        labelLog.widthAnchor.constraint(equalTo: labelLog.widthAnchor, multiplier: 1.0).isActive = true
+        labelLog.widthAnchor.constraint(equalTo: scrollLog.widthAnchor, multiplier: 1.0).isActive = true
         labelLog.heightAnchor.constraint(equalTo: labelLog.heightAnchor, multiplier: 1.0).isActive = true
         labelLog.numberOfLines = 10000
         labelLog.textAlignment = .left
@@ -138,10 +138,10 @@ class GameplayView : UIView
         labelConnectionStatus.textAlignment = .center
         
         layoutOutcomeScreen.translatesAutoresizingMaskIntoConstraints = false
-        layoutOutcomeScreen.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
-        layoutOutcomeScreen.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
-        layoutOutcomeScreen.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
-        layoutOutcomeScreen.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
+        layoutOutcomeScreen.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        layoutOutcomeScreen.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        layoutOutcomeScreen.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        layoutOutcomeScreen.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         layoutOutcomeScreen.isHidden = true
         layoutOutcomeScreen.isUserInteractionEnabled = false
         let gesture = UITapGestureRecognizer(target: self, action: #selector(actionLeaveOutcomeScreen(_:)))
@@ -197,13 +197,13 @@ extension GameplayView
             {
                 self.buttonGuess.isEnabled = true
                 self.labelStatus.text = String("It's your turn")
-                self.labelStatus.tintColor = .green
+                self.labelStatus.textColor = .green
             }
             else
             {
                 self.buttonGuess.isEnabled = false
                 self.labelStatus.text = String("It's the opponents turn")
-                self.labelStatus.tintColor = .red
+                self.labelStatus.textColor = .red
             }
         }
     }

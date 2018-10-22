@@ -39,6 +39,32 @@ class GameplayPresenter : NSObject
     deinit {
         self.communicator?.detachObserver(key: self.description)
     }
+    
+    static public func guessWordIsValid(guessWord: String) -> Bool
+    {
+        var symbols : [Int] = []
+        
+        for c in guessWord
+        {
+            if let symbol = Int(String(c))
+            {
+                if symbols.contains(symbol)
+                {
+                    return false
+                }
+                else
+                {
+                    symbols.append(symbol)
+                }
+            }
+            else
+            {
+                return false
+            }
+        }
+        
+        return true
+    }
 }
 
 extension GameplayPresenter : GameplayPresenterDelegate
@@ -60,11 +86,18 @@ extension GameplayPresenter : GameplayPresenterDelegate
     
     func guess(guess: String)
     {
-        print("GameplayPresenter sending guess to opponent \(guess)")
-        
-        gameSession.guessAttempt(guess: guess)
-        
-        communicator?.sendGuessMessage(guess: guess)
+        if GameplayPresenter.guessWordIsValid(guessWord: guess)
+        {
+            print("GameplayPresenter sending guess to opponent \(guess)")
+            
+            gameSession.guessAttempt(guess: guess)
+            
+            communicator?.sendGuessMessage(guess: guess)
+        }
+        else
+        {
+            
+        }
     }
 }
 
