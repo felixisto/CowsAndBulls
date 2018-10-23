@@ -202,7 +202,7 @@ class GameSetupView : UIView
         pickerTurn.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         
         labelOpponentStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelOpponentStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 0.0).isActive = true
+        labelOpponentStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -10.0).isActive = true
         labelOpponentStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.9).isActive = true
         labelOpponentStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelOpponentStatus.textAlignment = .center

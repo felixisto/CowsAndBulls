@@ -38,13 +38,13 @@ class PickWordViewController: UIViewController
         initInterface()
         
         customView?.setActionDelegate(delegate: self)
-        
-        presenter?.start()
     }
     
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
+        
+        presenter?.start()
     }
     
     override func viewWillDisappear(_ animated: Bool)

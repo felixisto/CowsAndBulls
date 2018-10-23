@@ -26,6 +26,8 @@ class PickWordPresenter : NSObject
     
     var connectionData: CommunicatorInitialConnection
     
+    var isActive: Bool
+    
     let guessWordLength: UInt
     var turnToGo: GameTurn
     
@@ -39,6 +41,8 @@ class PickWordPresenter : NSObject
     {
         self.communicator = communicator
         self.connectionData = connectionData
+        
+        self.isActive = false
         
         self.guessWordLength = guessWordLength
         self.turnToGo = turnToGo
@@ -89,6 +93,8 @@ extension PickWordPresenter : PickWordPresenterDelegate
 {
     func start()
     {
+        self.isActive = true
+        
         delegate?.updateConnectionData(playerAddress: connectionData.otherPlayerAddress, playerName: connectionData.otherPlayerName, playerColor: connectionData.otherPlayerColor)
         
         delegate?.updateEnterXCharacterWord(length: guessWordLength)
@@ -98,6 +104,8 @@ extension PickWordPresenter : PickWordPresenterDelegate
     {
         print("PickWordPresenter quit")
         
+        self.isActive = false
+        
         communicator?.sendQuitMessage()
         
         communicator?.stop()
@@ -105,6 +113,11 @@ extension PickWordPresenter : PickWordPresenterDelegate
     
     func goToGameplayScreen(guessWord: String)
     {
+        guard isActive else
+        {
+            return
+        }
+        
         guard guessWord.count == guessWordLength else {
             return
         }
@@ -137,6 +150,8 @@ extension PickWordPresenter : PickWordPresenterDelegate
     
     func prepareForNewGame()
     {
+        self.isActive = false
+        
         self.guessWordPicked = ""
         self.turnValue = 0
         
@@ -200,6 +215,11 @@ extension PickWordPresenter : CommunicatorObserver
     
     func opponentPickedPlaySession()
     {
+        guard isActive else
+        {
+            return
+        }
+        
         // Skip if opponent has picked guess word
         if opponentHasPickedGuessWord
         {

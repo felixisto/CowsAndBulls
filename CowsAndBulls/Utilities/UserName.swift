@@ -16,7 +16,14 @@ struct UserName
     {
         if let n = UIDevice.current.name.split(separator: " ").first
         {
-            self.value = n.description
+            if n.description.count <= 9
+            {
+                self.value = n.description
+            }
+            else
+            {
+                self.value = n.description[..<String.Index(encodedOffset: 9)].description
+            }
         }
         else
         {

@@ -80,7 +80,7 @@ class PickWordView : UIView
         pincodeGuessWord.keyboardType = .decimalPad
         
         labelOpponentStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelOpponentStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 10.0).isActive = true
+        labelOpponentStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -10.0).isActive = true
         labelOpponentStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelOpponentStatus.textAlignment = .center
         

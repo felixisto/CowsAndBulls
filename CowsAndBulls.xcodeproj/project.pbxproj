@@ -50,7 +50,6 @@
 		B8AAE4EC21664B80008C6178 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8AAE4EB21664B80008C6178 /* GameModels.swift */; };
 		B8B2840E2165F57600B62A88 /* CommunicatorObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B2840D2165F57600B62A88 /* CommunicatorObserver.swift */; };
 		B8B284142165FAE200B62A88 /* CommunicatorCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */; };
-		B8C452F0216773AD0089CFA7 /* PickWordPincodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,7 +113,6 @@
 		B8AAE4EB21664B80008C6178 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		B8B2840D2165F57600B62A88 /* CommunicatorObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicatorObserver.swift; sourceTree = "<group>"; };
 		B8B284132165FAE200B62A88 /* CommunicatorCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicatorCommands.swift; sourceTree = "<group>"; };
-		B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWordPincodeView.swift; sourceTree = "<group>"; };
 		CD4386958BEE378786183C72 /* Pods-CowsAndBullsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CowsAndBullsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CowsAndBullsTests/Pods-CowsAndBullsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -245,7 +243,6 @@
 				B80BF6502163B47800F8B1EE /* ClientView.swift */,
 				B86319C6216368CD0089A674 /* GameSetupView.swift */,
 				B86319CC216369B80089A674 /* PickWordView.swift */,
-				B8C452EF216773AD0089CFA7 /* PickWordPincodeView.swift */,
 				B86319D821636E500089A674 /* GameplayView.swift */,
 			);
 			path = Views;
@@ -496,7 +493,6 @@
 				B83720D121673D3B00D4B145 /* GameError.swift in Sources */,
 				B86319D721636E3F0089A674 /* GameplayPresenter.swift in Sources */,
 				B8B2840E2165F57600B62A88 /* CommunicatorObserver.swift in Sources */,
-				B8C452F0216773AD0089CFA7 /* PickWordPincodeView.swift in Sources */,
 				B86319C5216368AA0089A674 /* GameSetupPresenter.swift in Sources */,
 				B80BF64F2163B46D00F8B1EE /* ClientPresenter.swift in Sources */,
 				B863198521635F860089A674 /* AppDelegate.swift in Sources */,
