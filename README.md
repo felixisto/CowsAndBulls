@@ -10,7 +10,7 @@ Cows and Bulls video game on iOS.
 
 Must be played on a LAN network. This is the numerical version of the popular code-breaking game "Cows and Bulls".
 
-Compatible with my Android version of Cows and Bulls.
+Compatible with my [Android version of Cows and Bulls](https://github.com/felixisto/CowsAndBulls-Android).
 
 # Main Screen
 ![alt text](https://github.com/felixisto/CowsAndBulls/blob/master/Screenshots/scrn0.png)
