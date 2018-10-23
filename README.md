@@ -2,6 +2,8 @@ Created: 2018 October
 
 Technologies: Swift 4.2, SwiftSocket 2.0.2, PinCodeTextField 0.1.0
 
+Design: MVP (Model=data, View=interface, Presenter=data/interface bridge,state controller)
+
 Usage: Game
 
 Cows and Bulls video game on iOS.
