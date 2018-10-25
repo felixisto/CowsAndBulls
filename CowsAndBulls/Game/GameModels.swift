@@ -155,6 +155,11 @@ struct GuessCharacterResult
             return String("\(bulls) bulls")
         }
         
+        if cows == 0 && bulls == 0
+        {
+            return "nothing";
+        }
+        
         return String("\(cows) cows, \(bulls) bulls")
     }
 }
@@ -170,7 +175,7 @@ struct GuessResult
     {
         self.guessWordLength = guessWordLength
         self.message = GuessCharacterResult.arrayToString(guessWordLength: guessWordLength, array: characterGuesses)
-        self.messageWithGuess = String("\(guess), \(message)")
+        self.messageWithGuess = String("guessed \(guess), that's \(message)!")
         self.characterGuesses = characterGuesses
     }
     
@@ -283,7 +288,7 @@ struct GameSession
         
         gameTurn += 1
         
-        addToLog(String("\(GameSession.YOU_LABEL): \(response)"))
+        addToLog(String("\(GameSession.YOU_LABEL) \(response)"))
     }
     
     mutating func opponentIsGuessing(guess guessCharactersAsString: String) throws -> GuessResult
@@ -307,7 +312,7 @@ struct GameSession
         
         let guessResult = GuessCharacter.guessResult(guessWord: guessWord, guess: GuessCharacter.stringToGuessCharacters(guessCharactersAsString))
         
-        addToLog(String("\(GameSession.OPPONENT_LABEL): \(guessResult.messageWithGuess)"))
+        addToLog(String("\(GameSession.OPPONENT_LABEL) \(guessResult.messageWithGuess)"))
         
         if guessResult.hasSuccessfullyGuessed()
         {

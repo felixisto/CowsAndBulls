@@ -122,6 +122,11 @@ extension HostPresenter : CommunicatorObserver
         
     }
     
+    func nextGame()
+    {
+        
+    }
+    
     func opponentGuess(guess: String)
     {
         

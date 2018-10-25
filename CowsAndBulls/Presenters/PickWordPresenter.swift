@@ -14,8 +14,6 @@ protocol PickWordPresenterDelegate : class
     func quit()
     
     func goToGameplayScreen(guessWord: String)
-    
-    func prepareForNewGame()
 }
 
 class PickWordPresenter : NSObject
@@ -26,8 +24,6 @@ class PickWordPresenter : NSObject
     
     var connectionData: CommunicatorInitialConnection
     
-    var isActive: Bool
-    
     let guessWordLength: UInt
     var turnToGo: GameTurn
     
@@ -35,14 +31,13 @@ class PickWordPresenter : NSObject
     var turnValue: UInt
     
     var opponentHasPickedGuessWord: Bool
-    var opponentPickedTurn: UInt
+    
+    var waitingForNextGame: Bool
     
     required init(communicator: Communicator, connectionData: CommunicatorInitialConnection, guessWordLength: UInt, turnToGo: GameTurn)
     {
         self.communicator = communicator
         self.connectionData = connectionData
-        
-        self.isActive = false
         
         self.guessWordLength = guessWordLength
         self.turnToGo = turnToGo
@@ -51,7 +46,8 @@ class PickWordPresenter : NSObject
         self.turnValue = 0
         
         self.opponentHasPickedGuessWord = false
-        self.opponentPickedTurn = 0
+        
+        self.waitingForNextGame = false
         
         super.init()
         
@@ -87,14 +83,22 @@ class PickWordPresenter : NSObject
         
         return true
     }
+    
+    private func prepareForNewGame()
+    {
+        self.guessWordPicked = ""
+        self.turnValue = 0
+        
+        self.opponentHasPickedGuessWord = false
+        
+        self.turnToGo = self.turnToGo.nextTurn()
+    }
 }
 
 extension PickWordPresenter : PickWordPresenterDelegate
 {
     func start()
     {
-        self.isActive = true
-        
         delegate?.updateConnectionData(playerAddress: connectionData.otherPlayerAddress, playerName: connectionData.otherPlayerName, playerColor: connectionData.otherPlayerColor)
         
         delegate?.updateEnterXCharacterWord(length: guessWordLength)
@@ -104,8 +108,6 @@ extension PickWordPresenter : PickWordPresenterDelegate
     {
         print("PickWordPresenter quit")
         
-        self.isActive = false
-        
         communicator?.sendQuitMessage()
         
         communicator?.stop()
@@ -113,8 +115,7 @@ extension PickWordPresenter : PickWordPresenterDelegate
     
     func goToGameplayScreen(guessWord: String)
     {
-        guard isActive else
-        {
+        guard !waitingForNextGame else {
             return
         }
         
@@ -139,6 +140,8 @@ extension PickWordPresenter : PickWordPresenterDelegate
             let gameSession = GameSession(firstToGo: turnToGo == .first, guessWord: guessWord)
             
             delegate?.goToGameplayScreen(communicator: communicator, connectionData: connectionData, gameSession: gameSession)
+            
+            waitingForNextGame = true
         }
         else
         {
@@ -146,19 +149,6 @@ extension PickWordPresenter : PickWordPresenterDelegate
         }
         
         communicator?.sendAlertPickedGuessWordMessage()
-    }
-    
-    func prepareForNewGame()
-    {
-        self.isActive = false
-        
-        self.guessWordPicked = ""
-        self.turnValue = 0
-        
-        self.opponentHasPickedGuessWord = false
-        self.opponentPickedTurn = 0
-        
-        self.turnToGo = self.turnToGo.nextTurn()
     }
 }
 
@@ -215,7 +205,11 @@ extension PickWordPresenter : CommunicatorObserver
     
     func opponentPickedPlaySession()
     {
-        guard isActive else
+        guard !waitingForNextGame else {
+            return
+        }
+        
+        guard !opponentHasPickedGuessWord else
         {
             return
         }
@@ -229,7 +223,6 @@ extension PickWordPresenter : CommunicatorObserver
         print("PickWordPresenter opponent picked guess word!")
         
         opponentHasPickedGuessWord = true
-        opponentPickedTurn = turnValue
         
         delegate?.setOpponentStatus(status: "Opponent picked a guess word!")
         
@@ -238,6 +231,22 @@ extension PickWordPresenter : CommunicatorObserver
         {
             goToGameplayScreen(guessWord: guessWordPicked)
         }
+    }
+    
+    func nextGame()
+    {
+        guard waitingForNextGame else
+        {
+            return
+        }
+        
+        print("PickWordPresenter opponent is calling for next game!")
+        
+        waitingForNextGame = false
+        
+        prepareForNewGame()
+        
+        delegate?.nextGame()
     }
     
     func opponentGuess(guess: String)

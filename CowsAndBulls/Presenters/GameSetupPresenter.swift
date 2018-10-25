@@ -262,6 +262,11 @@ extension GameSetupPresenter : CommunicatorObserver
         
     }
     
+    func nextGame()
+    {
+        
+    }
+    
     func opponentGuess(guess: String)
     {
         

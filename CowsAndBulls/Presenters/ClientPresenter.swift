@@ -123,6 +123,11 @@ extension ClientPresenter : CommunicatorObserver
         
     }
     
+    func nextGame()
+    {
+        
+    }
+    
     func opponentGuess(guess: String)
     {
         

@@ -36,6 +36,7 @@ protocol Communicator
     func sendGuessMessage(guess: String)
     func sendGuessIncorrectResponseMessage(response: String)
     func sendGuessCorrectResponseMessage()
+    func sendGameNextMessage()
 }
 
 struct CommunicatorInitialConnection
@@ -190,6 +191,10 @@ extension CommunicatorHost
 {
     private func onBeginConnection(client: TCPClient)
     {
+        guard client != nil else {
+            return
+        }
+        
         print("CommunicatorHost: beginning new connection with a client \(client.address):\(client.port), sending greetings, waiting to be greeted back. Date: \(Date())")
         
         self.client = client
@@ -371,6 +376,14 @@ extension CommunicatorHost
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         writer?.send(data: dataToSend!.getData())
     }
+    
+    func sendGameNextMessage()
+    {
+        print("CommunicatorHost: sending game next message to client")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMENEXT.rawValue, parameter: "")
+        writer?.send(data: dataToSend!.getData())
+    }
 }
 
 // Reader delegates
@@ -402,6 +415,8 @@ extension CommunicatorHost : CommunicatorReaderDelegate
     
     func messageReceived(command: String, parameter: String)
     {
+        print("CommunicatorHost: received client message \(command)")
+        
         guard let cmd = CommunicatorCommands(rawValue: command) else {
             return
         }
@@ -469,6 +484,14 @@ extension CommunicatorHost : CommunicatorReaderDelegate
                 for observer in self.observers
                 {
                     observer.value.value?.correctGuessResponse()
+                }
+            }
+        case .GAMENEXT:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.nextGame()
                 }
             }
         default: break
@@ -661,6 +684,10 @@ extension CommunicatorClient
 {
     private func onBeginConnection()
     {
+        guard self.socket != nil else {
+            return
+        }
+        
         print("CommunicatorClient: beginning new connection with server on \(Date())")
         
         self.reader = CommunicatorReader(socket: socket!)
@@ -838,6 +865,14 @@ extension CommunicatorClient
         let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECORRECTGUESS.rawValue, parameter: "")
         writer?.send(data: dataToSend!.getData())
     }
+    
+    func sendGameNextMessage()
+    {
+        print("CommunicatorClient: sending game next message to server")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMENEXT.rawValue, parameter: "")
+        writer?.send(data: dataToSend!.getData())
+    }
 }
 
 // Reader delegate
@@ -869,6 +904,8 @@ extension CommunicatorClient : CommunicatorReaderDelegate
     
     func messageReceived(command: String, parameter: String)
     {
+        print("CommunicatorClient: received host message \(command)")
+        
         guard let cmd = CommunicatorCommands(rawValue: command) else {
             return
         }
@@ -936,6 +973,14 @@ extension CommunicatorClient : CommunicatorReaderDelegate
                 for observer in self.observers
                 {
                     observer.value.value?.correctGuessResponse()
+                }
+            }
+        case .GAMENEXT:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.nextGame()
                 }
             }
         default: break

@@ -16,6 +16,7 @@ protocol PickWordViewDelegate : class
     func setOpponentStatus(status: String)
     func updateEnterXCharacterWord(length: UInt)
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)
+    func nextGame()
     
     func connectionFailure()
     func connectionFailure(errorMessage: String)
@@ -123,6 +124,20 @@ extension PickWordView
     {
         DispatchQueue.main.async {
             self.labelInfo.text = String("Opponent: \(playerName) (\(playerAddress))")
+        }
+    }
+    
+    func enablePincode()
+    {
+        DispatchQueue.main.async {
+            self.pincodeGuessWord.isUserInteractionEnabled = true
+        }
+    }
+    
+    func disablePincode()
+    {
+        DispatchQueue.main.async {
+            self.pincodeGuessWord.isUserInteractionEnabled = false
         }
     }
     

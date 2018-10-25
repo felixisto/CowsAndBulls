@@ -25,6 +25,8 @@ protocol GameplayViewDelegate : class
     
     func victory(opponentGuessWord: String)
     func defeat(myGuessWord: String)
+    
+    func goBack()
 }
 
 protocol GameplayActionDelegate : PinCodeTextFieldDelegate

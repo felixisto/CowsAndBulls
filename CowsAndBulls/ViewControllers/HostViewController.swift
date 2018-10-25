@@ -87,14 +87,10 @@ extension HostViewController : HostViewDelegate
     func connectionBegin()
     {
         customView?.beginConnecting()
-        
-        navigationItem.leftBarButtonItem?.isEnabled = false
     }
     
     func connectionSuccessful(communicator: CommunicatorHost?, initialData: CommunicatorInitialConnection)
     {
-        navigationItem.leftBarButtonItem?.isEnabled = true
-        
         if let comm = communicator, var viewControllers = navigationController?.viewControllers
         {
             let presenter = GameSetupPresenter(communicator: comm, connectionData: initialData)

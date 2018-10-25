@@ -14,6 +14,8 @@ protocol GameplayPresenterDelegate : class
     func quit()
     
     func guess(guess: String)
+    
+    func goBack()
 }
 
 class GameplayPresenter : NSObject
@@ -99,6 +101,15 @@ extension GameplayPresenter : GameplayPresenterDelegate
             
         }
     }
+    
+    func goBack()
+    {
+        print("GameplayPresenter go back, play another game")
+        
+        communicator?.sendGameNextMessage()
+        
+        delegate?.goBack()
+    }
 }
 
 extension GameplayPresenter : CommunicatorObserver
@@ -153,6 +164,11 @@ extension GameplayPresenter : CommunicatorObserver
     }
     
     func opponentPickedPlaySession()
+    {
+        
+    }
+    
+    func nextGame()
     {
         
     }

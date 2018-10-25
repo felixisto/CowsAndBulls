@@ -96,6 +96,11 @@ extension CommunicatorMessage
     
     static func createWriteMessage(command: String, parameter: String="") -> CommunicatorMessage?
     {
+        guard command.count == CommunicatorMessageCommandLength else
+        {
+            return nil
+        }
+        
         var cmd = CommunicatorMessage(parameterLength: CommunicatorMessageParameterLength, command: command, parameter: parameter)
         
         cmd.fillMessage()
@@ -105,6 +110,11 @@ extension CommunicatorMessage
     
     static func createWriteMessage(command: String, parameter1: String, parameter2: String) -> CommunicatorMessage?
     {
+        guard command.count == CommunicatorMessageCommandLength else
+        {
+            return nil
+        }
+        
         var cmd = CommunicatorMessage(parameterLength: CommunicatorMessageParameterLength, command: command, parameter: String("\(parameter1) \(parameter2)"))
         
         cmd.fillMessage()

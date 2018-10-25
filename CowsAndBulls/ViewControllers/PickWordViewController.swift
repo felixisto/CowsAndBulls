@@ -49,12 +49,7 @@ class PickWordViewController: UIViewController
     
     override func viewWillDisappear(_ animated: Bool)
     {
-        // Prepare for new game
-        self.presenter?.prepareForNewGame()
         
-        customView?.clearPincode()
-        
-        customView?.setOpponentStatus(status: "Opponent is picking a guess word...")
     }
     
     override func didReceiveMemoryWarning()
@@ -151,7 +146,17 @@ extension PickWordViewController : PickWordViewDelegate
             let viewController = GameplayViewController(withPresenter: presenter)
             
             navigationController?.pushViewController(viewController, animated: true)
+            
+            customView?.clearPincode()
+            customView?.disablePincode()
+            customView?.setOpponentStatus(status: "Waiting for opponent to leave outcome screen...")
         }
+    }
+    
+    func nextGame()
+    {
+        customView?.enablePincode()
+        customView?.setOpponentStatus(status: "Opponent is picking guess word...")
     }
     
     func updateConnectionData(playerAddress: String, playerName: String, playerColor: UIColor)

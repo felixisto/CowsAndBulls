@@ -62,12 +62,14 @@ extension HostView
     func beginConnecting()
     {
         DispatchQueue.main.async {
+            self.labelDescription.text = "Found client! Connecting..."
         }
     }
     
     func stopConnecting()
     {
         DispatchQueue.main.async {
+            self.labelDescription.text = "Waiting for other player to join..."
         }
     }
     

@@ -43,6 +43,7 @@ protocol CommunicatorObserver: class
     
     // Game Pick Word scene
     func opponentPickedPlaySession()
+    func nextGame()
     
     // Game Play scene
     func opponentGuess(guess: String)

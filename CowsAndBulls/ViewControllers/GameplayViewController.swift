@@ -154,6 +154,11 @@ extension GameplayViewController : GameplayViewDelegate
         
         navigationItem.leftBarButtonItem?.isEnabled = false
     }
+    
+    func goBack()
+    {
+        navigationController?.popViewController(animated: false)
+    }
 }
 
 extension GameplayViewController : GameplayActionDelegate
@@ -169,6 +174,6 @@ extension GameplayViewController : GameplayActionDelegate
     
     func leaveOutcomeScreen()
     {
-        navigationController?.popViewController(animated: false)
+        presenter?.goBack()
     }
 }
