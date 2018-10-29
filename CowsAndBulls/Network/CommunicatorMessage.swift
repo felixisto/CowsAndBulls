@@ -30,11 +30,26 @@ struct CommunicatorMessage
     
     private init(parameterLength: UInt8, command: String, parameter: String)
     {
+        var param = parameter
+        var paramLength = parameterLength
+        
+        if paramLength <= 0
+        {
+            paramLength = 0
+            param = ""
+        }
+        
         self.commandLength = UInt8(command.count)
-        self.parameterLength = parameterLength
+        self.parameterLength = paramLength
         
         self.data = command
-        self.data.append(contentsOf: parameter)
+        
+        if param.count > paramLength
+        {
+            param = param[..<String.Index(encodedOffset: Int(paramLength))].description
+        }
+        
+        self.data.append(contentsOf: param)
     }
     
     func isFullyWritten() -> Bool

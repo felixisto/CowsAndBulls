@@ -165,11 +165,20 @@ extension GameplayViewController : GameplayActionDelegate
 {
     func textFieldDidEndEditing(_ textField: PinCodeTextField)
     {
+        guard !textField.isHidden else {
+            return
+        }
+        
         if let text = textField.text
         {
             presenter?.guess(guess: text)
             customView?.hidePincode()
         }
+    }
+    
+    func chat(message: String)
+    {
+        presenter?.chat(message: message)
     }
     
     func leaveOutcomeScreen()

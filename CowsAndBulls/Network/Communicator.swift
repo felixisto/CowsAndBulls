@@ -36,6 +36,7 @@ protocol Communicator
     func sendGuessMessage(guess: String)
     func sendGuessIncorrectResponseMessage(response: String)
     func sendGuessCorrectResponseMessage()
+    func sendGameChatMessage(message: String)
     func sendGameNextMessage()
 }
 
@@ -377,6 +378,14 @@ extension CommunicatorHost
         writer?.send(data: dataToSend!.getData())
     }
     
+    func sendGameChatMessage(message: String)
+    {
+        print("CommunicatorHost: sending game chat message to client")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECHAT.rawValue, parameter: message)
+        writer?.send(data: dataToSend!.getData())
+    }
+    
     func sendGameNextMessage()
     {
         print("CommunicatorHost: sending game next message to client")
@@ -484,6 +493,14 @@ extension CommunicatorHost : CommunicatorReaderDelegate
                 for observer in self.observers
                 {
                     observer.value.value?.correctGuessResponse()
+                }
+            }
+        case .GAMECHAT:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentChatMessage(message: parameter)
                 }
             }
         case .GAMENEXT:
@@ -866,6 +883,14 @@ extension CommunicatorClient
         writer?.send(data: dataToSend!.getData())
     }
     
+    func sendGameChatMessage(message: String)
+    {
+        print("CommunicatorClient: sending game chat message to server")
+        
+        let dataToSend = CommunicatorMessage.createWriteMessage(command: CommunicatorCommands.GAMECHAT.rawValue, parameter: message)
+        writer?.send(data: dataToSend!.getData())
+    }
+    
     func sendGameNextMessage()
     {
         print("CommunicatorClient: sending game next message to server")
@@ -973,6 +998,14 @@ extension CommunicatorClient : CommunicatorReaderDelegate
                 for observer in self.observers
                 {
                     observer.value.value?.correctGuessResponse()
+                }
+            }
+        case .GAMECHAT:
+            // Observers notification
+            DispatchQueue.main.async {
+                for observer in self.observers
+                {
+                    observer.value.value?.opponentChatMessage(message: parameter)
                 }
             }
         case .GAMENEXT:

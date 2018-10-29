@@ -142,5 +142,10 @@ extension ClientPresenter : CommunicatorObserver
     {
         
     }
+    
+    func opponentChatMessage(message: String)
+    {
+        
+    }
 }
 

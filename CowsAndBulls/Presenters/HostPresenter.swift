@@ -141,4 +141,9 @@ extension HostPresenter : CommunicatorObserver
     {
         
     }
+    
+    func opponentChatMessage(message: String)
+    {
+        
+    }
 }

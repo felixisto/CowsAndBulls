@@ -281,5 +281,10 @@ extension GameSetupPresenter : CommunicatorObserver
     {
         
     }
+    
+    func opponentChatMessage(message: String)
+    {
+        
+    }
 }
 

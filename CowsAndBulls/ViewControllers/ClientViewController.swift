@@ -8,6 +8,8 @@
 
 import UIKit
 
+let ClientLastHostAddressKey = "ClientLastHostAddressKey"
+
 class ClientViewController: UIViewController
 {
     private var customView: ClientView?
@@ -56,6 +58,14 @@ class ClientViewController: UIViewController
         navigationItem.title = "Join Game"
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Quit", style: .plain, target: self, action: #selector(actionBack(_:)))
+        
+        if let lastHostAddress = UserDefaults.standard.string(forKey: ClientLastHostAddressKey)
+        {
+            if lastHostAddress.count > 0
+            {
+                self.customView?.setHostAddress(text: lastHostAddress)
+            }
+        }
     }
 }
 
@@ -124,5 +134,8 @@ extension ClientViewController : ClientActionDelegate
     {
         customView?.beginConnecting()
         presenter?.connect(hostAddress: hostAddress)
+        
+        // Save the address, it will be used as default address next time the CLIENT screen starts
+        UserDefaults.standard.set(hostAddress, forKey: ClientLastHostAddressKey)
     }
 }

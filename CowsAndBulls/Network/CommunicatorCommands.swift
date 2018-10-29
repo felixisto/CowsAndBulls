@@ -21,6 +21,7 @@ enum CommunicatorCommands : String
     case GAMEGUESS = "GUESS"
     case GAMEGUESSRESPONSE = "GRESP"
     case GAMECORRECTGUESS = "GCORR"
+    case GAMECHAT = "GCHAT"
     
     case GAMENEXT = "GAMNX"
 }

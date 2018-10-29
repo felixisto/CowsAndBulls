@@ -31,6 +31,7 @@ protocol GameplayViewDelegate : class
 
 protocol GameplayActionDelegate : PinCodeTextFieldDelegate
 {
+    func chat(message: String)
     func leaveOutcomeScreen()
 }
 
@@ -44,12 +45,20 @@ class GameplayView : UIView
     @IBOutlet private weak var labelGameDescription: UILabel!
     @IBOutlet private weak var labelYourGuessWord: UILabel!
     @IBOutlet private weak var labelTurn: UILabel!
+    @IBOutlet private weak var labelLog: UILabel!
+    @IBOutlet private weak var scrollLog: UIScrollView!
+    @IBOutlet private weak var labelStatus: UILabel!
+    @IBOutlet private weak var buttonGuess: UIButton!
+    @IBOutlet private weak var buttonChat: UIButton!
+    
     @IBOutlet private weak var labelPincodeGuess: UILabel!
     @IBOutlet private weak var pincodeGuess: PinCodeTextField!
-    @IBOutlet private weak var scrollLog: UIScrollView!
-    @IBOutlet private weak var labelLog: UILabel!
-    @IBOutlet private weak var buttonGuess: UIButton!
-    @IBOutlet private weak var labelStatus: UILabel!
+    
+    @IBOutlet private weak var labelChat: UILabel!
+    @IBOutlet private weak var fieldChat: UITextField!
+    
+    @IBOutlet private weak var buttonCancel: UIButton!
+    
     @IBOutlet private weak var layoutConnectionStatus: UIView!
     @IBOutlet private weak var labelConnectionStatus: UILabel!
     
@@ -90,11 +99,38 @@ class GameplayView : UIView
         labelTurn.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelTurn.textAlignment = .center
         
+        
+        
+        buttonGuess.translatesAutoresizingMaskIntoConstraints = false
+        buttonGuess.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 5.0).isActive = true
+        buttonGuess.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: 5.0).isActive = true
+        buttonGuess.addTarget(self, action: #selector(actionGuess(_:)), for: .touchDown)
+        buttonGuess.setTitleColor(UIColor.gray, for: .disabled)
+        
+        buttonChat.translatesAutoresizingMaskIntoConstraints = false
+        buttonChat.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: 5.0).isActive = true
+        buttonChat.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -5.0).isActive = true
+        buttonChat.addTarget(self, action: #selector(actionChat(_:)), for: .touchDown)
+        
+        buttonCancel.translatesAutoresizingMaskIntoConstraints = false
+        buttonCancel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 5.0).isActive = true
+        buttonCancel.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -5.0).isActive = true
+        buttonCancel.addTarget(self, action: #selector(actionCancel(_:)), for: .touchDown)
+        
+        labelStatus.translatesAutoresizingMaskIntoConstraints = false
+        labelStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -10.0).isActive = true
+        labelStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        labelStatus.textAlignment = .center
+        
+        
+        
+        
+        
+        
         labelPincodeGuess.translatesAutoresizingMaskIntoConstraints = false
         labelPincodeGuess.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         labelPincodeGuess.bottomAnchor.constraint(equalTo: pincodeGuess.topAnchor, constant: 15.0).isActive = true
         labelPincodeGuess.textAlignment = .center
-        labelPincodeGuess.isHidden = true
         
         pincodeGuess.translatesAutoresizingMaskIntoConstraints = false
         pincodeGuess.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
@@ -103,7 +139,6 @@ class GameplayView : UIView
         pincodeGuess.heightAnchor.constraint(equalToConstant: 128.0).isActive = true
         pincodeGuess.allowedCharacterSet = CharacterSet.decimalDigits
         pincodeGuess.keyboardType = .decimalPad
-        pincodeGuess.isHidden = true
         
         scrollLog.translatesAutoresizingMaskIntoConstraints = false
         scrollLog.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
@@ -117,27 +152,39 @@ class GameplayView : UIView
         labelLog.numberOfLines = 10000
         labelLog.textAlignment = .left
         
-        buttonGuess.translatesAutoresizingMaskIntoConstraints = false
-        buttonGuess.topAnchor.constraint(equalTo: guide.topAnchor, constant: 5.0).isActive = true
-        buttonGuess.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -15.0).isActive = true
-        buttonGuess.addTarget(self, action: #selector(actionGuess(_:)), for: .touchDown)
         
-        labelStatus.translatesAutoresizingMaskIntoConstraints = false
-        labelStatus.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -10.0).isActive = true
-        labelStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        labelStatus.textAlignment = .center
+        
+        
+        
+        labelChat.translatesAutoresizingMaskIntoConstraints = false
+        labelChat.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        labelChat.bottomAnchor.constraint(equalTo: pincodeGuess.topAnchor, constant: 15.0).isActive = true
+        labelChat.textAlignment = .center
+        
+        fieldChat.translatesAutoresizingMaskIntoConstraints = false
+        fieldChat.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        fieldChat.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
+        fieldChat.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.9).isActive = true
+        fieldChat.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+        fieldChat.delegate = self
+        
+        
         
         layoutConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
         layoutConnectionStatus.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         layoutConnectionStatus.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         layoutConnectionStatus.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 1.0).isActive = true
         layoutConnectionStatus.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
-        layoutConnectionStatus.isHidden = true
         
         labelConnectionStatus.translatesAutoresizingMaskIntoConstraints = false
         labelConnectionStatus.centerXAnchor.constraint(equalTo: layoutConnectionStatus.centerXAnchor).isActive = true
         labelConnectionStatus.centerYAnchor.constraint(equalTo: layoutConnectionStatus.centerYAnchor).isActive = true
         labelConnectionStatus.textAlignment = .center
+        
+        
+        
+        
+        
         
         layoutOutcomeScreen.translatesAutoresizingMaskIntoConstraints = false
         layoutOutcomeScreen.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
@@ -156,11 +203,37 @@ class GameplayView : UIView
         labelOutcome.centerXAnchor.constraint(equalTo: layoutOutcomeScreen.centerXAnchor).isActive = true
         labelOutcome.centerYAnchor.constraint(equalTo: layoutOutcomeScreen.centerYAnchor).isActive = true
         labelOutcome.widthAnchor.constraint(equalTo: layoutOutcomeScreen.widthAnchor, multiplier: 1.0).isActive = true
-        labelOutcome.isHidden = true
         labelOutcome.numberOfLines = 10
         
         // Layout connection status should be ontop of everything, including the outcome screen
         bringSubviewToFront(layoutConnectionStatus)
+    }
+    
+    private func hideBase()
+    {
+        self.labelGameDescription.isHidden = true
+        self.labelYourGuessWord.isHidden = true
+        self.labelTurn.isHidden = true
+        self.scrollLog.isHidden = true
+        self.labelStatus.isHidden = true
+        
+        self.buttonGuess.isHidden = true
+        self.buttonChat.isHidden = true
+    }
+    
+    private func showBase()
+    {
+        self.labelGameDescription.isHidden = false
+        self.labelYourGuessWord.isHidden = false
+        self.labelTurn.isHidden = false
+        self.scrollLog.isHidden = false
+        self.labelStatus.isHidden = false
+        
+        self.buttonGuess.isHidden = false
+        self.buttonChat.isHidden = false
+        
+        self.pincodeGuess.resignFirstResponder()
+        self.fieldChat.resignFirstResponder()
     }
 }
 
@@ -217,7 +290,7 @@ extension GameplayView
         }
     }
     
-    func setActionDelegate(delegate: PinCodeTextFieldDelegate?)
+    func setActionDelegate(delegate: GameplayActionDelegate)
     {
         DispatchQueue.main.async {
             self.pincodeGuess.delegate = delegate
@@ -230,14 +303,9 @@ extension GameplayView
             self.pincodeGuess.isHidden = false
             self.labelPincodeGuess.isHidden = false
             
-            self.buttonGuess.setTitle("Cancel", for: .normal)
-            self.buttonGuess.setTitleColor(.orange, for: .normal)
+            self.buttonCancel.isHidden = false
             
-            self.labelGameDescription.isHidden = true
-            self.labelYourGuessWord.isHidden = true
-            self.labelTurn.isHidden = true
-            self.scrollLog.isHidden = true
-            self.labelStatus.isHidden = true
+            self.hideBase()
         }
     }
     
@@ -247,16 +315,11 @@ extension GameplayView
             self.pincodeGuess.isHidden = true
             self.labelPincodeGuess.isHidden = true
             
+            self.buttonCancel.isHidden = true
+            
             self.pincodeGuess.text = ""
             
-            self.buttonGuess.setTitle("Guess", for: .normal)
-            self.buttonGuess.setTitleColor(.green, for: .normal)
-            
-            self.labelGameDescription.isHidden = false
-            self.labelYourGuessWord.isHidden = false
-            self.labelTurn.isHidden = false
-            self.scrollLog.isHidden = false
-            self.labelStatus.isHidden = false
+            self.showBase()
         }
     }
     
@@ -289,6 +352,32 @@ extension GameplayView
                     self.hideConnectionStatus()
                 }
             }
+        }
+    }
+    
+    func showChat()
+    {
+        DispatchQueue.main.async {
+            self.labelChat.isHidden = false
+            self.fieldChat.isHidden = false
+            
+            self.buttonCancel.isHidden = false
+            
+            self.hideBase()
+        }
+    }
+    
+    func hideChat()
+    {
+        DispatchQueue.main.async {
+            self.labelChat.isHidden = true
+            self.fieldChat.isHidden = true
+            
+            self.buttonCancel.isHidden = true
+            
+            self.fieldChat.text = ""
+            
+            self.showBase()
         }
     }
     
@@ -333,17 +422,35 @@ extension GameplayView
 {
     @objc func actionGuess(_ sender: Any)
     {
+        guard !self.buttonGuess.isHidden else {
+            return
+        }
+        
         DispatchQueue.main.async {
-            if self.pincodeGuess.isHidden
-            {
-                self.showPincode()
-            }
-            else
-            {
-                self.hidePincode()
-                
-                self.pincodeGuess.resignFirstResponder()
-            }
+            self.showPincode()
+        }
+    }
+    
+    @objc func actionChat(_ sender: Any)
+    {
+        guard !self.buttonChat.isHidden else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.showChat()
+        }
+    }
+    
+    @objc func actionCancel(_ sender: Any)
+    {
+        guard !self.buttonCancel.isHidden else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.hideChat()
+            self.hidePincode()
         }
     }
     
@@ -352,6 +459,26 @@ extension GameplayView
         delegate?.leaveOutcomeScreen()
     }
 }
+
+extension GameplayView : UITextFieldDelegate
+{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        guard !fieldChat.isHidden else {
+            return true
+        }
+        
+        if let text = textField.text
+        {
+            delegate?.chat(message: text)
+        }
+        
+        self.hideChat()
+        
+        return true
+    }
+}
+
 extension GameplayView
 {
     class func create(owner: Any) -> GameplayView?

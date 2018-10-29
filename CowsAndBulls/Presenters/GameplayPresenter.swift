@@ -15,6 +15,8 @@ protocol GameplayPresenterDelegate : class
     
     func guess(guess: String)
     
+    func chat(message: String)
+    
     func goBack()
 }
 
@@ -100,6 +102,17 @@ extension GameplayPresenter : GameplayPresenterDelegate
         {
             
         }
+    }
+    
+    func chat(message: String)
+    {
+        print("GameplayPresenter sending chat message to opponent")
+        
+        gameSession.addMyChatTextToLog(message)
+        
+        delegate?.updateLog(string: gameSession.getLog(opponentName: initialConnectionData.otherPlayerName))
+        
+        communicator?.sendGameChatMessage(message: message)
     }
     
     func goBack()
@@ -241,5 +254,14 @@ extension GameplayPresenter : CommunicatorObserver
         {
             
         }
+    }
+    
+    func opponentChatMessage(message: String)
+    {
+        print("GameplayPresenter opponent says '\(message)'")
+        
+        gameSession.addOpponentChatTextToLog(message)
+        
+        delegate?.updateLog(string: gameSession.getLog(opponentName: initialConnectionData.otherPlayerName))
     }
 }

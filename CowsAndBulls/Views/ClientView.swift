@@ -93,6 +93,13 @@ extension ClientView
             self.fieldHostAddress.isEnabled = true
         }
     }
+    
+    func setHostAddress(text: String)
+    {
+        DispatchQueue.main.async {
+            self.fieldHostAddress.text = text
+        }
+    }
 }
 
 extension ClientView

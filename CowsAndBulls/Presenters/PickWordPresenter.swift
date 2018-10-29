@@ -263,4 +263,9 @@ extension PickWordPresenter : CommunicatorObserver
     {
         
     }
+    
+    func opponentChatMessage(message: String)
+    {
+        
+    }
 }

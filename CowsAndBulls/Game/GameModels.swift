@@ -288,7 +288,7 @@ struct GameSession
         
         gameTurn += 1
         
-        addToLog(String("\(GameSession.YOU_LABEL) \(response)"))
+        addGuessTextToLog(String("\(GameSession.YOU_LABEL) \(response)"))
     }
     
     mutating func opponentIsGuessing(guess guessCharactersAsString: String) throws -> GuessResult
@@ -312,7 +312,7 @@ struct GameSession
         
         let guessResult = GuessCharacter.guessResult(guessWord: guessWord, guess: GuessCharacter.stringToGuessCharacters(guessCharactersAsString))
         
-        addToLog(String("\(GameSession.OPPONENT_LABEL) \(guessResult.messageWithGuess)"))
+        addGuessTextToLog(String("\(GameSession.OPPONENT_LABEL) \(guessResult.messageWithGuess)"))
         
         if guessResult.hasSuccessfullyGuessed()
         {
@@ -322,7 +322,21 @@ struct GameSession
         return guessResult
     }
     
-    mutating private func addToLog(_ string: String)
+    mutating public func addMyChatTextToLog(_ string: String)
+    {
+        var temp = String("\(GameSession.YOU_LABEL): \(string)\n")
+        temp.append(log)
+        log = temp
+    }
+    
+    mutating public func addOpponentChatTextToLog(_ string: String)
+    {
+        var temp = String("\(GameSession.OPPONENT_LABEL): \(string)\n")
+        temp.append(log)
+        log = temp
+    }
+    
+    mutating private func addGuessTextToLog(_ string: String)
     {
         var temp = String("\(gameTurn-1). \(string)\n")
         temp.append(log)

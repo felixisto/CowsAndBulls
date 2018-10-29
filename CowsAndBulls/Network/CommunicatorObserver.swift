@@ -49,4 +49,5 @@ protocol CommunicatorObserver: class
     func opponentGuess(guess: String)
     func incorrectGuessResponse(response: String)
     func correctGuessResponse()
+    func opponentChatMessage(message: String)
 }
