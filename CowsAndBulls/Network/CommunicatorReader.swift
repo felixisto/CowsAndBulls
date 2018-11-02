@@ -79,12 +79,9 @@ extension CommunicatorReader
             }
             
             // Read output from socket
-            if let bytes = self.socket.read(Int(CommunicatorMessageLength), timeout: CommunicatorReaderReadTimeout)
+            if let buffer = self.socket.read(Int(CommunicatorMessageLength), timeout: CommunicatorReaderReadTimeout)
             {
-                if let receivedData = String(bytes: bytes, encoding: .utf8)
-                {
-                    self.data.append(string: receivedData)
-                }
+                self.data.append(buffer: buffer)
             }
             
             // Message was received

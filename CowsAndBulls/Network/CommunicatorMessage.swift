@@ -14,7 +14,7 @@ let CommunicatorMessageParameterLength : UInt8 = CommunicatorMessageLength-Commu
 
 let CommunicatorMessageFillerCharacter = "\t"
 
-let CommunicatorMessageEmojiTrashSymbol = "�"
+let CommunicatorMessageNullCharacterValue = 65533
 
 struct CommunicatorMessage
 {
@@ -66,11 +66,9 @@ struct CommunicatorMessage
     
     func getParameter() -> String
     {
-        var parameter = data[String.Index(encodedOffset: Int(commandLength))...].description
+        let parameter = data[String.Index(encodedOffset: Int(commandLength))...].description
         
-        parameter = parameter.replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
-        
-        return parameter.replacingOccurrences(of: CommunicatorMessageEmojiTrashSymbol, with: "")
+        return parameter.replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
     }
     
     func getData() -> String
@@ -83,14 +81,18 @@ struct CommunicatorMessage
         data = ""
     }
     
-    mutating func append(string: String)
+    mutating func append(buffer: [UInt8])
     {
-        for e in 0..<string.count
+        guard let stringData = String(bytes: buffer, encoding: .utf8) else {
+            return
+        }
+        
+        for e in 0..<stringData.count
         {
             // Data must start with alphanumeric or _
             if data.count == 0
             {
-                let c = string.unicodeScalars[String.Index(encodedOffset: e)]
+                let c = stringData.unicodeScalars[String.Index(encodedOffset: e)]
                 
                 if (!NSCharacterSet.alphanumerics.contains(c))
                 {
@@ -98,12 +100,23 @@ struct CommunicatorMessage
                 }
             }
             
-            data.append(string[String.Index(encodedOffset: e)])
+            let c = stringData[String.Index(encodedOffset: e)]
+            
+            // Do not add NULL CHARACTERS
+            if c.unicodeScalars.first!.value != CommunicatorMessageNullCharacterValue
+            {
+                data.append(c)
+            }
             
             if isFullyWritten()
             {
-                return
+                break
             }
+        }
+        
+        for _ in 0..<buffer.count-stringData.count
+        {
+            data.append(contentsOf: CommunicatorMessageFillerCharacter)
         }
     }
     
