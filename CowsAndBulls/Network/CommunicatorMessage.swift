@@ -14,6 +14,8 @@ let CommunicatorMessageParameterLength : UInt8 = CommunicatorMessageLength-Commu
 
 let CommunicatorMessageFillerCharacter = "\t"
 
+let CommunicatorMessageEmojiTrashSymbol = "�"
+
 struct CommunicatorMessage
 {
     let commandLength: UInt8
@@ -64,9 +66,11 @@ struct CommunicatorMessage
     
     func getParameter() -> String
     {
-        let parameter = data[String.Index(encodedOffset: Int(commandLength))...].description
+        var parameter = data[String.Index(encodedOffset: Int(commandLength))...].description
         
-        return parameter.replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
+        parameter = parameter.replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
+        
+        return parameter.replacingOccurrences(of: CommunicatorMessageEmojiTrashSymbol, with: "")
     }
     
     func getData() -> String
@@ -83,6 +87,17 @@ struct CommunicatorMessage
     {
         for e in 0..<string.count
         {
+            // Data must start with alphanumeric or _
+            if data.count == 0
+            {
+                let c = string.unicodeScalars[String.Index(encodedOffset: e)]
+                
+                if (!NSCharacterSet.alphanumerics.contains(c))
+                {
+                    continue
+                }
+            }
+            
             data.append(string[String.Index(encodedOffset: e)])
             
             if isFullyWritten()
