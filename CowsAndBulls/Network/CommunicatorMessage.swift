@@ -14,8 +14,6 @@ let CommunicatorMessageParameterLength : UInt8 = CommunicatorMessageLength-Commu
 
 let CommunicatorMessageFillerCharacter = "\t"
 
-let CommunicatorMessageNullCharacterValue = 65533
-
 struct CommunicatorMessage
 {
     let commandLength: UInt8
@@ -87,36 +85,41 @@ struct CommunicatorMessage
             return
         }
         
+        // String appended cannot start with a filler character
+        // String appended must not make @data longer than @CommunicatorMessageLength
+        let fillerCharacter = CommunicatorMessageFillerCharacter.first!
+        
+        var beginIndex : Int = -1
+        
         for e in 0..<stringData.count
         {
-            // Data must start with alphanumeric or _
-            if data.count == 0
+            if stringData[String.Index(encodedOffset: e)] != fillerCharacter
             {
-                let c = stringData.unicodeScalars[String.Index(encodedOffset: e)]
-                
-                if (!NSCharacterSet.alphanumerics.contains(c))
-                {
-                    continue
-                }
-            }
-            
-            let c = stringData[String.Index(encodedOffset: e)]
-            
-            // Do not add NULL CHARACTERS
-            if c.unicodeScalars.first!.value != CommunicatorMessageNullCharacterValue
-            {
-                data.append(c)
-            }
-            
-            if isFullyWritten()
-            {
+                beginIndex = e
                 break
             }
         }
         
-        for _ in 0..<buffer.count-stringData.count
+        guard beginIndex >= 0 else {
+            return
+        }
+        
+        var endIndex : Int = stringData.count
+        
+        let wouldBeResultStringLength = (data.count + endIndex - beginIndex)
+        
+        if wouldBeResultStringLength > CommunicatorMessageLength
         {
-            data.append(contentsOf: CommunicatorMessageFillerCharacter)
+            endIndex -= wouldBeResultStringLength - Int(CommunicatorMessageLength)
+        }
+        
+        guard endIndex >= 0 else {
+            return
+        }
+        
+        if beginIndex < endIndex
+        {
+            data.append(stringData[String.Index(encodedOffset: beginIndex)..<String.Index(encodedOffset: endIndex)].description)
         }
     }
     
