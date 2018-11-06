@@ -54,7 +54,7 @@ struct CommunicatorMessage
     
     func isFullyWritten() -> Bool
     {
-        return data.count == CommunicatorMessageLength
+        return getDataBytesCount() >= CommunicatorMessageLength
     }
     
     func getCommand() -> String
@@ -62,11 +62,35 @@ struct CommunicatorMessage
         return data[..<String.Index(encodedOffset: Int(commandLength))].description
     }
     
+    private func getParameterWithFillerChars() -> String
+    {
+        var byteArray = [UInt8]()
+        
+        for (index, char) in data.utf8.enumerated()
+        {
+            if index < commandLength
+            {
+                continue
+            }
+            
+            byteArray += [char]
+            
+            if index == CommunicatorMessageLength
+            {
+                break
+            }
+        }
+        
+        guard let parameter = String(bytes: byteArray, encoding: .utf8) else {
+            return ""
+        }
+        
+        return parameter
+    }
+    
     func getParameter() -> String
     {
-        let parameter = data[String.Index(encodedOffset: Int(commandLength))...].description
-        
-        return parameter.replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
+        return getParameterWithFillerChars().replacingOccurrences(of: CommunicatorMessageFillerCharacter, with: "")
     }
     
     func getData() -> String
@@ -74,9 +98,25 @@ struct CommunicatorMessage
         return data
     }
     
-    mutating func clear()
+    func getDataBytesCount() -> Int
     {
-        data = ""
+        return data.utf8.count
+    }
+    
+    mutating func clearFirstFilledMessage()
+    {
+        if getDataBytesCount() > CommunicatorMessageLength
+        {
+            let command = getCommand()
+            let parameter = getParameterWithFillerChars()
+            let beginIndex = String.Index(encodedOffset: command.count + parameter.count)
+            
+            data = data[beginIndex...].description
+        }
+        else
+        {
+            data = ""
+        }
     }
     
     mutating func append(buffer: [UInt8])
@@ -85,42 +125,7 @@ struct CommunicatorMessage
             return
         }
         
-        // String appended cannot start with a filler character
-        // String appended must not make @data longer than @CommunicatorMessageLength
-        let fillerCharacter = CommunicatorMessageFillerCharacter.first!
-        
-        var beginIndex : Int = -1
-        
-        for e in 0..<stringData.count
-        {
-            if stringData[String.Index(encodedOffset: e)] != fillerCharacter
-            {
-                beginIndex = e
-                break
-            }
-        }
-        
-        guard beginIndex >= 0 else {
-            return
-        }
-        
-        var endIndex : Int = stringData.count
-        
-        let wouldBeResultStringLength = (data.count + endIndex - beginIndex)
-        
-        if wouldBeResultStringLength > CommunicatorMessageLength
-        {
-            endIndex -= wouldBeResultStringLength - Int(CommunicatorMessageLength)
-        }
-        
-        guard endIndex >= 0 else {
-            return
-        }
-        
-        if beginIndex < endIndex
-        {
-            data.append(stringData[String.Index(encodedOffset: beginIndex)..<String.Index(encodedOffset: endIndex)].description)
-        }
+        data.append(stringData)
     }
     
     mutating func fillMessage()

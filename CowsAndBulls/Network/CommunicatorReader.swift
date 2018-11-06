@@ -78,9 +78,23 @@ extension CommunicatorReader
                 return
             }
             
-            // Read output from socket
-            if let buffer = self.socket.read(Int(CommunicatorMessageLength), timeout: CommunicatorReaderReadTimeout)
+            // If message is not fully written, read from socket
+            if !self.data.isFullyWritten()
             {
+                // Read output from socket
+                var buffer : [Byte] = []
+                
+                while buffer.count != Int(CommunicatorMessageLength)
+                {
+                    if let newInfo = self.socket.read(1, timeout: CommunicatorReaderReadTimeout)
+                    {
+                        for byte in newInfo
+                        {
+                            buffer.append(byte)
+                        }
+                    }
+                }
+                
                 self.data.append(buffer: buffer)
             }
             
@@ -112,10 +126,11 @@ extension CommunicatorReader
                     self.delegate?.messageReceived(command: command, parameter: parameter)
                 }
                 
-                // Reset
-                self.data.clear()
+                // Clear the first filled message
+                self.data.clearFirstFilledMessage()
             }
             
+            // Repeat
             self.loop()
         }
     }
